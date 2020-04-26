@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         Gallery.init(galleryConfig)
         try {
+
             val transaction = supportFragmentManager.beginTransaction()
             fragment = HomeFragment.getInstance(SelectedItemHolder.listOfSelectedPhotos,
                 SelectedItemHolder.listOfSelectedVideos,
