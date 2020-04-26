@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="highlight">#23E5D8</color>
+    <color name="textColorPrimary">#ffffff</color>
+    <color name="neutral_divider">#33002f34</color>
+
+    <color name="neutral_background">#EBEEEF</color>
+    <color name="background_grey">@color/neutral_background</color>
+
+    <color name="primary">#2a65ea</color>
+
+    <color name="colorPrimary">@color/primary</color>
+    <color name="neutral_disabled">#5C002f34</color>
+    <dimen name="caption_font_size">10sp</dimen>
+    <color name="snackbar_text">#FFFFFF</color>
+    <color name="background_video_duration">#990e2e34</color>
+    <color name="tab_text_color">#8a002f34</color>
+    <color name="toolbar_text">#002f34</color>
+
+</resources>

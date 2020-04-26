@@ -1,0 +1,5 @@
+<paths>
+    <external-path name="external_files" path="."/>
+    <external-path name="public_pictures" path="Pictures"/>
+    <files-path name="profile_picture_dir" path="/profile/picture"/>
+</paths>

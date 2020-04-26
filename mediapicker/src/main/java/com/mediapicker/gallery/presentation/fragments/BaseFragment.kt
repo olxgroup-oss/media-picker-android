@@ -1,0 +1,121 @@
+package com.mediapicker.gallery.presentation.fragments
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.CallSuper
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
+import com.mediapicker.gallery.R
+import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.presentation.viewmodels.VideoFile
+import kotlinx.android.synthetic.main.custom_toolbar.*
+import kotlinx.android.synthetic.main.fragment_base.*
+import kotlinx.android.synthetic.main.fragment_base.view.*
+
+abstract class BaseFragment : Fragment() {
+
+    companion object{
+        const val EXTRA_SELECTED_PHOTOS = "selected_photos"
+        const val EXTRA_SELECTED_VIDEOS = "selected_videos"
+        const val EXTRA_DEFAULT_PAGE = "extra_default_page"
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    protected fun getPhotosFromArguments() : List<PostingDraftPhoto>{
+        this.arguments?.let {
+            if(it.containsKey(EXTRA_SELECTED_PHOTOS)){
+                return it.getSerializable(EXTRA_SELECTED_PHOTOS) as List<PostingDraftPhoto>
+            }
+        }
+        return emptyList()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    protected fun getVideosFromArguments() : List<VideoFile>{
+       this.arguments?.let {
+            if(it.containsKey(EXTRA_SELECTED_VIDEOS)){
+                return it.getSerializable(EXTRA_SELECTED_VIDEOS) as List<VideoFile>
+            }
+        }
+        return  emptyList()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_base, container, false).apply {
+            baseContainer.addView(inflater.inflate(getLayoutId(),null))
+        }
+    }
+
+    @LayoutRes
+    abstract fun getLayoutId(): Int
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setToolbar()
+        initViewModels()
+        setUpViews()
+    }
+
+    @CallSuper
+    private fun setToolbar() {
+        /*baseToolbar.title = getScreenTitle()
+        baseToolbar.setTitleTextColor(context!!.resources!!.getColor(R.color.toolbar_text))
+        if(activity is AppCompatActivity){
+            val appCompatActivity = (activity as AppCompatActivity)
+            appCompatActivity.setSupportActionBar(baseToolbar)
+            if(setHomeAsUp()) {
+                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                appCompatActivity.supportActionBar?.setHomeAsUpIndicator(getHomeAsUpIcon())
+            }
+        }
+        if(shouldHideToolBar()){
+            baseToolbar.visibility = View.GONE
+            baseToolbar.setTitleTextColor(context!!.resources!!.getColor(R.color.primary))
+        }*/
+        toolbarTitle.text = getScreenTitle()
+        toolbarTitle.setTextColor(context!!.resources!!.getColor(R.color.toolbar_text))
+        if(setHomeAsUp()){
+            toolbarBackButton.visibility = View.VISIBLE
+            toolbarBackButton.setImageResource(getHomeAsUpIcon())
+        }else{
+            toolbarBackButton.visibility = View.GONE
+        }
+        if(shouldHideToolBar()){
+            toolbarView.visibility = View.GONE
+        }
+        toolbarBackButton.setOnClickListener { onBackPressed() }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if(item.itemId == android.R.id.home){
+            onBackPressed()
+            return true
+        }else{
+            super.onOptionsItemSelected(item)
+        }
+
+    }
+
+    abstract fun onBackPressed()
+
+    open fun getHomeAsUpIcon()  = R.drawable.ic_back
+
+    open fun setHomeAsUp()  = false
+
+    abstract fun getScreenTitle() : String
+
+    open fun shouldHideToolBar()  = false
+
+    abstract fun setUpViews()
+
+    @CallSuper
+    open fun initViewModels(){}
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        baseToolbar.visibility = View.VISIBLE
+    }
+}

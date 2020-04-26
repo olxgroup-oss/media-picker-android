@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gallery_item_size">128dp</dimen>
+    <dimen name="gallery_item_offset">1dp</dimen>
+    <dimen name="gallery_item_check_padding">16dp</dimen>
+    <dimen name="module_tiny">4dp</dimen>
+    <dimen name="module_small">8dp</dimen>
+    <dimen name="label_font_size">12sp</dimen>
+    <dimen name="module_base_9">18dp</dimen>
+    <dimen name="module_base">2dp</dimen>
+    <dimen name="module_big">24dp</dimen>
+    <dimen name="module_bigger">48dp</dimen>
+    <dimen name="subtitle_font_size">16sp</dimen>
+    <dimen name="module_medium">16dp</dimen>
+    <dimen name="image_item_size">104dp</dimen>
+    <dimen name="module_half_dp">0.5dp</dimen>
+    <dimen name="module_medium_big">20dp</dimen>
+</resources>

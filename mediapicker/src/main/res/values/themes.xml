@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomActionBar"></style>
+
+    <style name="CustomButton" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/button_selector_state</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/subtitle_font_size</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:paddingLeft">@dimen/module_medium</item>
+        <item name="android:paddingRight">@dimen/module_medium</item>
+        <item name="android:paddingTop">@dimen/module_medium</item>
+        <item name="android:paddingBottom">@dimen/module_medium</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+
+</resources>
