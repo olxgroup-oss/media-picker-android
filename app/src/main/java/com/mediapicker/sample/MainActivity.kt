@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.Gallery
+import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
 import com.mediapicker.gallery.domain.entity.Rule
@@ -17,67 +17,37 @@ import com.mediapicker.gallery.presentation.fragments.HomeFragment
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_VIDEO_CAPTURE: Int = 1000
+    private var fragment: HomeFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-       /* val galleryConfig = GalleryConfig.GalleryConfigBuilder(
-            application, BuildConfig.APPLICATION_ID + ".provider",
-            MyClientGalleryCommunicator()
-        )
-            .useMyPhotoCamera(true)
-            .useMyVideoCamera(true)
-            .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithVideo)
-            .validation(getValidation())
-            .build()
-
-        PanameraGallery.init(galleryConfig)*/
         showStepFragment()
     }
 
     private fun getValidation(): Validation {
-        val i = Rule.MaxVideoSelection(2,"")
-        return Validation.ValidationBuilder()
-            .setMaxPhotoSelection(Rule.MaxPhotoSelection(getRandomNumber(), "Max Photo Limit Reached "))
-            .setMaxVideoSelection(Rule.MaxVideoSelection(getRandomNumber(), "Max Video Limit Reached")).build()
-    }
-
-
-    private fun getRandomNumber() = Random(1).nextInt(10)
-
-    private fun getValidationV2(): Validation {
         return Validation.ValidationBuilder()
             .setMinPhotoSelection(Rule.MinPhotoSelection(1, "Minimum 0 photos can be selected "))
-            .setMinVideoSelection(Rule.MinVideoSelection(1, "0 photos can be selected "))
+            .setMinVideoSelection(Rule.MinVideoSelection(1, "Minimum 1 video can be selected "))
             .setMaxPhotoSelection(Rule.MaxPhotoSelection(2, "Maximum 2 photos can be selected "))
             .setMaxVideoSelection(Rule.MaxVideoSelection(2, "Maximum 2 videos can be selected")).build()
     }
 
-
-    private var fragment: HomeFragment? = null
-
     private fun attachGalleryFragment() {
-
-        val galleryConfig = GalleryConfig.GalleryConfigBuilder(
-            application, BuildConfig.APPLICATION_ID + ".provider",
-            MyClientGalleryCommunicator()
-        )
+        val galleryConfig = GalleryConfig.GalleryConfigBuilder(application, BuildConfig.APPLICATION_ID + ".provider", MyClientGalleryCommunicator())
             .useMyPhotoCamera(true)
             .useMyVideoCamera(false)
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
             .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithVideo)
-            .validation(getValidationV2())
+            .validation(getValidation())
             .build()
-
         Gallery.init(galleryConfig)
         try {
-
             val transaction = supportFragmentManager.beginTransaction()
             fragment = HomeFragment.getInstance(SelectedItemHolder.listOfSelectedPhotos,
                 SelectedItemHolder.listOfSelectedVideos,
@@ -118,16 +88,6 @@ class MainActivity : AppCompatActivity() {
             showStepFragment()
         }
 
-
-        /*override fun photosListFromGallery(selectedPhotosList: List<PostingDraftPhoto>) {
-            showMessage("photosListFromGallery")
-        }
-
-        override fun getSelectedPhotosList(): List<PostingDraftPhoto> {
-            showMessage("getSelectedPhotosList")
-            return ArrayList()
-        }*/
-
         override fun captureImage() {
             showMessage("captureImage")
         }
@@ -145,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun showMessage(msg: String) {
-            //Snackbar.make(this@MainActivity.coordinator_layout, msg, Snackbar.LENGTH_LONG).show()
+            showMessage(msg)
         }
     }
 
