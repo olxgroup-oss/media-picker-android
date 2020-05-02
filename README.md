@@ -5,6 +5,9 @@ By default it scan all the photos and videos in the device also you can provide 
 
 # Download
 
+[![](https://jitpack.io/v/olxgroup-oss/media-picker-android.svg)](https://jitpack.io/#olxgroup-oss/media-picker-android)
+
+
 Add it in your root build.gradle at the end of repositories
 ```
 allprojects {
@@ -45,6 +48,20 @@ val galleryConfig = GalleryConfig.GalleryConfigBuilder(application, BuildConfig.
             .setMaxVideoSelection(Rule.MaxVideoSelection(2, "Maximum 2 videos can be selected")).build()
     }
 ```
+**Add this to your manifest**
+```
+<activity android:name="com.mediapicker.gallery.presentation.activity.FolderViewActivity"
+            android:screenOrientation="portrait"/>
+<provider
+       android:name="androidx.core.content.FileProvider"
+       android:authorities="${applicationId}.provider"
+       android:exported="false"
+       android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+</provider>
+```	
 
 **UI Rendering**
 
