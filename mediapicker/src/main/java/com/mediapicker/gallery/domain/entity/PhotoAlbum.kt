@@ -21,7 +21,7 @@ class PhotoAlbum(var albumId: String?, var name: String?) : IGalleryItem, Serial
         this.albumEntries = albumEntries
     }
 
-    fun addEntryToAlbum(photo: PostingDraftPhoto) {
+    fun addEntryToAlbum(photo: PhotoFile) {
         albumEntries.add(photo)
     }
 

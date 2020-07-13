@@ -6,55 +6,42 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.fragments.BaseFragment
 import com.mediapicker.gallery.presentation.fragments.FolderViewFragment
 import com.mediapicker.gallery.presentation.fragments.GalleryPhotoViewFragment
 import com.mediapicker.gallery.presentation.utils.Constants.EXTRA_SELECTED_PHOTO
 import com.mediapicker.gallery.presentation.utils.Constants.PHOTO_SELECTION_REQUEST_CODE
-import kotlinx.android.synthetic.main.activity_folder_view.*
+import kotlinx.android.synthetic.main.base_fragment_activity.*
 
 
-class FolderViewActivity : AppCompatActivity(),
-    GalleryActionListener {
+class FolderViewActivity : BaseFragmentActivity(), GalleryActionListener {
 
     companion object {
-        fun startActivityForResult(fragment: Fragment, currentSelectPhotos: LinkedHashSet<PostingDraftPhoto>) {
+        fun startActivityForResult(fragment: Fragment, currentSelectPhotos: LinkedHashSet<PhotoFile>) {
             fragment.startActivityForResult(Intent(fragment.activity, FolderViewActivity::class.java).apply {
                 this.putExtra(EXTRA_SELECTED_PHOTO, currentSelectPhotos)
             }, PHOTO_SELECTION_REQUEST_CODE)
         }
     }
 
-    private var currentSelectedPhotos = LinkedHashSet<PostingDraftPhoto>()
+    private var currentSelectedPhotos = LinkedHashSet<PhotoFile>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.mediapicker.gallery.R.layout.activity_folder_view)
         setCurrentSelectedPhotos()
         setFragment(FolderViewFragment.getInstance())
     }
 
-    private fun setFragment(fragment: BaseFragment) {
-        try {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(container.id, fragment, fragment.javaClass.name)
-            transaction.addToBackStack(fragment.javaClass.name)
-            transaction.commitAllowingStateLoss()
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
-
     private fun setCurrentSelectedPhotos() {
-        currentSelectedPhotos = intent.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PostingDraftPhoto>
+        currentSelectedPhotos = intent.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PhotoFile>
     }
 
     override fun moveToPhotoGrid(photoAlbum: PhotoAlbum) {
         setFragment(GalleryPhotoViewFragment.getInstance(photoAlbum, currentSelectedPhotos))
     }
 
-    override fun onPhotoSelected(postingDraftPhoto: PostingDraftPhoto) {
+    override fun onPhotoSelected(postingDraftPhoto: PhotoFile) {
         if (currentSelectedPhotos.contains(postingDraftPhoto)) {
             currentSelectedPhotos.remove(postingDraftPhoto)
         } else {
@@ -62,7 +49,7 @@ class FolderViewActivity : AppCompatActivity(),
         }
     }
 
-    override fun isPhotoAlreadySelected(postingDraftPhoto: PostingDraftPhoto): Boolean {
+    override fun isPhotoAlreadySelected(postingDraftPhoto: PhotoFile): Boolean {
         if (currentSelectedPhotos.contains(postingDraftPhoto)) {
             currentSelectedPhotos.remove(postingDraftPhoto)
             return true
@@ -95,8 +82,8 @@ class FolderViewActivity : AppCompatActivity(),
 
 interface GalleryActionListener {
     fun moveToPhotoGrid(photoAlbum: PhotoAlbum)
-    fun onPhotoSelected(postingDraftPhoto: PostingDraftPhoto)
+    fun onPhotoSelected(postingDraftPhoto: PhotoFile)
     fun onActionClicked(shouldThrowResult: Boolean)
-    fun isPhotoAlreadySelected(postingDraftPhoto: PostingDraftPhoto): Boolean
+    fun isPhotoAlreadySelected(postingDraftPhoto: PhotoFile): Boolean
     fun showCrossButton()
 }

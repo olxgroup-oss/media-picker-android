@@ -50,6 +50,11 @@ val galleryConfig = GalleryConfig.GalleryConfigBuilder(application, BuildConfig.
 ```
 **Add this to your manifest**
 ```
+//Add only when you want a hosting activity
+ <activity android:name="com.mediapicker.gallery.presentation.activity.GalleryActivity"
+            android:screenOrientation="portrait"/>
+
+//Add only when you want a folder wise browsing
 <activity android:name="com.mediapicker.gallery.presentation.activity.FolderViewActivity"
             android:screenOrientation="portrait"/>
 <provider
@@ -61,11 +66,12 @@ val galleryConfig = GalleryConfig.GalleryConfigBuilder(application, BuildConfig.
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
 </provider>
-```	
+```
 
 **UI Rendering**
 
 ```
+----Using Fragments
 try {
         val transaction = supportFragmentManager.beginTransaction()
         fragment = HomeFragment.getInstance(<previous selected photos>,
@@ -76,6 +82,11 @@ try {
 } catch (ex: Exception) {
         ex.printStackTrace()
 }
+
+----Using Activity
+ startActivity(GalleryActivity.getGalleryActivityIntent(<previous selected photos>,
+                <previous selected videos>,
+            defaultPageType = DefaultPage.PhotoPage,context = baseContext))
 ```
 
 **Screenshots**

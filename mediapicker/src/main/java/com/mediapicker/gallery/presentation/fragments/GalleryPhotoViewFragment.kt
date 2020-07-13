@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.adapters.IGalleryItemClickListener
 import com.mediapicker.gallery.presentation.adapters.SelectPhotoImageAdapter
 import com.mediapicker.gallery.presentation.utils.Constants.EXTRA_SELECTED_ALBUM
@@ -29,11 +29,11 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
         arguments?.getSerializable(EXTRA_SELECTED_ALBUM) as PhotoAlbum
     }
 
-    private val currentSelectedPhotos: LinkedHashSet<PostingDraftPhoto> by lazy {
-        arguments?.getSerializable(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PostingDraftPhoto>
+    private val currentSelectedPhotos: LinkedHashSet<PhotoFile> by lazy {
+        arguments?.getSerializable(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PhotoFile>
     }
 
-    private fun removePhotoFromSelection(photo: PostingDraftPhoto, position: Int) {
+    private fun removePhotoFromSelection(photo: PhotoFile, position: Int) {
         currentSelectedPhotos.remove(photo)
         adapter.listCurrentPhotos = currentSelectedPhotos.toList()
         adapter.notifyDataSetChanged()
@@ -61,7 +61,7 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
     }
 
     @SuppressLint("CheckResult")
-    private fun handleItemClickListener(photo: PostingDraftPhoto, position: Int) {
+    private fun handleItemClickListener(photo: PhotoFile, position: Int) {
         if (currentSelectedPhotos.contains(photo)) {
             removePhotoFromSelection(photo, position)
         } else {
@@ -69,7 +69,7 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
         }
     }
 
-    private fun validateNewPhoto(photo: PostingDraftPhoto, position: Int) {
+    private fun validateNewPhoto(photo: PhotoFile, position: Int) {
         when(val validationResult = photoValidationAction.canAddThisToList(currentSelectedPhotos.size, photo)){
             is ValidationResult.Success -> {
                 galleryActionListener?.onPhotoSelected(photo)
@@ -92,7 +92,7 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
 
     private val galleryItemClickListener = object : IGalleryItemClickListener {
 
-        override fun onPhotoItemClick(photo: PostingDraftPhoto, position: Int) {
+        override fun onPhotoItemClick(photo: PhotoFile, position: Int) {
             handleItemClickListener(photo, position)
         }
 
@@ -106,7 +106,7 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
     }
 
     companion object {
-        fun getInstance(photoAlbum: PhotoAlbum, currentSelectedPhotos: java.util.LinkedHashSet<PostingDraftPhoto>) = GalleryPhotoViewFragment().apply {
+        fun getInstance(photoAlbum: PhotoAlbum, currentSelectedPhotos: java.util.LinkedHashSet<PhotoFile>) = GalleryPhotoViewFragment().apply {
             arguments = Bundle().apply {
                 this.putSerializable(EXTRA_SELECTED_ALBUM, photoAlbum)
                 this.putSerializable(EXTRA_SELECTED_PHOTO, currentSelectedPhotos)

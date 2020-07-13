@@ -11,7 +11,7 @@ import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.domain.entity.CameraItem
 import com.mediapicker.gallery.domain.entity.IGalleryItem
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.viewmodels.factory.BaseLoadMediaViewModel
 import java.util.*
 
@@ -25,7 +25,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoa
 
     private var lastLoadedCursor: Cursor? = null
 
-    private var currentSelectedPhotos: LinkedHashSet<PostingDraftPhoto> = LinkedHashSet()
+    private var currentSelectedPhotos: LinkedHashSet<PhotoFile> = LinkedHashSet()
 
     private val galleryItemsLiveData = MutableLiveData<List<IGalleryItem>>()
 
@@ -112,7 +112,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoa
     }
 
 
-    private fun getPhoto(cursor: Cursor): PostingDraftPhoto {
+    private fun getPhoto(cursor: Cursor): PhotoFile {
         val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
         val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
         val col = cursor.getColumnIndex(COL_FULL_PHOTO_URL)
@@ -120,7 +120,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoa
         if (col != -1) {
             fullPhotoUrl = cursor.getString(col)
         }
-        return PostingDraftPhoto.Builder()
+        return PhotoFile.Builder()
             .imageId(id)
             .path(path)
             .smallPhotoUrl("")

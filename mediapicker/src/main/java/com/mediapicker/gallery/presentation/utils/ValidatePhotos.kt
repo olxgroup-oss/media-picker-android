@@ -1,7 +1,7 @@
 package com.mediapicker.gallery.presentation.utils
 
 import com.mediapicker.gallery.Gallery
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.domain.entity.Rule
 import com.mediapicker.gallery.utils.getBitmapHeight
 import com.mediapicker.gallery.utils.getBitmapWidth
@@ -9,7 +9,7 @@ import com.mediapicker.gallery.utils.getBitmapWidth
 
 class ValidatePhotos {
 
-    fun canAddThisToList(currentNoOfAdded: Int, postingDraftPhoto: PostingDraftPhoto): ValidationResult {
+    fun canAddThisToList(currentNoOfAdded: Int, postingDraftPhoto: PhotoFile): ValidationResult {
         var canAddThisToList = true
         var exception: Throwable = InValidPhotoException("")
 
@@ -27,7 +27,7 @@ class ValidatePhotos {
         }
     }
 
-    private fun checkIfValidImage(postingDraftPhoto: PostingDraftPhoto, canAddThisToList: Boolean): Pair<Boolean, Throwable> {
+    private fun checkIfValidImage(postingDraftPhoto: PhotoFile, canAddThisToList: Boolean): Pair<Boolean, Throwable> {
         var canAddThisToList1 = canAddThisToList
         var exception: Throwable = InValidPhotoException("")
         val failedRule = complyRulesImages(postingDraftPhoto.path)
@@ -73,13 +73,13 @@ class ValidatePhotos {
         return complyAspectRatio
     }
 
-    fun shouldAddThisToList(currentNoOfAdded: Int, postingDraftPhoto: PostingDraftPhoto): Boolean {
+    fun shouldAddThisToList(currentNoOfAdded: Int, postingDraftPhoto: PhotoFile): Boolean {
         return (currentNoOfAdded <= Gallery.galleryConfig.validation.getMaxPhotoSelectionRule().maxSelectionLimit && validatePhoto(
             postingDraftPhoto
         ))
     }
 
-    private fun validatePhoto(postingDraftPhoto: PostingDraftPhoto) = !postingDraftPhoto.path.isNullOrBlank()
+    private fun validatePhoto(postingDraftPhoto: PhotoFile) = !postingDraftPhoto.path.isNullOrBlank()
 
     fun checkIfMimeTypeSupported(mimeType: String): Boolean {
         return mimeType.isEmpty() || listOf("image/png", "image/jpeg", "image/webp").contains(mimeType)

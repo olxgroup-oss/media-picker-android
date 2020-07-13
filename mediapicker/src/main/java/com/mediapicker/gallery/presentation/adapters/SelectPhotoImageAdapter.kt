@@ -23,7 +23,7 @@ import java.io.File
 
 class SelectPhotoImageAdapter constructor(
     private var listOfGalleryItems: List<IGalleryItem>,
-    var listCurrentPhotos: List<PostingDraftPhoto>,
+    var listCurrentPhotos: List<PhotoFile>,
     private val onGalleryItemClickListener: IGalleryItemClickListener,
     private val fromGallery: Boolean = true
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -41,7 +41,7 @@ class SelectPhotoImageAdapter constructor(
 
     override fun getItemViewType(position: Int): Int {
         val item = listOfGalleryItems[position]
-        return if (item is PostingDraftPhoto) ITEM_TYPE_PHOTO else if (item is PhotoAlbum) ITEM_TYPE_ALBUM else ITEM_TYPE_CAMERA
+        return if (item is PhotoFile) ITEM_TYPE_PHOTO else if (item is PhotoAlbum) ITEM_TYPE_ALBUM else ITEM_TYPE_CAMERA
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -55,7 +55,7 @@ class SelectPhotoImageAdapter constructor(
 
     override fun getItemCount() = listOfGalleryItems.size
 
-    private fun getPosition(photo: PostingDraftPhoto): Int {
+    private fun getPosition(photo: PhotoFile): Int {
         var i = 0
         while (i < listCurrentPhotos.size) {
             if (listCurrentPhotos[i] == photo) {
@@ -83,13 +83,13 @@ class SelectPhotoImageAdapter constructor(
             }
             else -> {
                 val photoViewHolder = viewHolder as PhotoViewHolder
-                photoViewHolder.photo = listOfGalleryItems[position] as PostingDraftPhoto
+                photoViewHolder.photoFile = listOfGalleryItems[position] as PhotoFile
                 photoViewHolder.itemView.imgCoverText.visibility = View.GONE
-                if (listCurrentPhotos.contains(photoViewHolder.photo)) {
+                if (listCurrentPhotos.contains(photoViewHolder.photoFile)) {
                     photoViewHolder.itemView.white_overlay.visibility = View.VISIBLE
                     photoViewHolder.itemView.imgSelectedText.text =
-                        getPosition(photoViewHolder.photo).toString()
-                    if (listCurrentPhotos.indexOf(photoViewHolder.photo) == 0) {
+                        getPosition(photoViewHolder.photoFile).toString()
+                    if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0) {
                         photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
                     }
                     photoViewHolder.itemView.scaleX = AnimationHelper.SELECTED_SCALE
@@ -102,15 +102,15 @@ class SelectPhotoImageAdapter constructor(
                     photoViewHolder.itemView.scaleY = AnimationHelper.UNSELECTED_SCALE
                 }
 
-                if (photoViewHolder.photo.imageId != photoViewHolder.itemView.tag) {
-                    loadImageIntoView(photoViewHolder.photo, photoViewHolder.itemView.cropedImage)
-                    photoViewHolder.itemView.tag = photoViewHolder.photo.imageId
+                if (photoViewHolder.photoFile.imageId != photoViewHolder.itemView.tag) {
+                    loadImageIntoView(photoViewHolder.photoFile, photoViewHolder.itemView.cropedImage)
+                    photoViewHolder.itemView.tag = photoViewHolder.photoFile.imageId
                 }
                 photoViewHolder.itemView.setOnClickListener { v ->
-                    val path = photoViewHolder.photo.path
-                    val imageId = photoViewHolder.photo.imageId
-                    val fullPhotoUrl = photoViewHolder.photo.fullPhotoUrl
-                    val photo = PostingDraftPhoto.Builder()
+                    val path = photoViewHolder.photoFile.path
+                    val imageId = photoViewHolder.photoFile.imageId
+                    val fullPhotoUrl = photoViewHolder.photoFile.fullPhotoUrl
+                    val photo = PhotoFile.Builder()
                         .imageId(imageId)
                         .path(path!!)
                         .smallPhotoUrl("")
@@ -135,27 +135,27 @@ class SelectPhotoImageAdapter constructor(
          trackingService.value.postingPictureSelect()*/
     }
 
-    private fun handleItemClick(photo: PostingDraftPhoto, position: Int) {
-        onGalleryItemClickListener.onPhotoItemClick(photo, position)
+    private fun handleItemClick(photoFile: PhotoFile, position: Int) {
+        onGalleryItemClickListener.onPhotoItemClick(photoFile, position)
     }
 
     private fun onClickCamera() {
         onGalleryItemClickListener.onCameraIconClick()
     }
 
-    private fun loadImageIntoView(photo: PostingDraftPhoto, imageView: ImageView) {
+    private fun loadImageIntoView(photoFile: PhotoFile, imageView: ImageView) {
 
         val options = RequestOptions()
             .skipMemoryCache(true)
             .fitCenter()
-        if (photo.isAlreadyUploaded) {
+        if (photoFile.isAlreadyUploaded) {
             Glide.with(imageView.context)
-                .load(photo.fullPhotoUrl)
+                .load(photoFile.fullPhotoUrl)
                 .apply(options)
                 .into(imageView)
-        } else if (!photo.path.isNullOrEmpty()) {
+        } else if (!photoFile.path.isNullOrEmpty()) {
             Glide.with(imageView.context)
-                .load(Uri.fromFile(File(photo.path!!)))
+                .load(Uri.fromFile(File(photoFile.path!!)))
                 .apply(RequestOptions().override(200, 200))
                 .addListener(ImageLoadingCallback())
                 .into(imageView)
@@ -216,12 +216,12 @@ internal class PhotoViewHolder(private var root: View) : RecyclerView.ViewHolder
      init {
          ButterKnife.bind(this, root)
      }*/
-    lateinit var photo: PostingDraftPhoto
+    lateinit var photoFile: PhotoFile
 
 }
 
 interface IGalleryItemClickListener {
-    fun onPhotoItemClick(photo: PostingDraftPhoto, position: Int)
+    fun onPhotoItemClick(photoFile: PhotoFile, position: Int)
     fun onFolderItemClick()
     fun onCameraIconClick()
 }

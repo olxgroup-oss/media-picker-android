@@ -78,7 +78,8 @@ class LoadVideoViewModel(val galleryConfig: GalleryConfig) : BaseLoadMediaViewMo
 
 interface VideoItem
 
-data class VideoFile(val id: Long, val uri: Uri, val name: String, val duration: Int, val size: Int, val thumbnail: Bitmap?) : VideoItem,
+data class VideoFile(val id: Long, @Transient val uri: Uri, val name: String, val duration: Int, val size: Int,
+                     @Transient val thumbnail: Bitmap?) : VideoItem,
     Serializable {
 
     var isSelected: Boolean = false
