@@ -5,7 +5,7 @@ import android.text.TextUtils
 import java.io.File
 import java.io.Serializable
 
-class PostingDraftPhoto : Serializable, IGalleryItem {
+class PhotoFile : Serializable, IGalleryItem {
     var imageId: Long = 0L
         private set
     var path: String? = null
@@ -66,7 +66,7 @@ class PostingDraftPhoto : Serializable, IGalleryItem {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
-        val that = o as PostingDraftPhoto?
+        val that = o as PhotoFile?
         return this.imageId == that!!.imageId
     }
 
@@ -136,8 +136,8 @@ class PostingDraftPhoto : Serializable, IGalleryItem {
             return this
         }
 
-        fun build(): PostingDraftPhoto {
-            return PostingDraftPhoto(this)
+        fun build(): PhotoFile {
+            return PhotoFile(this)
         }
     }
 }

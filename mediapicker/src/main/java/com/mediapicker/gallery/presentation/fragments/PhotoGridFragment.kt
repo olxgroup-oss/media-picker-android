@@ -9,7 +9,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.activity.FolderViewActivity
 import com.mediapicker.gallery.presentation.adapters.IGalleryItemClickListener
 import com.mediapicker.gallery.presentation.adapters.SelectPhotoImageAdapter
@@ -26,7 +26,7 @@ import java.util.*
 open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     companion object {
-        fun getInstance(title: String, listOfSelectedPhotos: List<PostingDraftPhoto>) = PhotoGridFragment().also {
+        fun getInstance(title: String, listOfSelectedPhotos: List<PhotoFile>) = PhotoGridFragment().also {
             it.pageTitle = title
             it.arguments = Bundle().apply { putSerializable(EXTRA_SELECTED_PHOTOS, listOfSelectedPhotos as Serializable) }
         }
@@ -41,9 +41,9 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     private var isExpectingNewPhoto: Boolean = false
     private lateinit var lastRequestFileToSavePath: String
 
-    private val currentSelectedPhotos: LinkedHashSet<PostingDraftPhoto> = LinkedHashSet()
+    private val currentSelectedPhotos: LinkedHashSet<PhotoFile> = LinkedHashSet()
 
-    private val listCurrentPhotos: MutableList<PostingDraftPhoto> by lazy {
+    private val listCurrentPhotos: MutableList<PhotoFile> by lazy {
         val i = getPhotosFromArguments().toMutableList()
         currentSelectedPhotos.addAll(i)
         return@lazy i
@@ -80,7 +80,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     private val galleryItemSelectHandler = object :
         IGalleryItemClickListener {
-        override fun onPhotoItemClick(photo: PostingDraftPhoto, position: Int) {
+        override fun onPhotoItemClick(photo: PhotoFile, position: Int) {
             if (handleItemClick(photo)) {
                 updateData(position)
             }
@@ -126,7 +126,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     }
 
 
-    protected fun handleItemClick(photo: PostingDraftPhoto): Boolean {
+    protected fun handleItemClick(photo: PhotoFile): Boolean {
         if (isSingleSelectionMode) {
             onImageAdded("", photo)
             galleryItemAdapter.notifyDataSetChanged()
@@ -151,7 +151,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     }
 
 
-    fun addNewPhotoToCurrentSelection(photo: PostingDraftPhoto, position: Int) {
+    fun addNewPhotoToCurrentSelection(photo: PhotoFile, position: Int) {
         if (!currentSelectedPhotos.contains(photo)) {
             currentSelectedPhotos.add(photo)
             listCurrentPhotos.add(photo)
@@ -169,7 +169,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         }
     }
 
-    private fun getPosition(photo: PostingDraftPhoto): Int {
+    private fun getPosition(photo: PhotoFile): Int {
         var i = 0
         while (i < listCurrentPhotos.size) {
             if (listCurrentPhotos[i].imageId == photo.imageId) {
@@ -181,7 +181,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     }
 
 
-    private fun removePhotoFromCurrentSelection(photo: PostingDraftPhoto, position: Int) {
+    private fun removePhotoFromCurrentSelection(photo: PhotoFile, position: Int) {
         if (currentSelectedPhotos.contains(photo)) {
             currentSelectedPhotos.remove(photo)
             removeFromList(photo)
@@ -189,7 +189,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         }
     }
 
-    private fun removeFromList(photoToRemove: PostingDraftPhoto) {
+    private fun removeFromList(photoToRemove: PhotoFile) {
         val iterator = listCurrentPhotos.listIterator()
         while (iterator.hasNext()) {
             val photo = iterator.next()
@@ -210,27 +210,27 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     }
 
-    fun onImageAdded(fragmentName: String, photo: PostingDraftPhoto): Boolean {
+    fun onImageAdded(fragmentName: String, photo: PhotoFile): Boolean {
         addItem(photo)
         //trackingService.postingPictureComplete()
         return true
     }
 
-    fun onImageRemoved(fragmentName: String, photo: PostingDraftPhoto): Boolean {
+    fun onImageRemoved(fragmentName: String, photo: PhotoFile): Boolean {
         removeItem(photo)
         return true
     }
 
-    fun onImageValidate(fragmentName: String, photo: PostingDraftPhoto): Boolean {
+    fun onImageValidate(fragmentName: String, photo: PhotoFile): Boolean {
         return true
     }
 
-    fun addItem(photo: PostingDraftPhoto) {
+    fun addItem(photo: PhotoFile) {
         currentSelectedPhotos.add(photo)
         listCurrentPhotos.add(photo)
     }
 
-    fun removeItem(photo: PostingDraftPhoto) {
+    fun removeItem(photo: PhotoFile) {
         currentSelectedPhotos.remove(photo)
         removeFromList(photo)
     }
@@ -240,7 +240,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == PHOTO_SELECTION_REQUEST_CODE) run {
-            val finalSelectionFromFolders = data?.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PostingDraftPhoto>
+            val finalSelectionFromFolders = data?.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PhotoFile>
             setSelectedFromFolderAndNotify(finalSelectionFromFolders)
         } else if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
@@ -260,7 +260,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         }
     }
 
-    private fun setSelectedFromFolderAndNotify(photoSet: LinkedHashSet<PostingDraftPhoto>) {
+    private fun setSelectedFromFolderAndNotify(photoSet: LinkedHashSet<PhotoFile>) {
         currentSelectedPhotos.clear()
         currentSelectedPhotos.addAll(photoSet)
 

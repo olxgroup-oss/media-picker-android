@@ -12,7 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.contract.OnItemClickListener
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import kotlinx.android.synthetic.main.item_folder_selection.view.*
 import java.io.File
 
@@ -33,13 +33,13 @@ open class GalleryFolderAdapter constructor(val context: Context, var listOfFold
         val album = listOfFolders[position]
         if (album.hasPhotos()) {
             vH.root.backgroundImage.visibility = View.VISIBLE
-            loadImageIntoView(album.firstPhoto as PostingDraftPhoto, vH.root.backgroundImage)  //todo shalini: change the type inference
+            loadImageIntoView(album.firstPhoto as PhotoFile, vH.root.backgroundImage)  //todo shalini: change the type inference
         } else {
             vH.root.backgroundImage.visibility = View.GONE
         }
     }
 
-    private fun loadImageIntoView(photo: PostingDraftPhoto, imageView: ImageView) {
+    private fun loadImageIntoView(photo: PhotoFile, imageView: ImageView) {
         val options = RequestOptions()
         if (photo.isAlreadyUploaded) {
             photo.path?.let {

@@ -4,10 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.domain.action.RuleAction
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 
 class BridgeViewModel(
-    private var listOfSelectedPhotos: List<PostingDraftPhoto>,
+    private var listOfSelectedPhotos: List<PhotoFile>,
     private var listOfSelectedVideos: List<VideoFile>,
     private val galleryConfig: GalleryConfig
 ) : ViewModel() {
@@ -22,6 +22,8 @@ class BridgeViewModel(
 
     private val errorStateLiveData = MutableLiveData<String>()
 
+    private val closeHostingViewLiveData = MutableLiveData<Boolean>()
+
     fun recordVideoWithNativeCamera() = recordVideoLiveData
 
     fun getActionState() = actionButtonStateLiveData
@@ -30,7 +32,9 @@ class BridgeViewModel(
 
     fun getError() = errorStateLiveData
 
-    fun setCurrentSelectedPhotos(listOfSelectedPhotos: List<PostingDraftPhoto>) {
+    fun getClosingSignal() = closeHostingViewLiveData
+
+    fun setCurrentSelectedPhotos(listOfSelectedPhotos: List<PhotoFile>) {
         this.listOfSelectedPhotos = listOfSelectedPhotos
         shouldEnableActionButton()
     }
@@ -83,6 +87,7 @@ class BridgeViewModel(
         val error = ruleAction.getFirstFailingMessage(Pair(listOfSelectedPhotos.size, listOfSelectedVideos.size))
         if (error.isEmpty()) {
             onActionButtonClick()
+            closeHostingViewLiveData.postValue(true)
         } else {
             errorStateLiveData.postValue(error)
         }

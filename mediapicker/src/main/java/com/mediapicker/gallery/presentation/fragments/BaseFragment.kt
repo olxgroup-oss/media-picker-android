@@ -9,7 +9,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.mediapicker.gallery.R
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_base.*
@@ -24,10 +24,10 @@ abstract class BaseFragment : Fragment() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    protected fun getPhotosFromArguments() : List<PostingDraftPhoto>{
+    protected fun getPhotosFromArguments() : List<PhotoFile>{
         this.arguments?.let {
             if(it.containsKey(EXTRA_SELECTED_PHOTOS)){
-                return it.getSerializable(EXTRA_SELECTED_PHOTOS) as List<PostingDraftPhoto>
+                return it.getSerializable(EXTRA_SELECTED_PHOTOS) as List<PhotoFile>
             }
         }
         return emptyList()

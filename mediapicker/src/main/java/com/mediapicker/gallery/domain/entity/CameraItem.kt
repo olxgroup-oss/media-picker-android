@@ -7,7 +7,7 @@ class CameraItem : IGalleryItem, Serializable {
 
     var name = "Camera"
     var albumId: String? = "-1"
-    var albumEntries: List<PostingDraftPhoto> = ArrayList()
+    var albumEntries: List<PhotoFile> = ArrayList()
 
 
     override fun equals(o: Any?): Boolean {

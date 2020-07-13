@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.domain.repositories.GalleryRepository
 
 open class GalleryService(private val applicationContext: Context) : GalleryRepository {
@@ -60,7 +60,7 @@ open class GalleryService(private val applicationContext: Context) : GalleryRepo
         return PhotoAlbum(id.toString(), name)
     }
 
-    private fun getPhoto(cursor: Cursor): PostingDraftPhoto {
+    private fun getPhoto(cursor: Cursor): PhotoFile {
         val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
         val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
         val col = cursor.getColumnIndex(COL_FULL_PHOTO_URL)
@@ -68,7 +68,7 @@ open class GalleryService(private val applicationContext: Context) : GalleryRepo
         if (col != -1) {
             fullPhotoUrl = cursor.getString(col)
         }
-        return PostingDraftPhoto.Builder()
+        return PhotoFile.Builder()
             .imageId(id)
             .path(path)
             .smallPhotoUrl("")

@@ -9,9 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.domain.entity.Rule
 import com.mediapicker.gallery.domain.entity.Validation
+import com.mediapicker.gallery.presentation.activity.GalleryActivity
 import com.mediapicker.gallery.presentation.fragments.DefaultPage
 import com.mediapicker.gallery.presentation.fragments.HomeFragment
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setUpGallery()
         showStepFragment()
     }
 
@@ -38,15 +40,18 @@ class MainActivity : AppCompatActivity() {
             .setMaxVideoSelection(Rule.MaxVideoSelection(2, "Maximum 2 videos can be selected")).build()
     }
 
-    private fun attachGalleryFragment() {
+    private fun setUpGallery(){
         val galleryConfig = GalleryConfig.GalleryConfigBuilder(application, BuildConfig.APPLICATION_ID + ".provider", MyClientGalleryCommunicator())
             .useMyPhotoCamera(true)
             .useMyVideoCamera(false)
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
-            .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithVideo)
+            .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderAndVideo)
             .validation(getValidation())
             .build()
         Gallery.init(galleryConfig)
+    }
+
+    private fun attachGalleryFragment() {
         try {
             val transaction = supportFragmentManager.beginTransaction()
             fragment = HomeFragment.getInstance(SelectedItemHolder.listOfSelectedPhotos,
@@ -62,7 +67,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun jumpToGallery() {
-        attachGalleryFragment()
+        startActivity(GalleryActivity.getGalleryActivityIntent(SelectedItemHolder.listOfSelectedPhotos,
+            SelectedItemHolder.listOfSelectedVideos,
+            defaultPageType = DefaultPage.PhotoPage,context = baseContext))
     }
 
     private fun showStepFragment() {
@@ -82,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        override fun actionButtonClick(listOfSelectedPhotos: List<PostingDraftPhoto>, listofSelectedVideos: List<VideoFile>) {
+        override fun actionButtonClick(listOfSelectedPhotos: List<PhotoFile>, listofSelectedVideos: List<VideoFile>) {
             SelectedItemHolder.listOfSelectedPhotos = listOfSelectedPhotos
             SelectedItemHolder.listOfSelectedVideos = listofSelectedVideos
             showStepFragment()
@@ -131,6 +138,6 @@ class MainActivity : AppCompatActivity() {
 
 
 object SelectedItemHolder {
-    var listOfSelectedPhotos = emptyList<PostingDraftPhoto>()
+    var listOfSelectedPhotos = emptyList<PhotoFile>()
     var listOfSelectedVideos = emptyList<VideoFile>()
 }

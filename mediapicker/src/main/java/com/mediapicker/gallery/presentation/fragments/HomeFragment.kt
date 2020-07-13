@@ -12,7 +12,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
+import com.mediapicker.gallery.presentation.activity.GalleryActivity
 import com.mediapicker.gallery.presentation.utils.getActivityScopedViewModel
 import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.BridgeViewModel
@@ -33,7 +34,13 @@ class HomeFragment : BaseFragment() {
     }
 
     private val bridgeViewModel: BridgeViewModel by lazy {
-        getActivityScopedViewModel { BridgeViewModel(getPhotosFromArguments(), getVideosFromArguments(), Gallery.galleryConfig) }
+        getActivityScopedViewModel {
+            BridgeViewModel(
+                getPhotosFromArguments(),
+                getVideosFromArguments(),
+                Gallery.galleryConfig
+            )
+        }
     }
 
     private val defaultPageToOpen: DefaultPage by lazy {
@@ -49,7 +56,11 @@ class HomeFragment : BaseFragment() {
         checkPermissionsWithPermissionCheck()
     }
 
-    @NeedsPermission(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    @NeedsPermission(
+        Manifest.permission.CAMERA,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
     fun checkPermissions() {
         when (homeViewModel.getMediaType()) {
             GalleryConfig.MediaType.PhotoOnly -> {
@@ -72,14 +83,22 @@ class HomeFragment : BaseFragment() {
 
 
     //todo change this logic
-    @OnPermissionDenied(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    @OnPermissionDenied(
+        Manifest.permission.CAMERA,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
     fun onPermissionDenied() {
         Toast.makeText(context, "Permission denied :(", Toast.LENGTH_SHORT).show()
         activity?.supportFragmentManager?.popBackStack()
     }
 
     @SuppressLint("NeedOnRequestPermissionsResult")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         onRequestPermissionsResult(requestCode, grantResults)
     }
@@ -88,6 +107,13 @@ class HomeFragment : BaseFragment() {
         super.initViewModels()
         bridgeViewModel.getActionState().observe(this, Observer { changeActionButtonState(it) })
         bridgeViewModel.getError().observe(this, Observer { showError(it) })
+        bridgeViewModel.getClosingSignal().observe(this, Observer { closeIfHostingOnActivity() })
+    }
+
+    private fun closeIfHostingOnActivity() {
+        if(requireActivity() is GalleryActivity){
+           requireActivity().finish()
+        }
     }
 
     override fun setHomeAsUp() = true
@@ -108,16 +134,21 @@ class HomeFragment : BaseFragment() {
         tabLayout.visibility = View.GONE
         PagerAdapter(
             childFragmentManager,
-            listOf(PhotoGridFragment.getInstance(getString(R.string.title_tab_photo), getPhotosFromArguments()))
+            listOf(
+                PhotoGridFragment.getInstance(
+                    getString(R.string.title_tab_photo),
+                    getPhotosFromArguments()
+                )
+            )
         ).apply {
             viewPager.adapter = this
         }
     }
 
-    private fun openPage(){
-        if(defaultPageToOpen == DefaultPage.PhotoPage){
+    private fun openPage() {
+        if (defaultPageToOpen is DefaultPage.PhotoPage) {
             viewPager.currentItem = 0
-        }else{
+        } else {
             viewPager.currentItem = 1
         }
     }
@@ -129,8 +160,14 @@ class HomeFragment : BaseFragment() {
     private fun setUpWithTabLayout() {
         PagerAdapter(
             childFragmentManager, listOf(
-                PhotoGridFragment.getInstance(getString(R.string.title_tab_photo), getPhotosFromArguments()),
-                VideoGridFragment.getInstance(getString(R.string.title_tab_video), getVideosFromArguments())
+                PhotoGridFragment.getInstance(
+                    getString(R.string.title_tab_photo),
+                    getPhotosFromArguments()
+                ),
+                VideoGridFragment.getInstance(
+                    getString(R.string.title_tab_video),
+                    getVideosFromArguments()
+                )
             )
         ).apply { viewPager.adapter = this }
         tabLayout.setupWithViewPager(viewPager)
@@ -153,8 +190,8 @@ class HomeFragment : BaseFragment() {
 
     companion object {
         fun getInstance(
-            listOfSelectedPhotos: List<PostingDraftPhoto>,
-            listOfSelectedVideos: List<VideoFile>,
+            listOfSelectedPhotos: List<PhotoFile> = emptyList(),
+            listOfSelectedVideos: List<VideoFile> = emptyList(),
             defaultPageType: DefaultPage = DefaultPage.PhotoPage
         ): HomeFragment {
             return HomeFragment().apply {

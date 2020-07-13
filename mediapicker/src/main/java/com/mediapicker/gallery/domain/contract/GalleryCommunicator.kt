@@ -1,6 +1,6 @@
 package com.mediapicker.gallery.domain.contract
 
-import com.mediapicker.gallery.domain.entity.PostingDraftPhoto
+import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import java.io.File
 
@@ -17,7 +17,7 @@ interface IGalleryCommunicator{
 
     fun onCloseMainScreen()
 
-    fun actionButtonClick(listOfSelectedPhotos: List<PostingDraftPhoto>, listofSelectedVideos: List<VideoFile>)
+    fun actionButtonClick(listOfSelectedPhotos: List<PhotoFile>, listofSelectedVideos: List<VideoFile>)
 }
 
 
@@ -27,7 +27,7 @@ internal class GalleryCommunicatorDefaultImpl : IGalleryCommunicator{
 
     }
 
-    override fun actionButtonClick(listOfSelectedPhotos: List<PostingDraftPhoto>, listofSelectedVideos: List<VideoFile>) {
+    override fun actionButtonClick(listOfSelectedPhotos: List<PhotoFile>, listofSelectedVideos: List<VideoFile>) {
 
     }
 
