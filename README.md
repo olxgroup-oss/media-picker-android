@@ -21,7 +21,7 @@ allprojects {
 Add the dependency
 ```
 dependencies {
-	implementation 'com.github.olxgroup-oss:media-picker-android:-SNAPSHOT'
+	implementation 'com.github.olxgroup-oss:media-picker-android:0.0.3_dev'
 }
 ```
 
