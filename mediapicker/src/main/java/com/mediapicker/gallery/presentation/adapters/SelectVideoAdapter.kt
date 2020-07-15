@@ -10,8 +10,8 @@ import com.mediapicker.gallery.presentation.viewmodels.RecordVideoItem
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.presentation.viewmodels.VideoItem
 import com.mediapicker.gallery.util.AnimationHelper
-import kotlinx.android.synthetic.main.item_camera_selection.view.*
-import kotlinx.android.synthetic.main.item_video_selection.view.*
+import kotlinx.android.synthetic.main.oss_item_camera_selection.view.*
+import kotlinx.android.synthetic.main.oss_item_video_selection.view.*
 
 class SelectVideoAdapter constructor(
     val context: Context,
@@ -26,7 +26,7 @@ class SelectVideoAdapter constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val resId = if (viewType == ITEM_TYPE_RECORD_VIDEO) R.layout.item_camera_selection else R.layout.item_video_selection
+        val resId = if (viewType == ITEM_TYPE_RECORD_VIDEO) R.layout.oss_item_camera_selection else R.layout.oss_item_video_selection
         val view = LayoutInflater.from(parent.context).inflate(resId, parent, false)
         return if (viewType == ITEM_TYPE_RECORD_VIDEO) RecordVideoViewHolder(view) else VideoViewHolder(view)
     }

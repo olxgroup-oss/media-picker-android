@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.presentation.fragments.BaseFragment
-import kotlinx.android.synthetic.main.base_fragment_activity.*
+import kotlinx.android.synthetic.main.oss_base_fragment_activity.*
 
 abstract class BaseFragmentActivity : AppCompatActivity() {
 
@@ -16,7 +16,7 @@ abstract class BaseFragmentActivity : AppCompatActivity() {
     }
 
     @LayoutRes
-    fun getLayout() = R.layout.base_fragment_activity
+    fun getLayout() = R.layout.oss_base_fragment_activity
 
     protected fun setFragment(fragment: BaseFragment, addToBackStack: Boolean = true) {
         try {

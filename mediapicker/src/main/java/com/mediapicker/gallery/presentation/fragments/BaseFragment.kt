@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
-import kotlinx.android.synthetic.main.custom_toolbar.*
-import kotlinx.android.synthetic.main.fragment_base.*
-import kotlinx.android.synthetic.main.fragment_base.view.*
+import kotlinx.android.synthetic.main.oss_custom_toolbar.*
+import kotlinx.android.synthetic.main.oss_fragment_base.*
+import kotlinx.android.synthetic.main.oss_fragment_base.view.*
 
 abstract class BaseFragment : Fragment() {
 
@@ -44,7 +44,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_base, container, false).apply {
+        return inflater.inflate(R.layout.oss_fragment_base, container, false).apply {
             baseContainer.addView(inflater.inflate(getLayoutId(),null))
         }
     }

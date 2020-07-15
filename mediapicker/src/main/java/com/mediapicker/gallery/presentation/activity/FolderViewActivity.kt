@@ -12,7 +12,7 @@ import com.mediapicker.gallery.presentation.fragments.FolderViewFragment
 import com.mediapicker.gallery.presentation.fragments.GalleryPhotoViewFragment
 import com.mediapicker.gallery.presentation.utils.Constants.EXTRA_SELECTED_PHOTO
 import com.mediapicker.gallery.presentation.utils.Constants.PHOTO_SELECTION_REQUEST_CODE
-import kotlinx.android.synthetic.main.base_fragment_activity.*
+import kotlinx.android.synthetic.main.oss_base_fragment_activity.*
 
 
 class FolderViewActivity : BaseFragmentActivity(), GalleryActionListener {

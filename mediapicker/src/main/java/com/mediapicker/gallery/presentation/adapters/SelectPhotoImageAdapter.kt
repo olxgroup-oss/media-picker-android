@@ -16,8 +16,8 @@ import com.bumptech.glide.request.target.Target
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.*
 import com.mediapicker.gallery.util.AnimationHelper
-import kotlinx.android.synthetic.main.item_camera_selection.view.*
-import kotlinx.android.synthetic.main.item_photo_selection.view.*
+import kotlinx.android.synthetic.main.oss_item_camera_selection.view.*
+import kotlinx.android.synthetic.main.oss_item_photo_selection.view.*
 import java.io.File
 
 
@@ -46,7 +46,7 @@ class SelectPhotoImageAdapter constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val resId =
-            if (viewType == ITEM_TYPE_CAMERA || viewType == ITEM_TYPE_ALBUM) R.layout.item_camera_selection else R.layout.item_photo_selection
+            if (viewType == ITEM_TYPE_CAMERA || viewType == ITEM_TYPE_ALBUM) R.layout.oss_item_camera_selection else R.layout.oss_item_photo_selection
         val view = LayoutInflater.from(parent.context).inflate(resId, parent, false)
         return if (viewType == ITEM_TYPE_CAMERA || viewType == ITEM_TYPE_ALBUM) CameraViewHolder(
             view

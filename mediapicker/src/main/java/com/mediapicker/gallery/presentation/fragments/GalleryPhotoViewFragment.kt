@@ -15,7 +15,7 @@ import com.mediapicker.gallery.presentation.utils.ItemDecorationAlbumColumns
 import com.mediapicker.gallery.presentation.utils.ValidatePhotos
 import com.mediapicker.gallery.presentation.utils.ValidationResult
 import com.mediapicker.gallery.utils.SnackbarUtils
-import kotlinx.android.synthetic.main.fragment_folder_view.*
+import kotlinx.android.synthetic.main.oss_fragment_folder_view.*
 
 const val COLUMNS_COUNT = 3
 
@@ -45,7 +45,7 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
 
     override fun getScreenTitle() = photoAlbum.name ?: ""
 
-    override fun getLayoutId() = R.layout.fragment_folder_view
+    override fun getLayoutId() = R.layout.oss_fragment_folder_view
 
     override fun setUpViews() {
         super.setUpViews()

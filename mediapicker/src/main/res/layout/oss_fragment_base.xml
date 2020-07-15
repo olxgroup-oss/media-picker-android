@@ -8,7 +8,7 @@
         android:background="@android:color/white"
         android:layout_height="wrap_content"
         android:visibility="gone"/>
-    <include layout = "@layout/custom_toolbar"/>
+    <include layout = "@layout/oss_custom_toolbar"/>
     <FrameLayout
         android:id="@+id/baseContainer"
         android:layout_width="match_parent"

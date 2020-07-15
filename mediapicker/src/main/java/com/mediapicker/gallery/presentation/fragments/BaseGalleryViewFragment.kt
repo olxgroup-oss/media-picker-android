@@ -2,7 +2,7 @@ package com.mediapicker.gallery.presentation.fragments
 
 import android.app.Activity
 import com.mediapicker.gallery.presentation.activity.GalleryActionListener
-import kotlinx.android.synthetic.main.fragment_folder_view.*
+import kotlinx.android.synthetic.main.oss_fragment_folder_view.*
 
 abstract class BaseGalleryViewFragment : BaseFragment() {
 

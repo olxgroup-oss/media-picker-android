@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         android:clipChildren="false"
         android:padding="@dimen/gallery_item_offset"
-        tools:listitem="@layout/list_item_gallery_media"
+        tools:listitem="@layout/oss_list_item_gallery_media"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

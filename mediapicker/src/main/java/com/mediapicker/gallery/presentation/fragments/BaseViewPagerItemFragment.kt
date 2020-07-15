@@ -13,7 +13,7 @@ import com.mediapicker.gallery.presentation.viewmodels.StateData
 import com.mediapicker.gallery.presentation.viewmodels.factory.BaseLoadMediaViewModel
 import com.mediapicker.gallery.util.ItemOffsetDecoration
 import com.mediapicker.gallery.utils.SnackbarUtils
-import kotlinx.android.synthetic.main.fragment_gallery.*
+import kotlinx.android.synthetic.main.oss_fragment_gallery.*
 
 abstract class BaseViewPagerItemFragment : BaseFragment() {
 
@@ -43,7 +43,7 @@ abstract class BaseViewPagerItemFragment : BaseFragment() {
 
     abstract fun getMediaAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>
 
-    override fun getLayoutId() = R.layout.fragment_gallery
+    override fun getLayoutId() = R.layout.oss_fragment_gallery
 
     abstract fun getBaseLoadMediaViewModel() : BaseLoadMediaViewModel
 

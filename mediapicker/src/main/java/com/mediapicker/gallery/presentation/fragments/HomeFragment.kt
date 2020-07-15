@@ -20,7 +20,7 @@ import com.mediapicker.gallery.presentation.viewmodels.BridgeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.HomeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.utils.SnackbarUtils
-import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.oss_fragment_main.*
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnPermissionDenied
 import permissions.dispatcher.RuntimePermissions
@@ -48,7 +48,7 @@ class HomeFragment : BaseFragment() {
     }
 
 
-    override fun getLayoutId() = R.layout.fragment_main
+    override fun getLayoutId() = R.layout.oss_fragment_main
 
     override fun getScreenTitle() = getString(R.string.title_home_screen)
 

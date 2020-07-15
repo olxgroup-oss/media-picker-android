@@ -11,7 +11,7 @@ import com.mediapicker.gallery.presentation.adapters.GalleryFolderAdapter
 import com.mediapicker.gallery.presentation.utils.ItemDecorationAlbumColumns
 import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.LoadAlbumViewModel
-import kotlinx.android.synthetic.main.fragment_folder_view.*
+import kotlinx.android.synthetic.main.oss_fragment_folder_view.*
 
 class FolderViewFragment : BaseGalleryViewFragment(), OnItemClickListener<PhotoAlbum> {
 
@@ -31,7 +31,7 @@ class FolderViewFragment : BaseGalleryViewFragment(), OnItemClickListener<PhotoA
         }
     }
 
-    override fun getLayoutId() = R.layout.fragment_folder_view
+    override fun getLayoutId() = R.layout.oss_fragment_folder_view
 
     override fun setUpViews() {
         super.setUpViews()
