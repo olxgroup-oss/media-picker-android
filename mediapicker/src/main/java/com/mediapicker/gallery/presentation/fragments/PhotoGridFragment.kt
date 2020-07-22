@@ -247,12 +247,8 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
                 TAKING_PHOTO -> {
                     if (lastRequestFileToSavePath.isNotEmpty()) {
                         val requestFile = File(lastRequestFileToSavePath)
-                        activity?.sendBroadcast(
-                            Intent(
-                                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                                Uri.fromFile(requestFile)
-                            )
-                        )
+                        MediaStore.Images.Media.insertImage( activity?.contentResolver,
+                            requestFile.absolutePath, requestFile.name, null);
                     }
                     loadPhotoViewModel.loadMedia(this)
                 }
