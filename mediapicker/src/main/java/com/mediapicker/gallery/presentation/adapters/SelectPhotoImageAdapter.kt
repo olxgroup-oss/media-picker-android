@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.*
 import com.mediapicker.gallery.util.AnimationHelper
@@ -89,7 +90,7 @@ class SelectPhotoImageAdapter constructor(
                     photoViewHolder.itemView.white_overlay.visibility = View.VISIBLE
                     photoViewHolder.itemView.imgSelectedText.text =
                         getPosition(photoViewHolder.photoFile).toString()
-                    if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0) {
+                    if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover) {
                         photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
                     }
                     photoViewHolder.itemView.scaleX = AnimationHelper.SELECTED_SCALE

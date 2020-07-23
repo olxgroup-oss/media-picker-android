@@ -17,6 +17,11 @@ class RuleAction(private val mediaValidation: Validation) {
         return (photoRulePass.isEmpty() && videoRulePass.isEmpty())
     }
 
+    fun shouldEnableActionButton(selectedMediaSizes: Int): Boolean {
+        val photoRulePass = validationPhotoRules(selectedSize = selectedMediaSizes)
+        return (photoRulePass.isEmpty())
+    }
+
     private fun validationPhotoRules(selectedSize: Int): String {
         val photoMinRule = mediaValidation.getMinPhotoSelectionRule()
         val photoMaxRule = mediaValidation.getMaxPhotoSelectionRule()

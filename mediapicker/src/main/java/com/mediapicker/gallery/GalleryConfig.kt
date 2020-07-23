@@ -1,17 +1,18 @@
 package com.mediapicker.gallery
 
-import android.app.Application
+import android.content.Context
 import androidx.annotation.LayoutRes
 import com.mediapicker.gallery.domain.contract.GalleryCommunicatorDefaultImpl
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 import com.mediapicker.gallery.domain.entity.Validation
 
 class GalleryConfig(
-    val application: Application,
+    val applicationContext: Context,
     val clientAuthority: String,
     var galleryCommunicator: IGalleryCommunicator,
     val shouldUsePhotoCamera: Boolean,
     val shouldUseVideoCamera: Boolean,
+    val needToShowCover: Boolean,
     val photoViewPlaceHolder: Int,
     val typeOfMediaSupported: MediaType,
     val validation: Validation,
@@ -19,18 +20,21 @@ class GalleryConfig(
 ) {
 
 
-    fun isGalleryInitialize() = application != null && clientAuthority != null
+    fun shouldOnlyValidatePhoto() = typeOfMediaSupported == MediaType.PhotoWithFolderOnly || typeOfMediaSupported == MediaType.PhotoOnly
+
+    fun isGalleryInitialize() = applicationContext != null && clientAuthority != null
 
 
     class GalleryNotInitilizedException(message: String = "Please initialize gallery with application and client authority") : Exception(message)
 
     class GalleryConfigBuilder(
-        private val application: Application,
+        private val applicationContext: Context,
         private val clientAuthority: String,
         private val galleryCommunicator: IGalleryCommunicator = GalleryCommunicatorDefaultImpl()
     ) {
         private var shouldUsePhotoCamera: Boolean = false
         private var shouldUseVideoCamera: Boolean = false
+        private var needToShowCover: Boolean = true
 
         @LayoutRes
         private var photoViewPlaceHolder: Int = 0
@@ -40,6 +44,7 @@ class GalleryConfig(
 
         fun useMyPhotoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUsePhotoCamera = shouldUseMyCamera }
         fun useMyVideoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUseVideoCamera = shouldUseMyCamera }
+        fun needToShowCover(needToShowCover: Boolean) = apply { this.needToShowCover = needToShowCover }
         fun photoViewPlaceHolder(layout: Int) = apply { this.photoViewPlaceHolder = layout }
         fun typeOfMediaSupported(mediaType: MediaType) = apply { this.typeOfMediaSupported = mediaType }
 
@@ -51,11 +56,12 @@ class GalleryConfig(
         fun mediaScanningCriteria(mediaScanningCriteria: MediaScanningCriteria) = apply { this.mediaScanningCriteria = mediaScanningCriteria }
 
         fun build() = GalleryConfig(
-            application,
+            applicationContext,
             clientAuthority,
             galleryCommunicator,
             shouldUsePhotoCamera,
             shouldUseVideoCamera,
+            needToShowCover,
             photoViewPlaceHolder,
             typeOfMediaSupported,
             validation,

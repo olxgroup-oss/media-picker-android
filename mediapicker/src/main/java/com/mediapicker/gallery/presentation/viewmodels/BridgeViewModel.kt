@@ -45,8 +45,13 @@ class BridgeViewModel(
     }
 
     private fun shouldEnableActionButton() {
-        val status = ruleAction.shouldEnableActionButton(Pair(listOfSelectedPhotos.size, listOfSelectedVideos.size))
-        actionButtonStateLiveData.postValue(status)
+        if(galleryConfig.shouldOnlyValidatePhoto()){
+            val status = ruleAction.shouldEnableActionButton(listOfSelectedPhotos.size)
+            actionButtonStateLiveData.postValue(status)
+        }else{
+            val status = ruleAction.shouldEnableActionButton(Pair(listOfSelectedPhotos.size, listOfSelectedVideos.size))
+            actionButtonStateLiveData.postValue(status)
+        }
     }
 
     private fun onActionButtonClick() {

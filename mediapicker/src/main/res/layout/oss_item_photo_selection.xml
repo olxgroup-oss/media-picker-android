@@ -28,18 +28,18 @@
         android:layout_gravity="top|center_horizontal"
         android:layout_margin="@dimen/module_small"
         android:background="@drawable/cover_photo_indicator_background"
-        android:paddingStart="@dimen/module_tiny"
-        android:paddingEnd="@dimen/module_tiny"
-        android:paddingLeft="@dimen/module_tiny"
-        android:paddingRight="@dimen/module_tiny"
         android:gravity="center"
         android:includeFontPadding="false"
+        android:paddingStart="@dimen/module_tiny"
+        android:paddingLeft="@dimen/module_tiny"
+        android:paddingEnd="@dimen/module_tiny"
+        android:paddingRight="@dimen/module_tiny"
         android:text="Cover"
         android:textSize="@dimen/label_font_size"
 
         android:visibility="gone"
-        tools:visibility="visible"
-        tools:text="Hello" />
+        tools:text="Hello"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/imgSelectedText"

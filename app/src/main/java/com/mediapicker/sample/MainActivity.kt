@@ -41,9 +41,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpGallery(){
-        val galleryConfig = GalleryConfig.GalleryConfigBuilder(application, BuildConfig.APPLICATION_ID + ".provider", MyClientGalleryCommunicator())
+        val galleryConfig = GalleryConfig.GalleryConfigBuilder(applicationContext, BuildConfig.APPLICATION_ID + ".provider", MyClientGalleryCommunicator())
             .useMyPhotoCamera(true)
             .useMyVideoCamera(false)
+            .needToShowCover(false)
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
             .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderAndVideo)
             .validation(getValidation())

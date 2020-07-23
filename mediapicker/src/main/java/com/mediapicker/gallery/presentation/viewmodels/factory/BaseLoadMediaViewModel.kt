@@ -21,7 +21,7 @@ abstract class BaseLoadMediaViewModel(private val galleryConfig: GalleryConfig) 
 
     fun getLoadingState() = loadingStateLiveData
 
-    protected fun getApplication() = galleryConfig.application
+    protected fun getApplication() = galleryConfig.applicationContext
 
     abstract fun getCursorLoader(): Loader<Cursor>
 

@@ -38,7 +38,7 @@ class LoadVideoViewModel(val galleryConfig: GalleryConfig) : BaseLoadMediaViewMo
             projection.add(folderCriteria.second)
         }
         return CursorLoader(
-            galleryConfig.application,
+            galleryConfig.applicationContext,
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, selection,
             projection.toTypedArray(), MediaStore.Images.Media.DATE_TAKEN + " DESC"
         )
@@ -64,7 +64,7 @@ class LoadVideoViewModel(val galleryConfig: GalleryConfig) : BaseLoadMediaViewMo
                 val size = cursor.getInt(sizeColumn)
                 val contentUri: Uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
                 val thumbnail = MediaStore.Video.Thumbnails.getThumbnail(
-                    galleryConfig.application.contentResolver,
+                    galleryConfig.applicationContext.contentResolver,
                     id, MediaStore.Video.Thumbnails.MICRO_KIND, null
                 )
                 if (!name.isNullOrBlank() && duration > 0)

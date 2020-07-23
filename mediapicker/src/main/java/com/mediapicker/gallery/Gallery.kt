@@ -13,7 +13,7 @@ object Gallery{
         galleryConfig.galleryCommunicator = galleryCommunicator
     }
 
-    internal fun getApp() = galleryConfig.application
+    internal fun getApp() = galleryConfig.applicationContext
 
     internal fun getClientAuthority() = galleryConfig.clientAuthority
 

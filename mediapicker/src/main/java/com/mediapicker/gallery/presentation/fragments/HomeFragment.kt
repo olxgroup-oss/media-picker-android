@@ -119,6 +119,7 @@ class HomeFragment : BaseFragment() {
     override fun setHomeAsUp() = true
 
     override fun onBackPressed() {
+        closeIfHostingOnActivity()
         bridgeViewModel.onBackPressed()
     }
 

@@ -61,20 +61,6 @@ abstract class BaseFragment : Fragment() {
 
     @CallSuper
     private fun setToolbar() {
-        /*baseToolbar.title = getScreenTitle()
-        baseToolbar.setTitleTextColor(context!!.resources!!.getColor(R.color.toolbar_text))
-        if(activity is AppCompatActivity){
-            val appCompatActivity = (activity as AppCompatActivity)
-            appCompatActivity.setSupportActionBar(baseToolbar)
-            if(setHomeAsUp()) {
-                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-                appCompatActivity.supportActionBar?.setHomeAsUpIndicator(getHomeAsUpIcon())
-            }
-        }
-        if(shouldHideToolBar()){
-            baseToolbar.visibility = View.GONE
-            baseToolbar.setTitleTextColor(context!!.resources!!.getColor(R.color.primary))
-        }*/
         toolbarTitle.text = getScreenTitle()
         toolbarTitle.setTextColor(context!!.resources!!.getColor(R.color.toolbar_text))
         if(setHomeAsUp()){
