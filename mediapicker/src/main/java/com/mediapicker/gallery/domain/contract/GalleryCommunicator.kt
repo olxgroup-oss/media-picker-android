@@ -18,6 +18,8 @@ interface IGalleryCommunicator{
     fun onCloseMainScreen()
 
     fun actionButtonClick(listOfSelectedPhotos: List<PhotoFile>, listofSelectedVideos: List<VideoFile>)
+
+    fun onFolderSelect()
 }
 
 
@@ -29,6 +31,10 @@ internal class GalleryCommunicatorDefaultImpl : IGalleryCommunicator{
 
     override fun actionButtonClick(listOfSelectedPhotos: List<PhotoFile>, listofSelectedVideos: List<VideoFile>) {
 
+    }
+
+    override fun onFolderSelect() {
+        //Need Implementation
     }
 
     override fun captureImage() {

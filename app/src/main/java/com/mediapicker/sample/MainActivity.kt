@@ -96,6 +96,10 @@ class MainActivity : AppCompatActivity() {
             showStepFragment()
         }
 
+        override fun onFolderSelect() {
+            showMessage("folderClicked")
+        }
+
         override fun captureImage() {
             showMessage("captureImage")
         }
@@ -113,7 +117,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun showMessage(msg: String) {
-            showMessage(msg)
+             Toast.makeText(applicationContext,msg,Toast.LENGTH_LONG).show()
+
         }
     }
 
