@@ -1,6 +1,7 @@
 package com.mediapicker.gallery.presentation.fragments
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,7 +19,6 @@ import com.mediapicker.gallery.presentation.utils.Constants.PHOTO_SELECTION_REQU
 import com.mediapicker.gallery.presentation.utils.FileUtils
 import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.LoadPhotoViewModel
-import java.io.File
 import java.io.Serializable
 import java.util.*
 
@@ -88,6 +88,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
         override fun onFolderItemClick() {
             //trackingService.postingFolderSelect()
+            bridgeViewModel.onFolderSelect()
             FolderViewActivity.startActivityForResult(this@PhotoGridFragment, currentSelectedPhotos)
         }
 
@@ -245,15 +246,26 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         } else if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 TAKING_PHOTO -> {
+                //    fixMediaDir()
                     if (lastRequestFileToSavePath.isNotEmpty()) {
-                        val requestFile = File(lastRequestFileToSavePath)
-                        MediaStore.Images.Media.insertImage( activity?.contentResolver,
-                            requestFile.absolutePath, requestFile.name, null);
+                        insertIntoGallery()
                     }
                     loadPhotoViewModel.loadMedia(this)
                 }
             }
         }
+    }
+
+    private fun insertIntoGallery() {
+        val values = ContentValues()
+        values.put(
+            MediaStore.Images.Media.DATE_TAKEN,
+            System.currentTimeMillis()
+        )
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        values.put(MediaStore.MediaColumns.DATA, lastRequestFileToSavePath)
+        context!!.contentResolver
+            .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
 
     private fun setSelectedFromFolderAndNotify(photoSet: LinkedHashSet<PhotoFile>) {

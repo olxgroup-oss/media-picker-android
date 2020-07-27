@@ -81,6 +81,10 @@ class BridgeViewModel(
         return galleryConfig.shouldUsePhotoCamera
     }
 
+    fun onFolderSelect(){
+        galleryConfig.galleryCommunicator.onFolderSelect()
+    }
+
     fun getMaxVideoLimitErrorResponse() = galleryConfig.validation.getMaxVideoSelectionRule().message
 
     fun complyRules() {
