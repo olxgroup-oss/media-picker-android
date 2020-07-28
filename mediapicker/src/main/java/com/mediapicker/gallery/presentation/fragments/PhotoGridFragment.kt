@@ -3,6 +3,7 @@ package com.mediapicker.gallery.presentation.fragments
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -39,7 +40,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
 
     private var isExpectingNewPhoto: Boolean = false
-    private lateinit var lastRequestFileToSavePath: String
+    private var lastRequestFileToSavePath = ""
 
     private val currentSelectedPhotos: LinkedHashSet<PhotoFile> = LinkedHashSet()
 
@@ -243,19 +244,29 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         if (resultCode == Activity.RESULT_OK && requestCode == PHOTO_SELECTION_REQUEST_CODE) run {
             val finalSelectionFromFolders = data?.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PhotoFile>
             setSelectedFromFolderAndNotify(finalSelectionFromFolders)
-        } else if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                TAKING_PHOTO -> {
-                //    fixMediaDir()
-                    if (lastRequestFileToSavePath.isNotEmpty()) {
-                        insertIntoGallery()
-                    }
-                    loadPhotoViewModel.loadMedia(this)
+        } else if (requestCode == TAKING_PHOTO) {
+            if(resultCode == Activity.RESULT_OK){
+                if (lastRequestFileToSavePath.isNotEmpty()) {
+                    insertIntoGallery()
                 }
+                addItem(getPhoto(lastRequestFileToSavePath))
+                loadPhotoViewModel.loadMedia(this)
+            }else{
+                isExpectingNewPhoto = false
             }
         }
     }
 
+    private fun getPhoto(path : String): PhotoFile {
+        var fullPhotoUrl = ""
+        return PhotoFile.Builder()
+            .imageId(0)
+            .path(path)
+            .smallPhotoUrl("")
+            .fullPhotoUrl(fullPhotoUrl)
+            .photoBackendId(0L)
+            .build()
+    }
     private fun insertIntoGallery() {
         val values = ContentValues()
         values.put(

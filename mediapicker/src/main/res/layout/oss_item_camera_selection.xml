@@ -4,7 +4,7 @@
     android:id="@+id/gridTile"
     android:layout_width="match_parent"
     android:layout_height="104dp"
-    android:background="#2a65ea"
+    android:background="@color/primary"
     android:orientation="vertical"
     android:padding="0.5dp">
 

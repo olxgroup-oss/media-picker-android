@@ -90,6 +90,8 @@ class SelectPhotoImageAdapter constructor(
                     photoViewHolder.itemView.white_overlay.visibility = View.VISIBLE
                     photoViewHolder.itemView.imgSelectedText.text =
                         getPosition(photoViewHolder.photoFile).toString()
+                    photoViewHolder.itemView.imgSelectedText.background = photoViewHolder.itemView.context
+                        .resources.getDrawable(R.drawable.oss_circle_photo_indicator_selected)
                     if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover) {
                         photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
                     }
@@ -98,6 +100,8 @@ class SelectPhotoImageAdapter constructor(
 
                 } else {
                     photoViewHolder.itemView.imgSelectedText.text = ""
+                    photoViewHolder.itemView.imgSelectedText.background = photoViewHolder.itemView.context
+                        .resources.getDrawable(R.drawable.oss_circle_photo_indicator)
                     photoViewHolder.itemView.white_overlay.visibility = View.GONE
                     photoViewHolder.itemView.scaleX = AnimationHelper.UNSELECTED_SCALE
                     photoViewHolder.itemView.scaleY = AnimationHelper.UNSELECTED_SCALE

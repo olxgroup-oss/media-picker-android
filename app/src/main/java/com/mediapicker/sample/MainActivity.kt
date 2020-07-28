@@ -35,9 +35,8 @@ class MainActivity : AppCompatActivity() {
     private fun getValidation(): Validation {
         return Validation.ValidationBuilder()
             .setMinPhotoSelection(Rule.MinPhotoSelection(1, "Minimum 0 photos can be selected "))
-            .setMinVideoSelection(Rule.MinVideoSelection(1, "Minimum 1 video can be selected "))
-            .setMaxPhotoSelection(Rule.MaxPhotoSelection(2, "Maximum 2 photos can be selected "))
-            .setMaxVideoSelection(Rule.MaxVideoSelection(2, "Maximum 2 videos can be selected")).build()
+            .setMaxPhotoSelection(Rule.MaxPhotoSelection(15, "Maximum 15 photos can be selected "))
+            .build()
     }
 
     private fun setUpGallery(){
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             .useMyVideoCamera(false)
             .needToShowCover(false)
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
-            .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderAndVideo)
+            .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderOnly)
             .validation(getValidation())
             .build()
         Gallery.init(galleryConfig)

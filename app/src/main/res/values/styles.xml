@@ -12,7 +12,7 @@
     </style>
 
     <style name="CustomButton" parent="@style/Widget.AppCompat.Button.Borderless">
-        <item name="android:background">@drawable/button_selector_state</item>
+        <item name="android:background">@drawable/oss_button_selector_state</item>
         <item name="android:foreground">?selectableItemBackground</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">@dimen/subtitle_font_size</item>

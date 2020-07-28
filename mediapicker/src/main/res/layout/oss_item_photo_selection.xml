@@ -18,7 +18,7 @@
         android:id="@+id/white_overlay"
         android:layout_width="match_parent"
         android:layout_height="104dp"
-        android:background="#B3FFFFFF"
+        android:background="@color/selected_photo_overlay"
         android:visibility="gone" />
 
     <TextView
@@ -47,7 +47,7 @@
         android:layout_height="@dimen/module_base_9"
         android:layout_gravity="top|right|end"
         android:layout_margin="@dimen/module_small"
-        android:background="@drawable/circle_photo_indicator"
+        android:background="@drawable/oss_circle_photo_indicator"
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="@dimen/label_font_size"

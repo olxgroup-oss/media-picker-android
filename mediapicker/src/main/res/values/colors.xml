@@ -7,7 +7,8 @@
     <color name="neutral_background">#EBEEEF</color>
     <color name="background_grey">@color/neutral_background</color>
 
-    <color name="primary">#2a65ea</color>
+    <color name="primary">#002f34</color>
+
 
     <color name="colorPrimary">@color/primary</color>
     <color name="neutral_disabled">#5C002f34</color>
@@ -16,5 +17,8 @@
     <color name="background_video_duration">#990e2e34</color>
     <color name="tab_text_color">#8a002f34</color>
     <color name="toolbar_text">#002f34</color>
+    <color name="selected_photo_overlay">#B3FFFFFF</color>
+    <color name="enable_action_button">@color/primary</color>
+    <color name="disable_action_button">#5C002f34</color>
 
 </resources>

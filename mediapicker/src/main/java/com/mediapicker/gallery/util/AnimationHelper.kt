@@ -7,7 +7,7 @@ import androidx.annotation.FloatRange
 
 object AnimationHelper {
 
-    internal val SELECTED_SCALE = .8f
+    internal val SELECTED_SCALE = .9f
     internal val UNSELECTED_SCALE = 1f
 
     fun scaleToUnselected(view: View){

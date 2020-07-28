@@ -25,7 +25,7 @@ data class Validation(val rules: List<Rule>) {
 
     class ValidationBuilder {
         private val rule = HashSet<Rule>().apply {
-            this.add(Rule.MinVideoSelection(minSelectionLimit = 1, message = "Please select at least one video"))
+            this.add(Rule.MinVideoSelection(minSelectionLimit = 0, message = "Please select at least one video"))
             this.add(Rule.MaxVideoSelection(maxSelectionLimit = 2, message = "Max video selection limit reached"))
             this.add(Rule.MinPhotoSelection(minSelectionLimit = 1, message = "Please select at least one photo"))
             this.add(Rule.MaxPhotoSelection(maxSelectionLimit = 4, message = "Max Photo Limit Reached "))
