@@ -3,7 +3,6 @@ package com.mediapicker.gallery.presentation.fragments
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -64,7 +63,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         )
     }
 
-    override fun getScreenTitle() = getString(R.string.title_tab_photo)
+    override fun getScreenTitle() = getString(R.string.oss_title_tab_photo)
 
     override fun getBaseLoadMediaViewModel() = loadPhotoViewModel
 

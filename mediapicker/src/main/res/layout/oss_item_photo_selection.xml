@@ -18,7 +18,7 @@
         android:id="@+id/white_overlay"
         android:layout_width="match_parent"
         android:layout_height="104dp"
-        android:background="@color/selected_photo_overlay"
+        android:background="@color/oss_selected_photo_overlay"
         android:visibility="gone" />
 
     <TextView

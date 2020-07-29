@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true" android:state_enabled="true">
-        <color android:color="@color/enable_action_button" />
+        <color android:color="@color/oss_enable_action_button" />
     </item>
     <item android:state_selected="false" android:state_enabled="true">
-        <color android:color="@color/disable_action_button" />
+        <color android:color="@color/oss_disable_action_button" />
     </item>
 <!--
     <item android:state_enabled="true">

@@ -73,13 +73,13 @@ class SelectPhotoImageAdapter constructor(
             viewHolder.itemViewType == ITEM_TYPE_CAMERA -> {
                 val cameraViewHolder = viewHolder as CameraViewHolder
                 cameraViewHolder.itemView.setOnClickListener { v -> onClickCamera() }
-                cameraViewHolder.itemView.folderName.text = viewHolder.itemView.context.getString(R.string.label_camera)
+                cameraViewHolder.itemView.folderName.text = viewHolder.itemView.context.getString(R.string.oss_label_camera)
             }
             viewHolder.itemViewType == ITEM_TYPE_ALBUM -> {
                 val cameraViewHolder = viewHolder as CameraViewHolder
 
                 cameraViewHolder.itemView.setOnClickListener { v -> onGalleryItemClickListener.onFolderItemClick() }
-                cameraViewHolder.itemView.folderName.text = viewHolder.itemView.context.getString(R.string.label_folder)
+                cameraViewHolder.itemView.folderName.text = viewHolder.itemView.context.getString(R.string.oss_label_folder)
                 cameraViewHolder.itemView.img.setImageResource(R.drawable.ic_folder_icon)
             }
             else -> {

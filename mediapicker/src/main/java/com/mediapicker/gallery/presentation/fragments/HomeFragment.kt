@@ -50,7 +50,7 @@ class HomeFragment : BaseFragment() {
 
     override fun getLayoutId() = R.layout.oss_fragment_main
 
-    override fun getScreenTitle() = getString(R.string.title_home_screen)
+    override fun getScreenTitle() = getString(R.string.oss_title_home_screen)
 
     override fun setUpViews() {
         checkPermissionsWithPermissionCheck()
@@ -137,7 +137,7 @@ class HomeFragment : BaseFragment() {
             childFragmentManager,
             listOf(
                 PhotoGridFragment.getInstance(
-                    getString(R.string.title_tab_photo),
+                    getString(R.string.oss_title_tab_photo),
                     getPhotosFromArguments()
                 )
             )
@@ -162,11 +162,11 @@ class HomeFragment : BaseFragment() {
         PagerAdapter(
             childFragmentManager, listOf(
                 PhotoGridFragment.getInstance(
-                    getString(R.string.title_tab_photo),
+                    getString(R.string.oss_title_tab_photo),
                     getPhotosFromArguments()
                 ),
                 VideoGridFragment.getInstance(
-                    getString(R.string.title_tab_video),
+                    getString(R.string.oss_title_tab_video),
                     getVideosFromArguments()
                 )
             )

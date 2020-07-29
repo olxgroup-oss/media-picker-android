@@ -15,10 +15,10 @@
     <dimen name="caption_font_size">10sp</dimen>
     <color name="snackbar_text">#FFFFFF</color>
     <color name="background_video_duration">#990e2e34</color>
-    <color name="tab_text_color">#8a002f34</color>
-    <color name="toolbar_text">#002f34</color>
-    <color name="selected_photo_overlay">#B3FFFFFF</color>
-    <color name="enable_action_button">@color/primary</color>
-    <color name="disable_action_button">#5C002f34</color>
+    <color name="oss_tab_text_color">#8a002f34</color>
+    <color name="oss_toolbar_text">#002f34</color>
+    <color name="oss_selected_photo_overlay">#B3FFFFFF</color>
+    <color name="oss_enable_action_button">@color/primary</color>
+    <color name="oss_disable_action_button">#5C002f34</color>
 
 </resources>

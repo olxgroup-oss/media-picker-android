@@ -41,7 +41,7 @@ class VideoGridFragment : BaseViewPagerItemFragment(), OnItemClickListener {
 
     override fun getBaseLoadMediaViewModel() = loadVideoViewModel
 
-    override fun getScreenTitle() = getString(R.string.title_tab_video)
+    override fun getScreenTitle() = getString(R.string.oss_title_tab_video)
 
     override fun getMediaAdapter() = adapter
 

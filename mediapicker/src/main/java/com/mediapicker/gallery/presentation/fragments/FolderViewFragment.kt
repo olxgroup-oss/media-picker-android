@@ -20,7 +20,7 @@ class FolderViewFragment : BaseGalleryViewFragment(), OnItemClickListener<PhotoA
         getFragmentScopedViewModel { LoadAlbumViewModel(GalleryService(Gallery.getApp())) }
     }
 
-    override fun getScreenTitle() = getString(R.string.title_folder_fragment)
+    override fun getScreenTitle() = getString(R.string.oss_title_folder_fragment)
 
     private lateinit var adapter: GalleryFolderAdapter
 
@@ -41,6 +41,7 @@ class FolderViewFragment : BaseGalleryViewFragment(), OnItemClickListener<PhotoA
             this.layoutManager = GridLayoutManager(this@FolderViewFragment.activity, COLUMNS_COUNT)
             this.adapter = this@FolderViewFragment.adapter
         }
+        actionButton.isSelected = true
     }
 
     override fun initViewModels() {

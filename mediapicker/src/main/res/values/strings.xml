@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="activity_gallery_no_images">No images.</string>
-    <string name="posting_next">Next</string>
+    <string name="oss_activity_gallery_no_images">No images.</string>
+    <string name="oss_posting_next">Next</string>
 
     <!--Screen titles -->
-    <string name="title_home_screen">Upload Your Photos</string>
-    <string name="title_tab_video">Videos</string>
-    <string name="title_tab_photo">Photos</string>
-    <string name="title_folder_fragment">Gallery</string>
+    <string name="oss_title_home_screen">Upload Your Photos</string>
+    <string name="oss_title_tab_video">Videos</string>
+    <string name="oss_title_tab_photo">Photos</string>
+    <string name="oss_title_folder_fragment">Gallery</string>
 
     <!-- Labels -->
-    <string name="label_camera">Take a picture</string>
-    <string name="label_folder">Folders</string>
-    <string name="label_record_video">Record Video</string>
+    <string name="oss_label_camera">Take a picture</string>
+    <string name="oss_label_folder">Folders</string>
+    <string name="oss_label_record_video">Record Video</string>
 
 
 </resources>

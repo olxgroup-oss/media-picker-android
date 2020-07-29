@@ -62,7 +62,7 @@ abstract class BaseFragment : Fragment() {
     @CallSuper
     private fun setToolbar() {
         toolbarTitle.text = getScreenTitle()
-        toolbarTitle.setTextColor(context!!.resources!!.getColor(R.color.toolbar_text))
+        toolbarTitle.setTextColor(context!!.resources!!.getColor(R.color.oss_toolbar_text))
         if(setHomeAsUp()){
             toolbarBackButton.visibility = View.VISIBLE
             toolbarBackButton.setImageResource(getHomeAsUpIcon())
