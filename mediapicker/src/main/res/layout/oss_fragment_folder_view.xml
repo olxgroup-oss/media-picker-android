@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:animateLayoutChanges="true"
-        style="@style/CustomButton"
+        style="@style/OSS_CustomButton"
         android:enabled="true"
         android:text="Done" />
 </LinearLayout>
