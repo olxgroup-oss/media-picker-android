@@ -7,13 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+//import com.bumptech.glide.Glide
+//import com.bumptech.glide.request.RequestOptions
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.contract.OnItemClickListener
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
 import com.mediapicker.gallery.domain.entity.PhotoFile
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.oss_item_folder_selection.view.*
+import kotlinx.android.synthetic.main.oss_list_item_gallery_media.view.*
 import java.io.File
 
 open class GalleryFolderAdapter constructor(val context: Context, var listOfFolders: List<PhotoAlbum>, val onItemClickListener: OnItemClickListener<PhotoAlbum>?=null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -40,15 +42,20 @@ open class GalleryFolderAdapter constructor(val context: Context, var listOfFold
     }
 
     private fun loadImageIntoView(photo: PhotoFile, imageView: ImageView) {
-        val options = RequestOptions()
+      //  val options = RequestOptions()
         if (photo.isAlreadyUploaded) {
             photo.path?.let {
-                Glide.with(imageView.context).load(photo.fullPhotoUrl).apply(options).into(imageView)
+                Picasso.get().load(photo.fullPhotoUrl)
+                    .fit()
+                    .centerCrop().into(imageView) //  Glide.with(imageView.context).load(photo.fullPhotoUrl).apply(options).into(imageView)
             }
         } else {
             if (photo.existsPhoto()) {
                 photo.path?.let {
-                    Glide.with(imageView.context).load(Uri.fromFile(File(it))).apply(options).into(imageView)
+                    Picasso.get().load(Uri.fromFile(File(it)))
+                        .fit()
+                        .centerCrop().into(imageView)
+                    //  Glide.with(imageView.context).load(Uri.fromFile(File(it))).apply(options).into(imageView)
                 }
             } else {
                 photo.toString()

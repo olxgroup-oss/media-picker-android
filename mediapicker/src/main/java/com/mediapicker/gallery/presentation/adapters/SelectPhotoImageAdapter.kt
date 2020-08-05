@@ -7,16 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+/*import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.target.Target*/
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.*
 import com.mediapicker.gallery.util.AnimationHelper
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.oss_item_camera_selection.view.*
 import kotlinx.android.synthetic.main.oss_item_photo_selection.view.*
 import java.io.File
@@ -150,24 +151,31 @@ class SelectPhotoImageAdapter constructor(
 
     private fun loadImageIntoView(photoFile: PhotoFile, imageView: ImageView) {
 
-        val options = RequestOptions()
+       /* val options = RequestOptions()
             .skipMemoryCache(true)
-            .fitCenter()
+            .fitCenter()*/
         if (photoFile.isAlreadyUploaded) {
-            Glide.with(imageView.context)
+            Picasso.get().load(photoFile.fullPhotoUrl)
+                .fit()
+                .centerCrop().into(imageView)
+        //    Picasso.get().load(photoFile.fullPhotoUrl).into(imageView)
+           /* Glide.with(imageView.context)
                 .load(photoFile.fullPhotoUrl)
                 .apply(options)
-                .into(imageView)
+                .into(imageView)*/
         } else if (!photoFile.path.isNullOrEmpty()) {
-            Glide.with(imageView.context)
+            Picasso.get().load(File(photoFile.path!!)).fit()
+                .centerCrop().into(imageView)
+        //    Picasso.get().load(File(photoFile.path!!)).into(imageView)
+           /* Glide.with(imageView.context)
                 .load(Uri.fromFile(File(photoFile.path!!)))
                 .apply(RequestOptions().override(200, 200))
                 .addListener(ImageLoadingCallback())
-                .into(imageView)
+                .into(imageView)*/
         }
     }
 
-    private inner class ImageLoadingCallback : RequestListener<Drawable> {
+  /*  private inner class ImageLoadingCallback : RequestListener<Drawable> {
         override fun onLoadFailed(
             e: GlideException?,
             model: Any?,
@@ -188,7 +196,7 @@ class SelectPhotoImageAdapter constructor(
 
             return false
         }
-    }
+    }*/
 }
 
 
