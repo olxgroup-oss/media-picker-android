@@ -4,14 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:clipChildren="false">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clipChildren="false"
+        android:layout_height="wrap_content"
         android:padding="@dimen/gallery_item_offset"
         tools:listitem="@layout/oss_list_item_gallery_media"
         app:layout_constraintTop_toTopOf="parent"
