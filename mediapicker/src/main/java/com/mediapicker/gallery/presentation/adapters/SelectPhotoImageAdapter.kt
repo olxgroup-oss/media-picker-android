@@ -1,6 +1,5 @@
 package com.mediapicker.gallery.presentation.adapters
 
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.*
@@ -73,14 +69,16 @@ class SelectPhotoImageAdapter constructor(
             viewHolder.itemViewType == ITEM_TYPE_CAMERA -> {
                 val cameraViewHolder = viewHolder as CameraViewHolder
                 cameraViewHolder.itemView.setOnClickListener { v -> onClickCamera() }
-                cameraViewHolder.itemView.folderName.text = viewHolder.itemView.context.getString(R.string.oss_label_camera)
+                cameraViewHolder.itemView.folderName.text =
+                    viewHolder.itemView.context.getString(R.string.oss_label_camera)
             }
             viewHolder.itemViewType == ITEM_TYPE_ALBUM -> {
                 val cameraViewHolder = viewHolder as CameraViewHolder
 
                 cameraViewHolder.itemView.setOnClickListener { v -> onGalleryItemClickListener.onFolderItemClick() }
-                cameraViewHolder.itemView.folderName.text = viewHolder.itemView.context.getString(R.string.oss_label_folder)
-                cameraViewHolder.itemView.img.setImageResource(R.drawable.ic_folder_icon)
+                cameraViewHolder.itemView.folderName.text =
+                    viewHolder.itemView.context.getString(R.string.oss_label_folder)
+                cameraViewHolder.itemView.img.setImageResource(R.drawable.oss_media_ic_folder_icon)
             }
             else -> {
                 val photoViewHolder = viewHolder as PhotoViewHolder
@@ -90,8 +88,9 @@ class SelectPhotoImageAdapter constructor(
                     photoViewHolder.itemView.white_overlay.visibility = View.VISIBLE
                     photoViewHolder.itemView.imgSelectedText.text =
                         getPosition(photoViewHolder.photoFile).toString()
-                    photoViewHolder.itemView.imgSelectedText.background = photoViewHolder.itemView.context
-                        .resources.getDrawable(R.drawable.oss_circle_photo_indicator_selected)
+                    photoViewHolder.itemView.imgSelectedText.background =
+                        photoViewHolder.itemView.context
+                            .resources.getDrawable(R.drawable.oss_circle_photo_indicator_selected)
                     if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover) {
                         photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
                     }
@@ -100,15 +99,19 @@ class SelectPhotoImageAdapter constructor(
 
                 } else {
                     photoViewHolder.itemView.imgSelectedText.text = ""
-                    photoViewHolder.itemView.imgSelectedText.background = photoViewHolder.itemView.context
-                        .resources.getDrawable(R.drawable.oss_circle_photo_indicator)
+                    photoViewHolder.itemView.imgSelectedText.background =
+                        photoViewHolder.itemView.context
+                            .resources.getDrawable(R.drawable.oss_circle_photo_indicator)
                     photoViewHolder.itemView.white_overlay.visibility = View.GONE
                     photoViewHolder.itemView.scaleX = AnimationHelper.UNSELECTED_SCALE
                     photoViewHolder.itemView.scaleY = AnimationHelper.UNSELECTED_SCALE
                 }
 
                 if (photoViewHolder.photoFile.imageId != photoViewHolder.itemView.tag) {
-                    loadImageIntoView(photoViewHolder.photoFile, photoViewHolder.itemView.cropedImage)
+                    loadImageIntoView(
+                        photoViewHolder.photoFile,
+                        photoViewHolder.itemView.cropedImage
+                    )
                     photoViewHolder.itemView.tag = photoViewHolder.photoFile.imageId
                 }
                 photoViewHolder.itemView.setOnClickListener { v ->
@@ -148,45 +151,23 @@ class SelectPhotoImageAdapter constructor(
         onGalleryItemClickListener.onCameraIconClick()
     }
 
-    private fun loadImageIntoView(photoFile: PhotoFile, imageView: ImageView) {
 
+    private fun loadImageIntoView(photoFile: PhotoFile, imageView: ImageView) {
         val options = RequestOptions()
-            .skipMemoryCache(true)
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .fitCenter()
         if (photoFile.isAlreadyUploaded) {
             Glide.with(imageView.context)
                 .load(photoFile.fullPhotoUrl)
+                .thumbnail(0.1f)
                 .apply(options)
                 .into(imageView)
         } else if (!photoFile.path.isNullOrEmpty()) {
             Glide.with(imageView.context)
                 .load(Uri.fromFile(File(photoFile.path!!)))
-                .apply(RequestOptions().override(200, 200))
-                .addListener(ImageLoadingCallback())
+                .thumbnail(0.1f)
+                .apply(options)
                 .into(imageView)
-        }
-    }
-
-    private inner class ImageLoadingCallback : RequestListener<Drawable> {
-        override fun onLoadFailed(
-            e: GlideException?,
-            model: Any?,
-            target: Target<Drawable>?,
-            isFirstResource: Boolean
-        ): Boolean {
-
-            return false
-        }
-
-        override fun onResourceReady(
-            resource: Drawable?,
-            model: Any?,
-            target: Target<Drawable>?,
-            dataSource: DataSource?,
-            isFirstResource: Boolean
-        ): Boolean {
-
-            return false
         }
     }
 }

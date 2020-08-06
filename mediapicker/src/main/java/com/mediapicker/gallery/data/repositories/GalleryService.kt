@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
+import android.util.Log
 import android.webkit.MimeTypeMap
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
 import com.mediapicker.gallery.domain.entity.PhotoFile

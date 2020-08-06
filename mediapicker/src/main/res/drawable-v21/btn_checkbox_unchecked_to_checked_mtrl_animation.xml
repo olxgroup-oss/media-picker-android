@@ -12,7 +12,7 @@
 -->
 
 <animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/btn_checkbox_unchecked_mtrl">
+    android:drawable="@drawable/oss_media_btn_checkbox_unchecked_mtrl">
     <target
         android:name="icon_null"
         android:animation="@anim/btn_checkbox_to_checked_icon_null_animation" />

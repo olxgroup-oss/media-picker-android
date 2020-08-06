@@ -43,7 +43,7 @@ class SelectVideoAdapter constructor(
         when {
             viewHolder.itemViewType == ITEM_TYPE_RECORD_VIDEO -> {
                 val recordVH = viewHolder as RecordVideoViewHolder
-                recordVH.itemView.img.setImageResource(R.drawable.ic_slow_motion_video_black_24dp)
+                recordVH.itemView.img.setImageResource(R.drawable.oss_media_ic_slow_motion_video_black_24dp)
                 recordVH.itemView.folderName.text = context.getString(R.string.oss_label_record_video)
                 recordVH.itemView.setOnClickListener { onItemClickListener?.recordVideo() }
             }

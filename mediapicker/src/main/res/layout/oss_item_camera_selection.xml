@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/ic_camera" />
+        app:srcCompat="@drawable/oss_media_ic_camera" />
 
 
 

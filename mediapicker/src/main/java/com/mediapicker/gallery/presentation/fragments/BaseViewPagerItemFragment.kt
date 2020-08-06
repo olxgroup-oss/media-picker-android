@@ -30,7 +30,7 @@ abstract class BaseViewPagerItemFragment : BaseFragment() {
     }
 
     override fun setUpViews() {
-        recycleView.apply {
+        ossRecycleView.apply {
             val spacing = resources.getDimensionPixelSize(R.dimen.gallery_item_offset)
             val gridLayoutManager = GridLayoutManager(context, 3)
             this.layoutManager = gridLayoutManager
@@ -60,12 +60,12 @@ abstract class BaseViewPagerItemFragment : BaseFragment() {
 
     protected open fun hideProgressBar() {
         progressBar.visibility = View.GONE
-        recycleView.visibility = View.VISIBLE
+        ossRecycleView.visibility = View.VISIBLE
     }
 
     protected open fun showProgressBar() {
         progressBar.visibility = View.VISIBLE
-        recycleView.visibility = View.GONE
+        ossRecycleView.visibility = View.GONE
     }
 
     protected open fun showMsg(msg : String){
