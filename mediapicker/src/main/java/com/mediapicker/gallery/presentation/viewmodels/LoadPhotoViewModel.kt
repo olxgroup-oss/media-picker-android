@@ -33,12 +33,12 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoa
     fun getGalleryItems() = galleryItemsLiveData
 
     override fun getCursorLoader(): Loader<Cursor> {
-       // val selection = MediaStore.Images.Media.MIME_TYPE + "!=?"
-        val selection = MediaStore.Images.Media.MIME_TYPE + "=? or "+ MediaStore.Images.Media.MIME_TYPE + "=? or "+ MediaStore.Images.Media.MIME_TYPE + "=?";
+        val selection = MediaStore.Images.Media.MIME_TYPE + "!=?"
+       // val selection = MediaStore.Images.Media.MIME_TYPE + "=? or "+ MediaStore.Images.Media.MIME_TYPE + "=? or "+ MediaStore.Images.Media.MIME_TYPE + "=?";
         val mimeTypeGif = MimeTypeMap.getSingleton().getMimeTypeFromExtension("gif")
       //  Log.d("Bharat", "getCursorLoader: $mimeTypeGif.")
-        val selectionTypeGifArgs = arrayOf("image/jpeg", "image/png", "image/jpg")
-    //    val selectionTypeGifArgs = arrayOf(mimeTypeGif)
+        //val selectionTypeGifArgs = arrayOf("image/jpeg", "image/png", "image/jpg")
+        val selectionTypeGifArgs = arrayOf(mimeTypeGif)
         return CursorLoader(
             getApplication(),
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, selection,
@@ -62,11 +62,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoa
                 listOfGalleryItems.add(PhotoAlbum.dummyInstance)
             listOfGalleryItems.addAll(getFinalListOfGalleryItems(photos))
         }
-        var size=listOfGalleryItems.size;
-        if(listOfGalleryItems.size>200){
-            size=200
-        }
-        galleryItemsLiveData.postValue(listOfGalleryItems.subList(0,size))
+        galleryItemsLiveData.postValue(listOfGalleryItems)
     }
 
     private fun unregisterDataSetObserver() {
