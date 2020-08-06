@@ -3,7 +3,6 @@ package com.mediapicker.gallery.presentation.viewmodels
 import android.database.Cursor
 import android.database.DataSetObserver
 import android.provider.MediaStore
-import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
 import androidx.loader.content.CursorLoader
@@ -16,7 +15,8 @@ import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.viewmodels.factory.BaseLoadMediaViewModel
 import java.util.*
 
-class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoadMediaViewModel(galleryConfig){
+class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
+    BaseLoadMediaViewModel(galleryConfig) {
 
     companion object {
         private const val COL_FULL_PHOTO_URL = "fullPhotoUrl"
@@ -34,10 +34,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoa
 
     override fun getCursorLoader(): Loader<Cursor> {
         val selection = MediaStore.Images.Media.MIME_TYPE + "!=?"
-       // val selection = MediaStore.Images.Media.MIME_TYPE + "=? or "+ MediaStore.Images.Media.MIME_TYPE + "=? or "+ MediaStore.Images.Media.MIME_TYPE + "=?";
         val mimeTypeGif = MimeTypeMap.getSingleton().getMimeTypeFromExtension("gif")
-      //  Log.d("Bharat", "getCursorLoader: $mimeTypeGif.")
-        //val selectionTypeGifArgs = arrayOf("image/jpeg", "image/png", "image/jpg")
         val selectionTypeGifArgs = arrayOf(mimeTypeGif)
         return CursorLoader(
             getApplication(),
@@ -125,7 +122,6 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoa
             fullPhotoUrl = cursor.getString(col)
 
         }
-        Log.d("Ghimire", "getPhoto: $path")
         return PhotoFile.Builder()
             .imageId(id)
             .path(path)

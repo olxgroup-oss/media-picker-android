@@ -29,8 +29,6 @@ open class GalleryService(private val applicationContext: Context) : GalleryRepo
         val selection = MediaStore.Images.Media.MIME_TYPE + "!=?"
         val mimeTypeGif = MimeTypeMap.getSingleton().getMimeTypeFromExtension("gif")
         val selectionTypeGifArgs = arrayOf(mimeTypeGif)
-
-        Log.d("Bharat", "queryMedia: ${selectionTypeGifArgs.toString()}")
         val cursor = MediaStore.Images.Media.query(
             applicationContext.contentResolver,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, selection, selectionTypeGifArgs,

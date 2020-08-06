@@ -5,7 +5,6 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
 import androidx.loader.content.CursorLoader
@@ -24,7 +23,10 @@ class LoadVideoViewModel(val galleryConfig: GalleryConfig) : BaseLoadMediaViewMo
 
     private fun getFolderCriteria(): Pair<String, String> {
         if (galleryConfig.mediaScanningCriteria.hasCustomQueryForVideo()) {
-            return Pair(" AND ${MediaStore.Video.VideoColumns.DATA} like ? ", "%${galleryConfig.mediaScanningCriteria.videoBrowseQuery}%")
+            return Pair(
+                " AND ${MediaStore.Video.VideoColumns.DATA} like ? ",
+                "%${galleryConfig.mediaScanningCriteria.videoBrowseQuery}%"
+            )
         }
         return Pair("", "")
     }
@@ -48,7 +50,6 @@ class LoadVideoViewModel(val galleryConfig: GalleryConfig) : BaseLoadMediaViewMo
     override fun getUniqueLoaderId() = 2
 
     override fun prepareDataForAdapterAndPost(cursor: Cursor) {
-        Log.d("Bharat", "prepareDataForAdapterAndPost: ")
         val videoList = mutableListOf<VideoItem>()
         val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
         val nameColumn =
@@ -64,7 +65,8 @@ class LoadVideoViewModel(val galleryConfig: GalleryConfig) : BaseLoadMediaViewMo
                 val name = cursor.getString(nameColumn)
                 val duration = cursor.getInt(durationColumn)
                 val size = cursor.getInt(sizeColumn)
-                val contentUri: Uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+                val contentUri: Uri =
+                    ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
                 val thumbnail = MediaStore.Video.Thumbnails.getThumbnail(
                     galleryConfig.applicationContext.contentResolver,
                     id, MediaStore.Video.Thumbnails.MICRO_KIND, null
@@ -80,8 +82,10 @@ class LoadVideoViewModel(val galleryConfig: GalleryConfig) : BaseLoadMediaViewMo
 
 interface VideoItem
 
-data class VideoFile(val id: Long, @Transient val uri: Uri, val name: String, val duration: Int, val size: Int,
-                     @Transient val thumbnail: Bitmap?) : VideoItem,
+data class VideoFile(
+    val id: Long, @Transient val uri: Uri, val name: String, val duration: Int, val size: Int,
+    @Transient val thumbnail: Bitmap?
+) : VideoItem,
     Serializable {
 
     var isSelected: Boolean = false
