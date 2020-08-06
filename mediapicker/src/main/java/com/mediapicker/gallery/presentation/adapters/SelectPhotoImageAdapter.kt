@@ -150,8 +150,9 @@ class SelectPhotoImageAdapter constructor(
         onGalleryItemClickListener.onCameraIconClick()
     }
 
+    var count:Int=0;
     private fun loadImageIntoView(photoFile: PhotoFile, imageView: ImageView) {
-
+        Log.d("Bharat", "count: $count")
         val options = RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .fitCenter()
@@ -163,6 +164,7 @@ class SelectPhotoImageAdapter constructor(
                 .into(imageView)
         } else if (!photoFile.path.isNullOrEmpty()) {
             Log.d("Bharat", "loadImageIntoView: ${photoFile.path}")
+
             Glide.with(imageView.context)
                 .load(Uri.fromFile(File(photoFile.path!!)))
                 .thumbnail(0.1f)
@@ -170,6 +172,7 @@ class SelectPhotoImageAdapter constructor(
                // .addListener(ImageLoadingCallback())
                 .into(imageView)
         }
+        count++;
     }
 
     private inner class ImageLoadingCallback : RequestListener<Drawable> {
