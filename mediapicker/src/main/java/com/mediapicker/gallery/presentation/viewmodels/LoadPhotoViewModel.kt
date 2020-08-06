@@ -62,7 +62,11 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoa
                 listOfGalleryItems.add(PhotoAlbum.dummyInstance)
             listOfGalleryItems.addAll(getFinalListOfGalleryItems(photos))
         }
-        galleryItemsLiveData.postValue(listOfGalleryItems)
+        var size=listOfGalleryItems.size;
+        if(listOfGalleryItems.size>200){
+            size=200
+        }
+        galleryItemsLiveData.postValue(listOfGalleryItems.subList(0,size))
     }
 
     private fun unregisterDataSetObserver() {

@@ -161,7 +161,7 @@ class SelectPhotoImageAdapter constructor(
                 .apply(options)
                 .into(imageView)
         } else if (!photoFile.path.isNullOrEmpty()) {
-            Log.d("Media", "loadImageIntoView: $photoFile.")
+            Log.d("Bharat", "loadImageIntoView: ${photoFile.path}")
             Glide.with(imageView.context)
                 .load(Uri.fromFile(File(photoFile.path!!)))
                 .apply(options)
