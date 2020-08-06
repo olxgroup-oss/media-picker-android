@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleView"
+        android:id="@+id/ossRecycleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/gallery_item_offset"
