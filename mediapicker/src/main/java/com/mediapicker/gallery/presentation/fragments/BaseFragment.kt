@@ -87,7 +87,7 @@ abstract class BaseFragment : Fragment() {
 
     abstract fun onBackPressed()
 
-    open fun getHomeAsUpIcon()  = R.drawable.ic_back
+    open fun getHomeAsUpIcon()  = R.drawable.oss_media_ic_back
 
     open fun setHomeAsUp()  = false
 

@@ -61,7 +61,7 @@ open class GalleryFolderAdapter constructor(val context: Context, var listOfFold
 
 internal class FolderViewHolder(var root: View) : RecyclerView.ViewHolder(root) {
     init {
-        root.img.setImageResource(R.drawable.ic_folder_icon)
+        root.img.setImageResource(R.drawable.oss_media_ic_folder_icon)
     }
 }
 

@@ -82,7 +82,7 @@ class SelectPhotoImageAdapter constructor(
 
                 cameraViewHolder.itemView.setOnClickListener { v -> onGalleryItemClickListener.onFolderItemClick() }
                 cameraViewHolder.itemView.folderName.text = viewHolder.itemView.context.getString(R.string.oss_label_folder)
-                cameraViewHolder.itemView.img.setImageResource(R.drawable.ic_folder_icon)
+                cameraViewHolder.itemView.img.setImageResource(R.drawable.oss_media_ic_folder_icon)
             }
             else -> {
                 val photoViewHolder = viewHolder as PhotoViewHolder
