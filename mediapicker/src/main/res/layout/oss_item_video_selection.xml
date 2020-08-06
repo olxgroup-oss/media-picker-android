@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
         android:layout_margin="@dimen/module_small"
-        android:background="@drawable/cover_photo_indicator_background"
+        android:background="@drawable/oss_media_cover_photo_indicator_background"
         android:paddingStart="@dimen/module_tiny"
         android:paddingEnd="@dimen/module_tiny"
         android:paddingLeft="@dimen/module_tiny"

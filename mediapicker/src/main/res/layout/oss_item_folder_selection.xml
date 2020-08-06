@@ -23,7 +23,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/folder_view_gradient"/>
+        android:background="@drawable/oss_media_folder_view_gradient"/>
 
     <ImageView
         android:id="@+id/img"
@@ -35,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/ic_camera"
+        app:srcCompat="@drawable/oss_media_ic_camera"
         android:layout_margin="@dimen/module_small"/>
 
 

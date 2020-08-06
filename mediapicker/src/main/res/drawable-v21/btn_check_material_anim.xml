@@ -15,10 +15,10 @@
     <item
         android:id="@+id/checked"
         android:state_checked="true"
-        android:drawable="@drawable/btn_checkbox_checked_mtrl" />
+        android:drawable="@drawable/oss_media_btn_checkbox_checked_mtrl" />
     <item
         android:id="@+id/unchecked"
-        android:drawable="@drawable/btn_checkbox_unchecked_mtrl" />
+        android:drawable="@drawable/oss_media_btn_checkbox_unchecked_mtrl" />
     <transition
         android:fromId="@+id/unchecked"
         android:toId="@+id/checked"

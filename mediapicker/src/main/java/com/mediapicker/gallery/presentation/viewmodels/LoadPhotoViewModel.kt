@@ -15,7 +15,8 @@ import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.viewmodels.factory.BaseLoadMediaViewModel
 import java.util.*
 
-class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoadMediaViewModel(galleryConfig){
+class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
+    BaseLoadMediaViewModel(galleryConfig) {
 
     companion object {
         private const val COL_FULL_PHOTO_URL = "fullPhotoUrl"
@@ -119,6 +120,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) : BaseLoa
         var fullPhotoUrl = ""
         if (col != -1) {
             fullPhotoUrl = cursor.getString(col)
+
         }
         return PhotoFile.Builder()
             .imageId(id)
