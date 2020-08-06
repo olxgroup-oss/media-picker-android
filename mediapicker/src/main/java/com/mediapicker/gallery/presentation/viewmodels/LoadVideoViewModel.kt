@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
 import androidx.loader.content.CursorLoader
@@ -47,6 +48,7 @@ class LoadVideoViewModel(val galleryConfig: GalleryConfig) : BaseLoadMediaViewMo
     override fun getUniqueLoaderId() = 2
 
     override fun prepareDataForAdapterAndPost(cursor: Cursor) {
+        Log.d("Bharat", "prepareDataForAdapterAndPost: ")
         val videoList = mutableListOf<VideoItem>()
         val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
         val nameColumn =
