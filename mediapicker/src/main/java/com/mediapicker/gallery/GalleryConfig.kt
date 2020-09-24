@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.LayoutRes
 import com.mediapicker.gallery.domain.contract.GalleryCommunicatorDefaultImpl
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
+import com.mediapicker.gallery.domain.entity.PhotoTag
 import com.mediapicker.gallery.domain.entity.Validation
 
 class GalleryConfig(
@@ -16,6 +17,7 @@ class GalleryConfig(
     val photoViewPlaceHolder: Int,
     val typeOfMediaSupported: MediaType,
     val validation: Validation,
+    val photoTag: PhotoTag,
     val mediaScanningCriteria: MediaScanningCriteria
 ) {
 
@@ -36,10 +38,12 @@ class GalleryConfig(
         private var shouldUseVideoCamera: Boolean = false
         private var needToShowCover: Boolean = true
 
+
         @LayoutRes
         private var photoViewPlaceHolder: Int = 0
         private var typeOfMediaSupported: MediaType = MediaType.PhotoWithFolderAndVideo
         private lateinit var validation: Validation
+        private lateinit var photoTag: PhotoTag
         private var mediaScanningCriteria = MediaScanningCriteria()
 
         fun useMyPhotoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUsePhotoCamera = shouldUseMyCamera }
@@ -50,6 +54,10 @@ class GalleryConfig(
 
         fun validation(validation: Validation): GalleryConfigBuilder {
             this.validation = validation
+            return this
+        }
+        fun photoTag(photoTag: PhotoTag):GalleryConfigBuilder{
+            this.photoTag=photoTag
             return this
         }
 
@@ -65,6 +73,7 @@ class GalleryConfig(
             photoViewPlaceHolder,
             typeOfMediaSupported,
             validation,
+            photoTag,
             mediaScanningCriteria
         )
 

@@ -94,6 +94,10 @@ class SelectPhotoImageAdapter constructor(
                     if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover) {
                         photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
                     }
+                    if(Gallery.galleryConfig.photoTag.shouldShowPhotoTag){
+                        photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
+                        photoViewHolder.itemView.imgCoverText.text=Gallery.galleryConfig.photoTag.photoTagText
+                    }
                     photoViewHolder.itemView.scaleX = AnimationHelper.SELECTED_SCALE
                     photoViewHolder.itemView.scaleY = AnimationHelper.SELECTED_SCALE
 
