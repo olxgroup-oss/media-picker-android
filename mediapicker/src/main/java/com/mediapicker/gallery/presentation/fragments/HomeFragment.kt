@@ -27,7 +27,7 @@ import permissions.dispatcher.RuntimePermissions
 import java.io.Serializable
 
 @RuntimePermissions
-class HomeFragment : BaseFragment() {
+open class HomeFragment : BaseFragment() {
 
     private val homeViewModel: HomeViewModel by lazy {
         getFragmentScopedViewModel { HomeViewModel(Gallery.galleryConfig) }

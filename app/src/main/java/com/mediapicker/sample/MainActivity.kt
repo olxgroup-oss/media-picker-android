@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     private fun attachGalleryFragment() {
         try {
             val transaction = supportFragmentManager.beginTransaction()
-            fragment = HomeFragment.getInstance(SelectedItemHolder.listOfSelectedPhotos,
+            fragment = DemoHomeFragment.getInstance(SelectedItemHolder.listOfSelectedPhotos,
                 SelectedItemHolder.listOfSelectedVideos,
                 defaultPageType = DefaultPage.PhotoPage
             )
@@ -69,9 +69,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun jumpToGallery() {
-        startActivity(GalleryActivity.getGalleryActivityIntent(SelectedItemHolder.listOfSelectedPhotos,
+       /* startActivity(GalleryActivity.getGalleryActivityIntent(SelectedItemHolder.listOfSelectedPhotos,
             SelectedItemHolder.listOfSelectedVideos,
-            defaultPageType = DefaultPage.PhotoPage,context = baseContext))
+            defaultPageType = DefaultPage.PhotoPage,context = baseContext))*/
+        attachGalleryFragment()
     }
 
     private fun showStepFragment() {
