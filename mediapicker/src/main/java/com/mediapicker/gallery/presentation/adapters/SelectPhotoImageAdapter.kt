@@ -169,7 +169,6 @@ class SelectPhotoImageAdapter constructor(
         if (photoFile.isAlreadyUploaded) {
             Glide.with(imageView.context)
                     .load(photoFile.fullPhotoUrl)
-                    .thumbnail(0.1f)
                     .apply(options)
                     .into(imageView)
         } else if (!photoFile.path.isNullOrEmpty()) {

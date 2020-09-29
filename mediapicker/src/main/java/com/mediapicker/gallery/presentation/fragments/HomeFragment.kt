@@ -89,8 +89,8 @@ open class HomeFragment : BaseFragment() {
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
     fun onPermissionDenied() {
-        Toast.makeText(context, "Permission denied :(", Toast.LENGTH_SHORT).show()
         activity?.supportFragmentManager?.popBackStack()
+        Gallery.galleryConfig.galleryCommunicator.onPermissionDenied()
     }
 
     @SuppressLint("NeedOnRequestPermissionsResult")
