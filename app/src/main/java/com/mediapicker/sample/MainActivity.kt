@@ -10,10 +10,8 @@ import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 import com.mediapicker.gallery.domain.entity.PhotoFile
-import com.mediapicker.gallery.domain.entity.PhotoTag
 import com.mediapicker.gallery.domain.entity.Rule
 import com.mediapicker.gallery.domain.entity.Validation
-import com.mediapicker.gallery.presentation.activity.GalleryActivity
 import com.mediapicker.gallery.presentation.fragments.DefaultPage
 import com.mediapicker.gallery.presentation.fragments.HomeFragment
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
@@ -36,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private fun getValidation(): Validation {
         return Validation.ValidationBuilder()
             .setMinPhotoSelection(Rule.MinPhotoSelection(1, "Minimum 0 photos can be selected "))
-            .setMaxPhotoSelection(Rule.MaxPhotoSelection(15, "Maximum 15 photos can be selected "))
+            .setMaxPhotoSelection(Rule.MaxPhotoSelection(2, "Maximum 2 photos can be selected "))
             .build()
     }
 
@@ -55,7 +53,8 @@ class MainActivity : AppCompatActivity() {
     private fun attachGalleryFragment() {
         try {
             val transaction = supportFragmentManager.beginTransaction()
-            fragment = DemoHomeFragment.getInstance(SelectedItemHolder.listOfSelectedPhotos,
+            val  photos =  SelectedItemHolder.listOfSelectedPhotos
+            fragment = DemoHomeFragment.getInstance(photos,
                 SelectedItemHolder.listOfSelectedVideos,
                 defaultPageType = DefaultPage.PhotoPage
             )
@@ -92,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun actionButtonClick(listOfSelectedPhotos: List<PhotoFile>, listofSelectedVideos: List<VideoFile>) {
-            SelectedItemHolder.listOfSelectedPhotos = listOfSelectedPhotos
+            SelectedItemHolder.listOfSelectedPhotos = listOfSelectedPhotos.toMutableList()
             SelectedItemHolder.listOfSelectedVideos = listofSelectedVideos
             showStepFragment()
         }
@@ -121,6 +120,10 @@ class MainActivity : AppCompatActivity() {
              Toast.makeText(applicationContext,msg,Toast.LENGTH_LONG).show()
 
         }
+
+        override fun onPermissionDenied() {
+            Toast.makeText(applicationContext,"Permission denied :(",Toast.LENGTH_LONG).show()
+        }
     }
 
 
@@ -145,6 +148,18 @@ class MainActivity : AppCompatActivity() {
 
 
 object SelectedItemHolder {
-    var listOfSelectedPhotos = emptyList<PhotoFile>()
+    var listOfSelectedPhotos = mutableListOf<PhotoFile>()/*.apply {
+        val builder= PhotoFile.Builder()
+        builder.apolloKey = "11111"
+        builder.imageId = 25
+        builder.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
+        this.add(builder.build())
+
+        val builder1 = PhotoFile.Builder()
+        builder1.apolloKey = "11112"
+        builder1.imageId = 20
+        builder1.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
+        this.add(builder1.build())
+    }*/
     var listOfSelectedVideos = emptyList<VideoFile>()
 }

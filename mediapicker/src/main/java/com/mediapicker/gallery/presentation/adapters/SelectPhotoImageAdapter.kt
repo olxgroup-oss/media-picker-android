@@ -1,6 +1,7 @@
 package com.mediapicker.gallery.presentation.adapters
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -169,7 +170,6 @@ class SelectPhotoImageAdapter constructor(
         if (photoFile.isAlreadyUploaded) {
             Glide.with(imageView.context)
                     .load(photoFile.fullPhotoUrl)
-                    .thumbnail(0.1f)
                     .apply(options)
                     .into(imageView)
         } else if (!photoFile.path.isNullOrEmpty()) {

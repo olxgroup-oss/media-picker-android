@@ -34,7 +34,7 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
     }
 
     private fun removePhotoFromSelection(photo: PhotoFile, position: Int) {
-        currentSelectedPhotos.remove(photo)
+        currentSelectedPhotos.removePhoto(photo)
         adapter.listCurrentPhotos = currentSelectedPhotos.toList()
         adapter.notifyDataSetChanged()
     }
@@ -62,7 +62,7 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
 
     @SuppressLint("CheckResult")
     private fun handleItemClickListener(photo: PhotoFile, position: Int) {
-        if (currentSelectedPhotos.contains(photo)) {
+        if (currentSelectedPhotos.containsPhoto(photo)) {
             removePhotoFromSelection(photo, position)
         } else {
             validateNewPhoto(photo, position)
