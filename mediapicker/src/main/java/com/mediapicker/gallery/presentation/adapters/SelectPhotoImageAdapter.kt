@@ -1,7 +1,6 @@
 package com.mediapicker.gallery.presentation.adapters
 
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

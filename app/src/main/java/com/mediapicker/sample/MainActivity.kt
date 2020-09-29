@@ -10,6 +10,7 @@ import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 import com.mediapicker.gallery.domain.entity.PhotoFile
+import com.mediapicker.gallery.domain.entity.PhotoTag
 import com.mediapicker.gallery.domain.entity.Rule
 import com.mediapicker.gallery.domain.entity.Validation
 import com.mediapicker.gallery.presentation.fragments.DefaultPage
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
             .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderOnly)
             .validation(getValidation())
+            .photoTag( PhotoTag(true,"RC photo"))
             .build()
         Gallery.init(galleryConfig)
     }
