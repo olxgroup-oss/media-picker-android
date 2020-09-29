@@ -3,16 +3,15 @@ package com.mediapicker.gallery.presentation.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
 import com.mediapicker.gallery.domain.entity.PhotoFile
-import com.mediapicker.gallery.presentation.fragments.BaseFragment
 import com.mediapicker.gallery.presentation.fragments.FolderViewFragment
 import com.mediapicker.gallery.presentation.fragments.GalleryPhotoViewFragment
+import com.mediapicker.gallery.presentation.fragments.containsPhoto
+import com.mediapicker.gallery.presentation.fragments.removePhoto
 import com.mediapicker.gallery.presentation.utils.Constants.EXTRA_SELECTED_PHOTO
 import com.mediapicker.gallery.presentation.utils.Constants.PHOTO_SELECTION_REQUEST_CODE
-import kotlinx.android.synthetic.main.oss_base_fragment_activity.*
 
 
 class FolderViewActivity : BaseFragmentActivity(), GalleryActionListener {
@@ -42,16 +41,16 @@ class FolderViewActivity : BaseFragmentActivity(), GalleryActionListener {
     }
 
     override fun onPhotoSelected(postingDraftPhoto: PhotoFile) {
-        if (currentSelectedPhotos.contains(postingDraftPhoto)) {
-            currentSelectedPhotos.remove(postingDraftPhoto)
+        if (currentSelectedPhotos.containsPhoto(postingDraftPhoto)) {
+            currentSelectedPhotos.removePhoto(postingDraftPhoto)
         } else {
             currentSelectedPhotos.add(postingDraftPhoto)
         }
     }
 
     override fun isPhotoAlreadySelected(postingDraftPhoto: PhotoFile): Boolean {
-        if (currentSelectedPhotos.contains(postingDraftPhoto)) {
-            currentSelectedPhotos.remove(postingDraftPhoto)
+        if (currentSelectedPhotos.containsPhoto(postingDraftPhoto)) {
+            currentSelectedPhotos.removePhoto(postingDraftPhoto)
             return true
         }
         return false

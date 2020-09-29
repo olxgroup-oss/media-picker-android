@@ -19,10 +19,10 @@ import java.io.File
 
 
 class SelectPhotoImageAdapter constructor(
-    private var listOfGalleryItems: List<IGalleryItem>,
-    var listCurrentPhotos: List<PhotoFile>,
-    private val onGalleryItemClickListener: IGalleryItemClickListener,
-    private val fromGallery: Boolean = true
+        private var listOfGalleryItems: List<IGalleryItem>,
+        var listCurrentPhotos: List<PhotoFile>,
+        private val onGalleryItemClickListener: IGalleryItemClickListener,
+        private val fromGallery: Boolean = true
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -43,10 +43,10 @@ class SelectPhotoImageAdapter constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val resId =
-            if (viewType == ITEM_TYPE_CAMERA || viewType == ITEM_TYPE_ALBUM) R.layout.oss_item_camera_selection else R.layout.oss_item_photo_selection
+                if (viewType == ITEM_TYPE_CAMERA || viewType == ITEM_TYPE_ALBUM) R.layout.oss_item_camera_selection else R.layout.oss_item_photo_selection
         val view = LayoutInflater.from(parent.context).inflate(resId, parent, false)
         return if (viewType == ITEM_TYPE_CAMERA || viewType == ITEM_TYPE_ALBUM) CameraViewHolder(
-            view
+                view
         ) else PhotoViewHolder(view)
     }
 
@@ -70,14 +70,14 @@ class SelectPhotoImageAdapter constructor(
                 val cameraViewHolder = viewHolder as CameraViewHolder
                 cameraViewHolder.itemView.setOnClickListener { v -> onClickCamera() }
                 cameraViewHolder.itemView.folderName.text =
-                    viewHolder.itemView.context.getString(R.string.oss_label_camera)
+                        viewHolder.itemView.context.getString(R.string.oss_label_camera)
             }
             viewHolder.itemViewType == ITEM_TYPE_ALBUM -> {
                 val cameraViewHolder = viewHolder as CameraViewHolder
 
                 cameraViewHolder.itemView.setOnClickListener { v -> onGalleryItemClickListener.onFolderItemClick() }
                 cameraViewHolder.itemView.folderName.text =
-                    viewHolder.itemView.context.getString(R.string.oss_label_folder)
+                        viewHolder.itemView.context.getString(R.string.oss_label_folder)
                 cameraViewHolder.itemView.img.setImageResource(R.drawable.oss_media_ic_folder_icon)
             }
             else -> {
@@ -87,34 +87,30 @@ class SelectPhotoImageAdapter constructor(
                 if (listCurrentPhotos.contains(photoViewHolder.photoFile)) {
                     photoViewHolder.itemView.white_overlay.visibility = View.VISIBLE
                     photoViewHolder.itemView.imgSelectedText.text =
-                        getPosition(photoViewHolder.photoFile).toString()
+                            getPosition(photoViewHolder.photoFile).toString()
                     photoViewHolder.itemView.imgSelectedText.background =
-                        photoViewHolder.itemView.context
-                            .resources.getDrawable(R.drawable.oss_circle_photo_indicator_selected)
-                    if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover) {
-                        photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
-                    }
-                    if(Gallery.galleryConfig.photoTag.shouldShowPhotoTag){
-                        photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
-                        photoViewHolder.itemView.imgCoverText.text=Gallery.galleryConfig.photoTag.photoTagText
-                    }
+                            photoViewHolder.itemView.context
+                                    .resources.getDrawable(R.drawable.oss_circle_photo_indicator_selected)
+                    setSelectedPhoto(photoViewHolder)
                     photoViewHolder.itemView.scaleX = AnimationHelper.SELECTED_SCALE
                     photoViewHolder.itemView.scaleY = AnimationHelper.SELECTED_SCALE
-
                 } else {
-                    photoViewHolder.itemView.imgSelectedText.text = ""
-                    photoViewHolder.itemView.imgSelectedText.background =
-                        photoViewHolder.itemView.context
-                            .resources.getDrawable(R.drawable.oss_circle_photo_indicator)
-                    photoViewHolder.itemView.white_overlay.visibility = View.GONE
-                    photoViewHolder.itemView.scaleX = AnimationHelper.UNSELECTED_SCALE
-                    photoViewHolder.itemView.scaleY = AnimationHelper.UNSELECTED_SCALE
-                }
-
+                    if(photoViewHolder.photoFile.isAlreadyUploaded){
+                        setSelectedPhoto(photoViewHolder)
+                    }else{
+                        photoViewHolder.itemView.imgSelectedText.text = ""
+                        photoViewHolder.itemView.imgSelectedText.background =
+                                photoViewHolder.itemView.context
+                                        .resources.getDrawable(R.drawable.oss_circle_photo_indicator)
+                        photoViewHolder.itemView.white_overlay.visibility = View.GONE
+                        photoViewHolder.itemView.scaleX = AnimationHelper.UNSELECTED_SCALE
+                        photoViewHolder.itemView.scaleY = AnimationHelper.UNSELECTED_SCALE
+                    }
+                     }
                 if (photoViewHolder.photoFile.imageId != photoViewHolder.itemView.tag) {
                     loadImageIntoView(
-                        photoViewHolder.photoFile,
-                        photoViewHolder.itemView.cropedImage
+                            photoViewHolder.photoFile,
+                            photoViewHolder.itemView.cropedImage
                     )
                     photoViewHolder.itemView.tag = photoViewHolder.photoFile.imageId
                 }
@@ -123,18 +119,28 @@ class SelectPhotoImageAdapter constructor(
                     val imageId = photoViewHolder.photoFile.imageId
                     val fullPhotoUrl = photoViewHolder.photoFile.fullPhotoUrl
                     val photo = PhotoFile.Builder()
-                        .imageId(imageId)
-                        .path(path!!)
-                        .smallPhotoUrl("")
-                        .fullPhotoUrl(fullPhotoUrl!!)
-                        .photoBackendId(0L)
-                        .action(Action.ADD)
-                        .status(Status.PENDING)
-                        .build()
+                            .imageId(imageId)
+                            .path(path!!)
+                            .smallPhotoUrl("")
+                            .fullPhotoUrl(fullPhotoUrl!!)
+                            .photoBackendId(0L)
+                            .action(Action.ADD)
+                            .status(Status.PENDING)
+                            .build()
                     trackSelectPhotos()
                     handleItemClick(photo, position)
                 }
             }
+        }
+    }
+
+    private fun setSelectedPhoto(photoViewHolder: PhotoViewHolder) {
+        if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover) {
+            photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
+        }
+        if (Gallery.galleryConfig.photoTag.shouldShowPhotoTag) {
+            photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
+            photoViewHolder.itemView.imgCoverText.text = Gallery.galleryConfig.photoTag.photoTagText
         }
     }
 
@@ -158,20 +164,19 @@ class SelectPhotoImageAdapter constructor(
 
     private fun loadImageIntoView(photoFile: PhotoFile, imageView: ImageView) {
         val options = RequestOptions()
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-            .fitCenter()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .fitCenter()
         if (photoFile.isAlreadyUploaded) {
             Glide.with(imageView.context)
-                .load(photoFile.fullPhotoUrl)
-                .thumbnail(0.1f)
-                .apply(options)
-                .into(imageView)
+                    .load(photoFile.fullPhotoUrl)
+                    .apply(options)
+                    .into(imageView)
         } else if (!photoFile.path.isNullOrEmpty()) {
             Glide.with(imageView.context)
-                .load(Uri.fromFile(File(photoFile.path!!)))
-                .thumbnail(0.1f)
-                .apply(options)
-                .into(imageView)
+                    .load(Uri.fromFile(File(photoFile.path!!)))
+                    .thumbnail(0.1f)
+                    .apply(options)
+                    .into(imageView)
         }
     }
 }

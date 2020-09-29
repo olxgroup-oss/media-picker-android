@@ -43,7 +43,7 @@ class GalleryConfig(
         private var photoViewPlaceHolder: Int = 0
         private var typeOfMediaSupported: MediaType = MediaType.PhotoWithFolderAndVideo
         private lateinit var validation: Validation
-        private lateinit var photoTag: PhotoTag
+        private  var photoTag: PhotoTag=PhotoTag()
         private var mediaScanningCriteria = MediaScanningCriteria()
 
         fun useMyPhotoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUsePhotoCamera = shouldUseMyCamera }
