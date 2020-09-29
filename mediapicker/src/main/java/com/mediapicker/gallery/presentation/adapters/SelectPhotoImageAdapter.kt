@@ -32,14 +32,7 @@ class SelectPhotoImageAdapter constructor(
     }
 
     fun updateGalleryItems(itemList: List<IGalleryItem>) {
-        var newList: MutableList<IGalleryItem> = mutableListOf()
-        for (currentPhoto in listCurrentPhotos) {
-            if (currentPhoto.isAlreadyUploaded) {
-                newList.add(currentPhoto)
-            }
-        }
-        newList.addAll(itemList)
-        this.listOfGalleryItems = newList
+        this.listOfGalleryItems = itemList
         notifyDataSetChanged()
     }
 

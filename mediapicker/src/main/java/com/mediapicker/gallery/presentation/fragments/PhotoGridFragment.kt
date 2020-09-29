@@ -10,6 +10,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
+import com.mediapicker.gallery.domain.entity.IGalleryItem
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.activity.FolderViewActivity
 import com.mediapicker.gallery.presentation.adapters.IGalleryItemClickListener
@@ -71,6 +72,9 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     override fun initViewModels() {
         super.initViewModels()
+        for (listCurrentPhoto in listCurrentPhotos) {
+            loadPhotoViewModel.currentSelectedPhotos.add(listCurrentPhoto)
+        }
         loadPhotoViewModel.getGalleryItems().observe(this, Observer {
             galleryItemAdapter.updateGalleryItems(it)
             onStepValidate()
