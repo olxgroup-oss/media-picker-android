@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.oss_custom_toolbar.*
 import kotlinx.android.synthetic.main.oss_fragment_base.*
 import kotlinx.android.synthetic.main.oss_fragment_base.view.*
 
-abstract class BaseFragment : Fragment() {
+open abstract class BaseFragment : Fragment() {
 
     companion object{
         const val EXTRA_SELECTED_PHOTOS = "selected_photos"

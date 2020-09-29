@@ -24,7 +24,7 @@
     <TextView
         android:id="@+id/imgCoverText"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/module_base_9"
         android:layout_gravity="top|center_horizontal"
         android:layout_margin="@dimen/module_small"
         android:background="@drawable/oss_media_cover_photo_indicator_background"

@@ -11,7 +11,7 @@ class ValidatePhotos {
 
     fun canAddThisToList(currentNoOfAdded: Int, postingDraftPhoto: PhotoFile): ValidationResult {
         var canAddThisToList = true
-        var exception: Throwable = InValidPhotoException("")
+        var exception: Throwable = InValidPhotoException(Gallery.galleryConfig.validation.getMaxPhotoSelectionRule().message)
 
         if (currentNoOfAdded < Gallery.galleryConfig.validation.getMaxPhotoSelectionRule().maxSelectionLimit) {
             val pair = checkIfValidImage(postingDraftPhoto, canAddThisToList)

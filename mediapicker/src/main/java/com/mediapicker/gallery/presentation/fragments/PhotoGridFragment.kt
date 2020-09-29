@@ -20,16 +20,21 @@ import com.mediapicker.gallery.presentation.utils.FileUtils
 import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.LoadPhotoViewModel
 import java.io.Serializable
-import java.util.*
 
 
 open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     companion object {
-        fun getInstance(title: String, listOfSelectedPhotos: List<PhotoFile>) = PhotoGridFragment().also {
-            it.pageTitle = title
-            it.arguments = Bundle().apply { putSerializable(EXTRA_SELECTED_PHOTOS, listOfSelectedPhotos as Serializable) }
-        }
+        fun getInstance(title: String, listOfSelectedPhotos: List<PhotoFile>) =
+            PhotoGridFragment().also {
+                it.pageTitle = title
+                it.arguments = Bundle().apply {
+                    putSerializable(
+                        EXTRA_SELECTED_PHOTOS,
+                        listOfSelectedPhotos as Serializable
+                    )
+                }
+            }
     }
 
     private var isSingleSelectionMode = false
@@ -71,6 +76,9 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     override fun initViewModels() {
         super.initViewModels()
+        for (listCurrentPhoto in listCurrentPhotos) {
+            loadPhotoViewModel.currentSelectedPhotos.add(listCurrentPhoto)
+        }
         loadPhotoViewModel.getGalleryItems().observe(this, Observer {
             galleryItemAdapter.updateGalleryItems(it)
             onStepValidate()
@@ -132,13 +140,11 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
             onImageAdded("", photo)
             galleryItemAdapter.notifyDataSetChanged()
             return true
-        } else if (currentSelectedPhotos.contains(photo)) {
-            if (onImageRemoved("", photo)) {
-                removePhotoFromCurrentSelection(photo, getPosition(photo))
-                galleryItemAdapter.notifyDataSetChanged()
-                onStepValidate()
-                return true
-            }
+        } else if (checkIfAlreadySelected(photo)) {
+            removePhotoFromCurrentSelection(photo, getPosition(photo))
+            galleryItemAdapter.notifyDataSetChanged()
+            onStepValidate()
+            return true
         } else if (currentSelectedPhotos.size < bridgeViewModel.getMaxSelectionLimit()) {
             if (onImageValidate("", photo) && onImageAdded("", photo)) {
                 addNewPhotoToCurrentSelection(photo, getPosition(photo))
@@ -151,9 +157,18 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         return false
     }
 
+    private fun checkIfAlreadySelected(newSelection: PhotoFile): Boolean {
+        currentSelectedPhotos.forEach { selectedPhoto ->
+            if (newSelection == selectedPhoto) {
+                return true
+            }
+        }
+        return false
+    }
+
 
     fun addNewPhotoToCurrentSelection(photo: PhotoFile, position: Int) {
-        if (!currentSelectedPhotos.contains(photo)) {
+        if (!currentSelectedPhotos.containsPhoto(photo)) {
             currentSelectedPhotos.add(photo)
             listCurrentPhotos.add(photo)
             updateData(position)
@@ -183,8 +198,8 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
 
     private fun removePhotoFromCurrentSelection(photo: PhotoFile, position: Int) {
-        if (currentSelectedPhotos.contains(photo)) {
-            currentSelectedPhotos.remove(photo)
+        if (currentSelectedPhotos.containsPhoto(photo)) {
+            currentSelectedPhotos.removePhoto(photo)
             removeFromList(photo)
             updateData(position)
         }
@@ -194,7 +209,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         val iterator = listCurrentPhotos.listIterator()
         while (iterator.hasNext()) {
             val photo = iterator.next()
-            if (photo.imageId == photoToRemove.imageId) {
+            if (photo == photoToRemove) {
                 iterator.remove()
                 return
             }
@@ -218,7 +233,6 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     }
 
     fun onImageRemoved(fragmentName: String, photo: PhotoFile): Boolean {
-        removeItem(photo)
         return true
     }
 
@@ -231,32 +245,28 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         listCurrentPhotos.add(photo)
     }
 
-    fun removeItem(photo: PhotoFile) {
-        currentSelectedPhotos.remove(photo)
-        removeFromList(photo)
-    }
-
     override fun shouldHideToolBar() = true
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == PHOTO_SELECTION_REQUEST_CODE) run {
-            val finalSelectionFromFolders = data?.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PhotoFile>
+            val finalSelectionFromFolders =
+                data?.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PhotoFile>
             setSelectedFromFolderAndNotify(finalSelectionFromFolders)
         } else if (requestCode == TAKING_PHOTO) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 if (lastRequestFileToSavePath.isNotEmpty()) {
                     insertIntoGallery()
                 }
                 addItem(getPhoto(lastRequestFileToSavePath))
                 loadPhotoViewModel.loadMedia(this)
-            }else{
+            } else {
                 isExpectingNewPhoto = false
             }
         }
     }
 
-    private fun getPhoto(path : String): PhotoFile {
+    private fun getPhoto(path: String): PhotoFile {
         var fullPhotoUrl = ""
         return PhotoFile.Builder()
             .imageId(0)
@@ -266,6 +276,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
             .photoBackendId(0L)
             .build()
     }
+
     private fun insertIntoGallery() {
         val values = ContentValues()
         values.put(
@@ -288,5 +299,23 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         galleryItemAdapter.notifyDataSetChanged()
     }
 
+}
 
+fun LinkedHashSet<PhotoFile>.removePhoto(photo: PhotoFile) {
+    val iterator = this.iterator()
+    while (iterator.hasNext()) {
+        val item = iterator.next()
+        if (item == photo) {
+            iterator.remove()
+        }
+    }
+}
+
+fun LinkedHashSet<PhotoFile>.containsPhoto(photo: PhotoFile): Boolean {
+    this.forEach { selectedPhoto ->
+        if (photo == selectedPhoto) {
+            return true
+        }
+    }
+    return false
 }

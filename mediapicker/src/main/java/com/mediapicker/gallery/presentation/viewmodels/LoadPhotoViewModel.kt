@@ -26,7 +26,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
 
     private var lastLoadedCursor: Cursor? = null
 
-    private var currentSelectedPhotos: LinkedHashSet<PhotoFile> = LinkedHashSet()
+     var currentSelectedPhotos: LinkedHashSet<PhotoFile> = LinkedHashSet()
 
     private val galleryItemsLiveData = MutableLiveData<List<IGalleryItem>>()
 
