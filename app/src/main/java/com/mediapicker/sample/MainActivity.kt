@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity() {
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
             .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderOnly)
             .validation(getValidation())
-            .photoTag( PhotoTag(true,"RC photo"))
             .build()
         Gallery.init(galleryConfig)
     }
