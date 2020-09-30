@@ -22,6 +22,7 @@ import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.utils.SnackbarUtils
 import kotlinx.android.synthetic.main.oss_fragment_main.*
 import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.OnNeverAskAgain
 import permissions.dispatcher.OnPermissionDenied
 import permissions.dispatcher.RuntimePermissions
 import java.io.Serializable
@@ -91,6 +92,18 @@ open class HomeFragment : BaseFragment() {
     fun onPermissionDenied() {
         activity?.supportFragmentManager?.popBackStack()
         Gallery.galleryConfig.galleryCommunicator.onPermissionDenied()
+    }
+
+
+
+    @OnNeverAskAgain(
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+    fun showNeverAskAgainPermission() {
+        Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
+        Gallery.galleryConfig.galleryCommunicator.onNeverAskPermissionAgain()
     }
 
     @SuppressLint("NeedOnRequestPermissionsResult")
