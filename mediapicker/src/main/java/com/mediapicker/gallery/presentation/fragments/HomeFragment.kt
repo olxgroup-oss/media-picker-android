@@ -90,7 +90,7 @@ open class HomeFragment : BaseFragment() {
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
     fun onPermissionDenied() {
-        activity?.supportFragmentManager?.popBackStack()
+       // activity?.supportFragmentManager?.popBackStack()
         Gallery.galleryConfig.galleryCommunicator.onPermissionDenied()
     }
 
@@ -102,7 +102,7 @@ open class HomeFragment : BaseFragment() {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
     fun showNeverAskAgainPermission() {
-        Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
+       //. Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
         Gallery.galleryConfig.galleryCommunicator.onNeverAskPermissionAgain()
     }
 
