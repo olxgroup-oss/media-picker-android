@@ -150,18 +150,18 @@ class MainActivity : AppCompatActivity() {
 
 
 object SelectedItemHolder {
-    var listOfSelectedPhotos = mutableListOf<PhotoFile>()/*.apply {
+    var listOfSelectedPhotos = mutableListOf<PhotoFile>().apply {
         val builder= PhotoFile.Builder()
         builder.apolloKey = "11111"
         builder.imageId = 25
         builder.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
         this.add(builder.build())
 
-        val builder1 = PhotoFile.Builder()
+     /*   val builder1 = PhotoFile.Builder()
         builder1.apolloKey = "11112"
         builder1.imageId = 20
         builder1.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
-        this.add(builder1.build())
-    }*/
+        this.add(builder1.build())*/
+    }
     var listOfSelectedVideos = emptyList<VideoFile>()
 }
