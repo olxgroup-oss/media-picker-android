@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.Gallery
+import com.mediapicker.gallery.IGalleryButton
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.activity.GalleryActivity
@@ -47,14 +48,18 @@ open class HomeFragment : BaseFragment() {
         getPageFromArguments()
     }
 
-
     override fun getLayoutId() = R.layout.oss_fragment_main
 
     override fun getScreenTitle() = getString(R.string.oss_title_home_screen)
 
     override fun setUpViews() {
+        if(getActionButton()!=null){
+           action_button.visibility = View.GONE
+        }
         checkPermissionsWithPermissionCheck()
     }
+
+    protected open fun getActionButton() : IGalleryButton? = null
 
     @NeedsPermission(
         Manifest.permission.CAMERA,
@@ -77,7 +82,7 @@ open class HomeFragment : BaseFragment() {
             }
         }
         openPage()
-        action_button.isSelected = false
+        changeActionButtonState(false)
         action_button.setOnClickListener { onActionButtonClicked() }
     }
 
@@ -123,8 +128,9 @@ open class HomeFragment : BaseFragment() {
         bridgeViewModel.onBackPressed()
     }
 
-    private fun changeActionButtonState(state: Boolean) {
+    open fun changeActionButtonState(state: Boolean) {
         action_button.isSelected = state
+        getActionButton()?.setSelected(state)
     }
 
     private fun showError(error: String) {
