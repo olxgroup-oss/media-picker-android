@@ -1,5 +1,6 @@
 package com.mediapicker.gallery
 
+import android.util.Log
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 
 object Gallery{
@@ -10,6 +11,7 @@ object Gallery{
     }
 
     fun updateCommunicator(galleryCommunicator: IGalleryCommunicator){
+        Log.i("Amit","Communicator  ${galleryCommunicator.hashCode()}")
         galleryConfig.galleryCommunicator = galleryCommunicator
     }
 
