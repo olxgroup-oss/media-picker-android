@@ -37,28 +37,36 @@ open class GalleryService(private val applicationContext: Context) : GalleryRepo
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 val album = getAlbumEntry(cursor)
-                val photo = getPhoto(cursor)
-                if (mutableListOfFolders.contains(album)) {
-                    mutableListOfFolders.forEach {
-                        if (it == album) {
-                            it.addEntryToAlbum(photo)
+                album?.let { item ->
+                    val photo = getPhoto(cursor)
+                    if (mutableListOfFolders.contains(item)) {
+                        mutableListOfFolders.forEach {
+                            if (it == item) {
+                                it.addEntryToAlbum(photo)
+                            }
                         }
+                    } else {
+                        item.addEntryToAlbum(photo)
+                        mutableListOfFolders.add(item)
                     }
-                } else {
-                    album.addEntryToAlbum(photo)
-                    mutableListOfFolders.add(album)
                 }
             } while (cursor.moveToNext())
         }
         return mutableListOfFolders
     }
 
-    private fun getAlbumEntry(cursor: Cursor): PhotoAlbum {
+    private fun getAlbumEntry(cursor: Cursor): PhotoAlbum? {
         val albumIdIndex = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_ID)
+
         val albumNameIndex = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
-        val id = cursor.getInt(albumIdIndex)
-        val name = cursor.getString(albumNameIndex)
-        return PhotoAlbum(id.toString(), name)
+        if (albumIdIndex != -1 && albumNameIndex != -1) {
+            val id = cursor.getInt(albumIdIndex)
+            val name = cursor.getString(albumNameIndex)
+            return PhotoAlbum(id.toString(), name)
+        } else {
+            return null
+        }
+
     }
 
     private fun getPhoto(cursor: Cursor): PhotoFile {

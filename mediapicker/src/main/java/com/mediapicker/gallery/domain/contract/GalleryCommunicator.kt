@@ -23,6 +23,8 @@ interface IGalleryCommunicator{
     fun onFolderSelect()
 
     fun onPermissionDenied()
+
+    fun onNeverAskPermissionAgain()
 }
 
 
@@ -58,5 +60,9 @@ internal class GalleryCommunicatorDefaultImpl : IGalleryCommunicator{
 
     override fun onPermissionDenied() {
         ////Need Implementation
+    }
+
+    override fun onNeverAskPermissionAgain() {
+      //Need Implementation
     }
 }

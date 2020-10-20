@@ -13,6 +13,7 @@
     <string name="oss_label_camera">Take a picture</string>
     <string name="oss_label_folder">Folders</string>
     <string name="oss_label_record_video">Record Video</string>
+    <string name="oss_permissions_denied_attach_image">We need this permission to send an image</string>
 
 
 </resources>
