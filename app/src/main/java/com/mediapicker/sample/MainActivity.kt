@@ -126,6 +126,10 @@ class MainActivity : AppCompatActivity() {
         override fun onPermissionDenied() {
             Toast.makeText(applicationContext,"Permission denied :(",Toast.LENGTH_LONG).show()
         }
+
+        override fun onNeverAskPermissionAgain() {
+            Toast.makeText(applicationContext,"Permission denied :(",Toast.LENGTH_LONG).show()
+        }
     }
 
 
