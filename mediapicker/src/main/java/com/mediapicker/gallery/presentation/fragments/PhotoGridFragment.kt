@@ -278,15 +278,25 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     }
 
     private fun insertIntoGallery() {
-        val values = ContentValues()
-        values.put(
-            MediaStore.Images.Media.DATE_TAKEN,
-            System.currentTimeMillis()
-        )
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-        values.put(MediaStore.MediaColumns.DATA, lastRequestFileToSavePath)
-        context!!.contentResolver
-            .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/olx/")
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            } else {
+                put(MediaStore.MediaColumns.DATA, lastRequestFileToSavePath)
+            }
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val collection =
+                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            requireContext().contentResolver
+                .insert(collection, values)
+        } else {
+            requireContext().contentResolver
+                .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        }
     }
 
     private fun setSelectedFromFolderAndNotify(photoSet: LinkedHashSet<PhotoFile>) {
