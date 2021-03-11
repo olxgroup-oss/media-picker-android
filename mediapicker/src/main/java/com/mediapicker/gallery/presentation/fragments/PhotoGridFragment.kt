@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
@@ -278,15 +279,33 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     }
 
     private fun insertIntoGallery() {
-        val values = ContentValues()
-        values.put(
-            MediaStore.Images.Media.DATE_TAKEN,
-            System.currentTimeMillis()
-        )
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-        values.put(MediaStore.MediaColumns.DATA, lastRequestFileToSavePath)
-        context!!.contentResolver
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            } else {
+                put(MediaStore.MediaColumns.DATA, lastRequestFileToSavePath)
+            }
+        }
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
+            addImageIntoGalleryQAndAboveDevices(values)
+        } else {
+            addImageIntoGalleryBelowQDevices(values)
+        }
+    }
+
+    private fun addImageIntoGalleryBelowQDevices(values: ContentValues) {
+        requireContext().contentResolver
             .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+    }
+
+    private fun addImageIntoGalleryQAndAboveDevices(values: ContentValues) {
+        val collection =
+            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        requireContext().contentResolver
+            .insert(collection, values)
     }
 
     private fun setSelectedFromFolderAndNotify(photoSet: LinkedHashSet<PhotoFile>) {
