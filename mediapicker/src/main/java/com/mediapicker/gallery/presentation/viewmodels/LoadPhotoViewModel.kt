@@ -39,7 +39,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
         return CursorLoader(
             getApplication(),
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, selection,
-            selectionTypeGifArgs, MediaStore.Images.Media.DATE_TAKEN + " DESC"
+            selectionTypeGifArgs, MediaStore.Images.Media.DATE_ADDED +" DESC"
         )
     }
 
