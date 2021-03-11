@@ -281,7 +281,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     private fun insertIntoGallery() {
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
                 put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
                 put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
                 put(MediaStore.Images.Media.IS_PENDING, 1)
@@ -289,7 +289,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
                 put(MediaStore.MediaColumns.DATA, lastRequestFileToSavePath)
             }
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
             addImageIntoGalleryQAndAboveDevices(values)
         } else {
             addImageIntoGalleryBelowQDevices(values)

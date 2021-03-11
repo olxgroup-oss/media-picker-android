@@ -32,7 +32,7 @@ open class GalleryService(private val applicationContext: Context) : GalleryRepo
         val cursor = MediaStore.Images.Media.query(
             applicationContext.contentResolver,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, selection, selectionTypeGifArgs,
-            MediaStore.Images.Media.DATE_TAKEN + " DESC"
+            MediaStore.Images.Media.DATE_ADDED + " DESC"
         )
         if (cursor != null && cursor.moveToFirst()) {
             do {
