@@ -1,6 +1,5 @@
 package com.mediapicker.gallery.domain.contract
 
-import android.widget.Toast
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import java.io.File
@@ -25,6 +24,12 @@ interface IGalleryCommunicator{
     fun onPermissionDenied()
 
     fun onNeverAskPermissionAgain()
+}
+
+internal interface GalleryPagerCommunicator {
+    fun onItemClicked(photoFile: PhotoFile, isSelected: Boolean)
+
+    fun onPreviewItemsUpdated(listOfSelectedPhotos: List<PhotoFile>)
 }
 
 

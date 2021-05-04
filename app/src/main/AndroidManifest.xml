@@ -17,7 +17,8 @@
         android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme" >
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -29,6 +30,9 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name="com.mediapicker.gallery.presentation.activity.GalleryActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name="com.mediapicker.gallery.presentation.carousalview.MediaGalleryActivity"
             android:screenOrientation="portrait"/>
 
         <provider

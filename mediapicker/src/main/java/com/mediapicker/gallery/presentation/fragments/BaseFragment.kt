@@ -85,6 +85,14 @@ open abstract class BaseFragment : Fragment() {
 
     }
 
+    protected fun showToolbar() {
+        toolbarView.visibility = View.VISIBLE
+    }
+
+    protected fun hideToolbar() {
+        toolbarView.visibility = View.GONE
+    }
+
     abstract fun onBackPressed()
 
     open fun getHomeAsUpIcon()  = R.drawable.oss_media_ic_back

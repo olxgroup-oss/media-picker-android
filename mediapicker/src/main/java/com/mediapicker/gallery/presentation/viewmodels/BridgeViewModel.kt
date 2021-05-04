@@ -44,6 +44,8 @@ class BridgeViewModel(
         shouldEnableActionButton()
     }
 
+    fun getSelectedPhotos(): List<PhotoFile> = listOfSelectedPhotos
+
     private fun shouldEnableActionButton() {
         if(galleryConfig.shouldOnlyValidatePhoto()){
             val status = ruleAction.shouldEnableActionButton(listOfSelectedPhotos.size)

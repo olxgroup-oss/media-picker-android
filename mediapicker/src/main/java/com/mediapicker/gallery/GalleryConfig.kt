@@ -13,8 +13,9 @@ class GalleryConfig(
     var galleryCommunicator: IGalleryCommunicator,
     val shouldUsePhotoCamera: Boolean,
     val shouldUseVideoCamera: Boolean,
-    val needToShowCover: Boolean,
+    val needToShowCover: PhotoTag,
     val photoViewPlaceHolder: Int,
+    val showPreviewCarousal: Boolean,
     val typeOfMediaSupported: MediaType,
     val validation: Validation,
     val photoTag: PhotoTag,
@@ -22,7 +23,7 @@ class GalleryConfig(
 ) {
 
 
-    fun shouldOnlyValidatePhoto() = typeOfMediaSupported == MediaType.PhotoWithFolderOnly || typeOfMediaSupported == MediaType.PhotoOnly
+    fun shouldOnlyValidatePhoto() = typeOfMediaSupported == MediaType.PhotoWithFolderOnly || typeOfMediaSupported == MediaType.PhotoOnly || typeOfMediaSupported == MediaType.PhotoWithoutCameraFolderOnly
 
     fun isGalleryInitialize() = applicationContext != null && clientAuthority != null
 
@@ -36,7 +37,8 @@ class GalleryConfig(
     ) {
         private var shouldUsePhotoCamera: Boolean = false
         private var shouldUseVideoCamera: Boolean = false
-        private var needToShowCover: Boolean = true
+        private var needToShowCover: PhotoTag = PhotoTag()
+        private var showPreviewCarousal: Boolean = false
 
 
         @LayoutRes
@@ -48,7 +50,8 @@ class GalleryConfig(
 
         fun useMyPhotoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUsePhotoCamera = shouldUseMyCamera }
         fun useMyVideoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUseVideoCamera = shouldUseMyCamera }
-        fun needToShowCover(needToShowCover: Boolean) = apply { this.needToShowCover = needToShowCover }
+        fun needToShowCover(needToShowCover: PhotoTag) = apply { this.needToShowCover = needToShowCover }
+        fun needToShowPreviewCarousal(showPreviewCarousal: Boolean) = apply { this.showPreviewCarousal = showPreviewCarousal }
         fun photoViewPlaceHolder(layout: Int) = apply { this.photoViewPlaceHolder = layout }
         fun typeOfMediaSupported(mediaType: MediaType) = apply { this.typeOfMediaSupported = mediaType }
 
@@ -71,6 +74,7 @@ class GalleryConfig(
             shouldUseVideoCamera,
             needToShowCover,
             photoViewPlaceHolder,
+            showPreviewCarousal,
             typeOfMediaSupported,
             validation,
             photoTag,
@@ -84,6 +88,7 @@ class GalleryConfig(
         object PhotoWithVideo : MediaType()
         object PhotoWithFolderAndVideo : MediaType()
         object PhotoWithFolderOnly : MediaType()
+        object PhotoWithoutCameraFolderOnly : MediaType()
     }
 
     data class MediaScanningCriteria(val photoBrowseQuery: String = "", val videoBrowseQuery: String = "") {
