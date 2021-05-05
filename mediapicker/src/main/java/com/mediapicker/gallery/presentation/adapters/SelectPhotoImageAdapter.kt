@@ -132,15 +132,12 @@ class SelectPhotoImageAdapter constructor(
     }
 
     private fun setSelectedPhoto(photoViewHolder: PhotoViewHolder) {
-        if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover) {
-            photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
-            photoViewHolder.itemView.imgCoverText.text = "Cover"
-        } else {
-            photoViewHolder.itemView.imgCoverText.visibility = View.GONE
-        }
         if (Gallery.galleryConfig.photoTag.shouldShowPhotoTag) {
             photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
             photoViewHolder.itemView.imgCoverText.text = Gallery.galleryConfig.photoTag.photoTagText
+        } else if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover.shouldShowPhotoTag) {
+            photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
+            photoViewHolder.itemView.imgCoverText.text = Gallery.galleryConfig.needToShowCover.photoTagText
         } else {
             photoViewHolder.itemView.imgCoverText.visibility = View.GONE
         }

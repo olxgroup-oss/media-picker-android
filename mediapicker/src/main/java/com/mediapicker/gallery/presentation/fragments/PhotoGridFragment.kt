@@ -172,6 +172,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         if (!currentSelectedPhotos.containsPhoto(photo)) {
             currentSelectedPhotos.add(photo)
             listCurrentPhotos.add(photo)
+            Gallery.pagerCommunicator.onItemClicked(photo, true)
             updateData(position)
         }
     }
@@ -202,6 +203,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         if (currentSelectedPhotos.containsPhoto(photo)) {
             currentSelectedPhotos.removePhoto(photo)
             removeFromList(photo)
+            Gallery.pagerCommunicator.onItemClicked(photo, false)
             updateData(position)
         }
     }
@@ -229,6 +231,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     fun onImageAdded(fragmentName: String, photo: PhotoFile): Boolean {
         addItem(photo)
+        Gallery.pagerCommunicator.onItemClicked(photo, true)
         //trackingService.postingPictureComplete()
         return true
     }
@@ -316,6 +319,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         listCurrentPhotos.addAll(currentSelectedPhotos)
 
         galleryItemAdapter.notifyDataSetChanged()
+        Gallery.pagerCommunicator.onPreviewItemsUpdated(listCurrentPhotos)
     }
 
 }
