@@ -5,8 +5,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.mediapicker.gallery.Gallery
@@ -62,7 +60,10 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
 
     override fun getLayoutId() = R.layout.oss_fragment_carousal
 
-    override fun getScreenTitle() = getString(R.string.oss_title_home_screen)
+    override fun getScreenTitle() = if(Gallery.galleryConfig.galleryLabels.homeTitle.isNotBlank())
+        Gallery.galleryConfig.galleryLabels.homeTitle
+    else
+        getString(R.string.oss_title_home_screen)
 
     override fun setUpViews() {
         checkPermissionsWithPermissionCheck()
@@ -78,6 +79,11 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
                 mediaGalleryView.updateDefaultText(Gallery.galleryConfig.showPreviewCarousal.previewText)
             }
         }
+
+        action_button.text = if(Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
+            Gallery.galleryConfig.galleryLabels.homeAction
+        else
+            getString(R.string.oss_posting_next)
     }
 
     @NeedsPermission(
