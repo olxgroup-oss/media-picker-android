@@ -4,13 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.Gallery
+import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.activity.GalleryActivity
@@ -53,10 +50,17 @@ open class HomeFragment : BaseFragment() {
 
     override fun getLayoutId() = R.layout.oss_fragment_main
 
-    override fun getScreenTitle() = getString(R.string.oss_title_home_screen)
+    override fun getScreenTitle() = if(Gallery.galleryConfig.galleryLabels.homeTitle.isNotBlank())
+        Gallery.galleryConfig.galleryLabels.homeTitle
+    else
+        getString(R.string.oss_title_home_screen)
 
     override fun setUpViews() {
         checkPermissionsWithPermissionCheck()
+        action_button.text = if(Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
+            Gallery.galleryConfig.galleryLabels.homeAction
+        else
+            getString(R.string.oss_posting_next)
     }
 
     @NeedsPermission(

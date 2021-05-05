@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.mediapicker.gallery.domain.contract.GalleryCommunicatorDefaultImpl
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 import com.mediapicker.gallery.domain.entity.CarousalConfig
+import com.mediapicker.gallery.domain.entity.GalleryLabels
 import com.mediapicker.gallery.domain.entity.PhotoTag
 import com.mediapicker.gallery.domain.entity.Validation
 
@@ -20,7 +21,8 @@ class GalleryConfig(
     val typeOfMediaSupported: MediaType,
     val validation: Validation,
     val photoTag: PhotoTag,
-    val mediaScanningCriteria: MediaScanningCriteria
+    val mediaScanningCriteria: MediaScanningCriteria,
+    val galleryLabels: GalleryLabels
 ) {
 
 
@@ -48,6 +50,7 @@ class GalleryConfig(
         private lateinit var validation: Validation
         private  var photoTag: PhotoTag=PhotoTag()
         private var mediaScanningCriteria = MediaScanningCriteria()
+        private var galleryLabels = GalleryLabels()
 
         fun useMyPhotoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUsePhotoCamera = shouldUseMyCamera }
         fun useMyVideoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUseVideoCamera = shouldUseMyCamera }
@@ -55,6 +58,7 @@ class GalleryConfig(
         fun needToShowPreviewCarousal(showPreviewCarousal: CarousalConfig) = apply { this.showPreviewCarousal = showPreviewCarousal }
         fun photoViewPlaceHolder(layout: Int) = apply { this.photoViewPlaceHolder = layout }
         fun typeOfMediaSupported(mediaType: MediaType) = apply { this.typeOfMediaSupported = mediaType }
+        fun setGalleryLabels(galleryLabels: GalleryLabels) = apply { this.galleryLabels = galleryLabels }
 
         fun validation(validation: Validation): GalleryConfigBuilder {
             this.validation = validation
@@ -79,7 +83,8 @@ class GalleryConfig(
             typeOfMediaSupported,
             validation,
             photoTag,
-            mediaScanningCriteria
+            mediaScanningCriteria,
+            galleryLabels
         )
 
     }
