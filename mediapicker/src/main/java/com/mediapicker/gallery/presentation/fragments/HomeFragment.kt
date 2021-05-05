@@ -14,6 +14,8 @@ import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.activity.GalleryActivity
+import com.mediapicker.gallery.presentation.adapters.PagerAdapter
+import com.mediapicker.gallery.presentation.utils.DefaultPage
 import com.mediapicker.gallery.presentation.utils.getActivityScopedViewModel
 import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.BridgeViewModel
@@ -217,20 +219,4 @@ open class HomeFragment : BaseFragment() {
             }
         }
     }
-}
-
-
-sealed class DefaultPage : Serializable {
-    object PhotoPage : DefaultPage()
-    object VideoPage : DefaultPage()
-}
-
-class PagerAdapter(fm: FragmentManager, private val fragmentList: List<BaseViewPagerItemFragment>) :
-    FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-
-    override fun getCount() = fragmentList.size
-
-    override fun getItem(i: Int) = fragmentList[i]
-
-    override fun getPageTitle(position: Int) = fragmentList[position].pageTitle
 }

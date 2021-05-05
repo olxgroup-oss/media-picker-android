@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         val galleryConfig = GalleryConfig.GalleryConfigBuilder(applicationContext, BuildConfig.APPLICATION_ID + ".provider", MyClientGalleryCommunicator())
             .useMyPhotoCamera(true)
             .useMyVideoCamera(false)
-//            .needToShowPreviewCarousal(CarousalConfig(true, R.drawable.oss_pic_default_photo, true, 0))
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
             .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderOnly)
             .validation(getValidation())

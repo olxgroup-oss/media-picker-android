@@ -27,7 +27,7 @@ import com.mediapicker.gallery.presentation.viewmodels.BridgeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.HomeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.utils.SnackbarUtils
-import kotlinx.android.synthetic.main.oss_fragment_main.*
+import kotlinx.android.synthetic.main.oss_fragment_carousal.*
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnNeverAskAgain
 import permissions.dispatcher.OnPermissionDenied
@@ -239,8 +239,8 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
             listOfSelectedPhotos: List<PhotoFile> = emptyList(),
             listOfSelectedVideos: List<VideoFile> = emptyList(),
             defaultPageType: DefaultPage = DefaultPage.PhotoPage
-        ): HomeFragment {
-            return HomeFragment().apply {
+        ): PhotoCarousalFragment {
+            return PhotoCarousalFragment().apply {
                 this.arguments = Bundle().apply {
                     putSerializable(EXTRA_SELECTED_PHOTOS, listOfSelectedPhotos as Serializable)
                     putSerializable(EXTRA_SELECTED_VIDEOS, listOfSelectedVideos as Serializable)
