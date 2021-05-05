@@ -6,7 +6,7 @@ import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 object Gallery{
     internal lateinit var galleryConfig : GalleryConfig
 
-    internal lateinit var pagerCommunicator: GalleryPagerCommunicator
+    internal var pagerCommunicator: GalleryPagerCommunicator ?= null
 
     fun init(galleryConfig: GalleryConfig){
         this.galleryConfig = galleryConfig
