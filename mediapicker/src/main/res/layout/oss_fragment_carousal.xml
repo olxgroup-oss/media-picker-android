@@ -29,7 +29,6 @@
                 android:id="@+id/mediaGalleryViewCollapsingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
                 android:fitsSystemWindows="true"
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="64dp"
