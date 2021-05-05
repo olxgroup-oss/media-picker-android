@@ -50,6 +50,7 @@
                         android:layout_marginRight="8dp"
                         android:layout_marginBottom="8dp"
                         app:layout_constraintDimensionRatio="H,4:2"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
