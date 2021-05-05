@@ -1,6 +1,8 @@
 package com.mediapicker.gallery.presentation.carousalview
 
 import android.content.Context
+import android.os.Build
+import android.text.Html
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
@@ -44,6 +46,11 @@ class MediaGalleryView(context: Context, attrs: AttributeSet?) : MediaGalleryPag
         val tvDefaultText = findViewById<TextView>(R.id.tvDefaultText)
         if (id != 0) {
             tvDefaultText.visibility = View.VISIBLE
+            tvDefaultText.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(resources.getString(id), Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                Html.fromHtml(resources.getString(id))
+            }
             tvDefaultText.setText(id)
         } else {
             tvDefaultText.visibility = View.GONE
