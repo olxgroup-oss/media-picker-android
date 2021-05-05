@@ -2,8 +2,8 @@ package com.mediapicker.sample
 
 import android.os.Bundle
 import com.mediapicker.gallery.domain.entity.PhotoFile
-import com.mediapicker.gallery.presentation.fragments.DefaultPage
 import com.mediapicker.gallery.presentation.fragments.HomeFragment
+import com.mediapicker.gallery.presentation.utils.DefaultPage
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import java.io.Serializable
 

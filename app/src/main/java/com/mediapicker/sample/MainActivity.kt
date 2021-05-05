@@ -10,8 +10,8 @@ import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 import com.mediapicker.gallery.domain.entity.*
-import com.mediapicker.gallery.presentation.fragments.DefaultPage
 import com.mediapicker.gallery.presentation.fragments.HomeFragment
+import com.mediapicker.gallery.presentation.utils.DefaultPage
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val galleryConfig = GalleryConfig.GalleryConfigBuilder(applicationContext, BuildConfig.APPLICATION_ID + ".provider", MyClientGalleryCommunicator())
             .useMyPhotoCamera(true)
             .useMyVideoCamera(false)
-            .needToShowPreviewCarousal(CarousalConfig(true, R.drawable.oss_pic_default_photo, true, 0))
+//            .needToShowPreviewCarousal(CarousalConfig(true, R.drawable.oss_pic_default_photo, true, 0))
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
             .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderOnly)
             .validation(getValidation())

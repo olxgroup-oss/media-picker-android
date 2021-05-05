@@ -3,17 +3,24 @@ package com.mediapicker.gallery.presentation.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.Gallery
+import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.R
+import com.mediapicker.gallery.domain.contract.GalleryPagerCommunicator
+import com.mediapicker.gallery.domain.entity.GalleryViewMediaType
+import com.mediapicker.gallery.domain.entity.MediaGalleryEntity
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.activity.GalleryActivity
+import com.mediapicker.gallery.presentation.adapters.PagerAdapter
+import com.mediapicker.gallery.presentation.carousalview.MediaGalleryActivity
+import com.mediapicker.gallery.presentation.carousalview.MediaGalleryView
+import com.mediapicker.gallery.presentation.utils.DefaultPage
 import com.mediapicker.gallery.presentation.utils.getActivityScopedViewModel
 import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.BridgeViewModel
@@ -26,9 +33,13 @@ import permissions.dispatcher.OnNeverAskAgain
 import permissions.dispatcher.OnPermissionDenied
 import permissions.dispatcher.RuntimePermissions
 import java.io.Serializable
+import java.util.*
 
 @RuntimePermissions
-open class HomeFragment : BaseFragment() {
+open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
+    MediaGalleryView.OnGalleryItemClickListener {
+
+    private val PHOTO_PREVIEW = 43475
 
     private val homeViewModel: HomeViewModel by lazy {
         getFragmentScopedViewModel { HomeViewModel(Gallery.galleryConfig) }
@@ -49,12 +60,24 @@ open class HomeFragment : BaseFragment() {
     }
 
 
-    override fun getLayoutId() = R.layout.oss_fragment_main
+    override fun getLayoutId() = R.layout.oss_fragment_carousal
 
     override fun getScreenTitle() = getString(R.string.oss_title_home_screen)
 
     override fun setUpViews() {
         checkPermissionsWithPermissionCheck()
+        Gallery.pagerCommunicator = this
+
+        if(Gallery.galleryConfig.showPreviewCarousal.showCarousal) {
+            mediaGalleryViewContainer.visibility = View.VISIBLE
+            mediaGalleryView.setOnGalleryClickListener(this)
+            if (Gallery.galleryConfig.showPreviewCarousal.imageId != 0) {
+                mediaGalleryView.updateDefaultPhoto(Gallery.galleryConfig.showPreviewCarousal.imageId)
+            }
+            if (Gallery.galleryConfig.showPreviewCarousal.previewText != 0) {
+                mediaGalleryView.updateDefaultText(Gallery.galleryConfig.showPreviewCarousal.previewText)
+            }
+        }
     }
 
     @NeedsPermission(
@@ -76,6 +99,9 @@ open class HomeFragment : BaseFragment() {
             GalleryConfig.MediaType.PhotoWithVideo -> {
                 setUpWithTabLayout()
             }
+            GalleryConfig.MediaType.PhotoWithoutCameraFolderOnly -> {
+                setUpWithOutTabLayout()
+            }
         }
         openPage()
         action_button.isSelected = false
@@ -90,11 +116,17 @@ open class HomeFragment : BaseFragment() {
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
     fun onPermissionDenied() {
-        // activity?.supportFragmentManager?.popBackStack()
+       // activity?.supportFragmentManager?.popBackStack()
         Gallery.galleryConfig.galleryCommunicator.onPermissionDenied()
     }
 
+    fun addMediaForPager(mediaGalleryEntity: MediaGalleryEntity) {
+        mediaGalleryView.addMediaForPager(mediaGalleryEntity)
+    }
 
+    fun removeMediaFromPager(mediaGalleryEntity: MediaGalleryEntity) {
+        mediaGalleryView.removeMediaFromPager(mediaGalleryEntity)
+    }
 
     @OnNeverAskAgain(
         Manifest.permission.CAMERA,
@@ -102,7 +134,7 @@ open class HomeFragment : BaseFragment() {
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
     fun showNeverAskAgainPermission() {
-        //. Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
+       //. Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
         Gallery.galleryConfig.galleryCommunicator.onNeverAskPermissionAgain()
     }
 
@@ -125,7 +157,7 @@ open class HomeFragment : BaseFragment() {
 
     private fun closeIfHostingOnActivity() {
         if(requireActivity() is GalleryActivity){
-            requireActivity().finish()
+           requireActivity().finish()
         }
     }
 
@@ -217,20 +249,54 @@ open class HomeFragment : BaseFragment() {
             }
         }
     }
-}
 
+    override fun onItemClicked(photoFile: PhotoFile, isSelected: Boolean) {
+        if (isSelected) {
+            if(Gallery.galleryConfig.showPreviewCarousal.addImage) {
+                addMediaForPager(getMediaEntity(photoFile))
+            }
+        } else {
+            if(Gallery.galleryConfig.showPreviewCarousal.addImage) {
+                removeMediaFromPager(getMediaEntity(photoFile))
+            }
+        }
+    }
 
-sealed class DefaultPage : Serializable {
-    object PhotoPage : DefaultPage()
-    object VideoPage : DefaultPage()
-}
+    private fun getMediaEntity(photo: PhotoFile): MediaGalleryEntity {
+        var path: String? = photo.fullPhotoUrl
+        var isLocalImage = false
+        if (!TextUtils.isEmpty(photo.path) && photo.path?.contains("/")!!) {
+            path = photo.path
+            isLocalImage = true
+        }
+        return MediaGalleryEntity(
+            photo.path,
+            photo.imageId,
+            path,
+            isLocalImage,
+            GalleryViewMediaType.IMAGE
+        )
+    }
 
-class PagerAdapter(fm: FragmentManager, private val fragmentList: List<BaseViewPagerItemFragment>) :
-    FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    private fun convertPhotoFileToMediaGallery(photoList: List<PhotoFile>): ArrayList<MediaGalleryEntity> {
+        val mediaList = ArrayList<MediaGalleryEntity>()
+        for (photo in photoList) {
+            mediaList.add(getMediaEntity(photo))
+        }
+        return mediaList
+    }
 
-    override fun getCount() = fragmentList.size
+    override fun onPreviewItemsUpdated(listOfSelectedPhotos: List<PhotoFile>) {
+        if(Gallery.galleryConfig.showPreviewCarousal.addImage) {
+            mediaGalleryView.setImagesForPager(convertPhotoFileToMediaGallery(listOfSelectedPhotos))
+        }
+    }
 
-    override fun getItem(i: Int) = fragmentList[i]
-
-    override fun getPageTitle(position: Int) = fragmentList[position].pageTitle
+    override fun onGalleryItemClick(mediaIndex: Int) {
+        MediaGalleryActivity.startActivityForResult(
+            this, convertPhotoFileToMediaGallery(
+                bridgeViewModel.getSelectedPhotos()
+            ), mediaIndex, "", PHOTO_PREVIEW
+        )
+    }
 }
