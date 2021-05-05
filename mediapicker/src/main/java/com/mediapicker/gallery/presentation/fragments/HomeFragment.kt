@@ -66,9 +66,15 @@ open class HomeFragment : BaseFragment(), GalleryPagerCommunicator,
         checkPermissionsWithPermissionCheck()
         Gallery.pagerCommunicator = this
 
-        if(Gallery.galleryConfig.showPreviewCarousal) {
+        if(Gallery.galleryConfig.showPreviewCarousal.showCarousal) {
             mediaGalleryViewContainer.visibility = View.VISIBLE
             mediaGalleryView.setOnGalleryClickListener(this)
+            if (Gallery.galleryConfig.showPreviewCarousal.imageId != 0) {
+                mediaGalleryView.updateDefaultPhoto(Gallery.galleryConfig.showPreviewCarousal.imageId)
+            }
+            if (Gallery.galleryConfig.showPreviewCarousal.previewText != 0) {
+                mediaGalleryView.updateDefaultText(Gallery.galleryConfig.showPreviewCarousal.previewText)
+            }
         }
     }
 
@@ -244,9 +250,13 @@ open class HomeFragment : BaseFragment(), GalleryPagerCommunicator,
 
     override fun onItemClicked(photoFile: PhotoFile, isSelected: Boolean) {
         if (isSelected) {
-            addMediaForPager(getMediaEntity(photoFile))
+            if(Gallery.galleryConfig.showPreviewCarousal.addImage) {
+                addMediaForPager(getMediaEntity(photoFile))
+            }
         } else {
-            removeMediaFromPager(getMediaEntity(photoFile))
+            if(Gallery.galleryConfig.showPreviewCarousal.addImage) {
+                removeMediaFromPager(getMediaEntity(photoFile))
+            }
         }
     }
 
@@ -275,7 +285,9 @@ open class HomeFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     override fun onPreviewItemsUpdated(listOfSelectedPhotos: List<PhotoFile>) {
-        mediaGalleryView.setImagesForPager(convertPhotoFileToMediaGallery(listOfSelectedPhotos))
+        if(Gallery.galleryConfig.showPreviewCarousal.addImage) {
+            mediaGalleryView.setImagesForPager(convertPhotoFileToMediaGallery(listOfSelectedPhotos))
+        }
     }
 
     override fun onGalleryItemClick(mediaIndex: Int) {
