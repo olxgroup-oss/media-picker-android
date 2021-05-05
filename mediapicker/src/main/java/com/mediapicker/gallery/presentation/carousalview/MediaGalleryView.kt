@@ -42,7 +42,12 @@ class MediaGalleryView(context: Context, attrs: AttributeSet?) : MediaGalleryPag
 
     fun updateDefaultText(id: Int) {
         val tvDefaultText = findViewById<TextView>(R.id.tvDefaultText)
-        tvDefaultText.setText(id)
+        if (id != 0) {
+            tvDefaultText.visibility = View.VISIBLE
+            tvDefaultText.setText(id)
+        } else {
+            tvDefaultText.visibility = View.GONE
+        }
     }
 
     fun setOnGalleryClickListener(onGalleryItemClickListener: OnGalleryItemClickListener?) {
