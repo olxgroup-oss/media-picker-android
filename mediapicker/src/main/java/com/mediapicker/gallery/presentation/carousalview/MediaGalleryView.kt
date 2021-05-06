@@ -51,7 +51,6 @@ class MediaGalleryView(context: Context, attrs: AttributeSet?) : MediaGalleryPag
             } else {
                 Html.fromHtml(resources.getString(id))
             }
-            tvDefaultText.setText(id)
         } else {
             tvDefaultText.visibility = View.GONE
         }

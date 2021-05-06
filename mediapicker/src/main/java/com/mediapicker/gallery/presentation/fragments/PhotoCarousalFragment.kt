@@ -2,6 +2,7 @@ package com.mediapicker.gallery.presentation.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -304,5 +305,17 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
                 bridgeViewModel.getSelectedPhotos()
             ), mediaIndex, "", PHOTO_PREVIEW
         )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PHOTO_PREVIEW && view != null) {
+            var index = 0
+            if (data != null) {
+                val bundle = data.extras
+                index = bundle!!.getInt("gallery_media_index", 0)
+            }
+            mediaGalleryView.setSelectedPhoto(index)
+        }
     }
 }

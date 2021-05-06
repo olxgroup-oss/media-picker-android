@@ -153,7 +153,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
                 return true
             }
         } else {
-            showMsg(bridgeViewModel.getMaxLimitErrorResponse())
+            bridgeViewModel.getError().postValue(bridgeViewModel.getMaxLimitErrorResponse())
         }
         return false
     }
