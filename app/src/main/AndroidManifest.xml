@@ -32,7 +32,7 @@
         <activity android:name="com.mediapicker.gallery.presentation.activity.GalleryActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name="com.mediapicker.gallery.presentation.carousalview.MediaGalleryActivity"
+        <activity android:name="com.mediapicker.gallery.presentation.activity.MediaGalleryActivity"
             android:screenOrientation="portrait"/>
 
         <provider

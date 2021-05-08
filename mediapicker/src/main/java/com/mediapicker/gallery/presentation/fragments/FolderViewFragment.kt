@@ -61,6 +61,7 @@ class FolderViewFragment : BaseGalleryViewFragment(), OnItemClickListener<PhotoA
 
     private fun openPhotoGridFragment(photo: PhotoAlbum) {
         galleryActionListener?.moveToPhotoGrid(photo)
+        Gallery.carousalActionListener?.onGalleryFolderSelected()
     }
 
     override fun onActionButtonClick() {
