@@ -101,13 +101,10 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
             GalleryConfig.MediaType.PhotoWithFolderOnly -> {
                 setUpWithOutTabLayout()
             }
-            GalleryConfig.MediaType.PhotoWithFolderAndVideo -> {
-                setUpWithTabLayout()
-            }
-            GalleryConfig.MediaType.PhotoWithVideo -> {
-                setUpWithTabLayout()
-            }
             GalleryConfig.MediaType.PhotoWithoutCameraFolderOnly -> {
+                setUpWithOutTabLayout()
+            }
+            else -> {
                 setUpWithOutTabLayout()
             }
         }
