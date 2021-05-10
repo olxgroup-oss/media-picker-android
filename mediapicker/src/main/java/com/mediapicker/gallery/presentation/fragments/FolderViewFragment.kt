@@ -42,6 +42,10 @@ class FolderViewFragment : BaseGalleryViewFragment(), OnItemClickListener<PhotoA
             this.adapter = this@FolderViewFragment.adapter
         }
         actionButton.isSelected = true
+
+        if (Gallery.galleryConfig.galleryLabels.galleryFolderAction.isNotBlank()) {
+            actionButton.text = Gallery.galleryConfig.galleryLabels.galleryFolderAction
+        }
     }
 
     override fun initViewModels() {
