@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
 import com.mediapicker.gallery.domain.entity.PhotoFile
@@ -35,6 +36,7 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
 
     private fun removePhotoFromSelection(photo: PhotoFile, position: Int) {
         currentSelectedPhotos.removePhoto(photo)
+        Gallery.carousalActionListener?.onItemClicked(photo, false)
         adapter.listCurrentPhotos = currentSelectedPhotos.toList()
         adapter.notifyDataSetChanged()
     }
@@ -73,6 +75,7 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
         when(val validationResult = photoValidationAction.canAddThisToList(currentSelectedPhotos.size, photo)){
             is ValidationResult.Success -> {
                 galleryActionListener?.onPhotoSelected(photo)
+                Gallery.carousalActionListener?.onItemClicked(photo, true)
                 adapter.listCurrentPhotos = currentSelectedPhotos.toList()
                 adapter.notifyDataSetChanged()
             }

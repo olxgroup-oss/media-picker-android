@@ -82,6 +82,9 @@ open class HomeFragment : BaseFragment() {
             GalleryConfig.MediaType.PhotoWithVideo -> {
                 setUpWithTabLayout()
             }
+            GalleryConfig.MediaType.PhotoWithoutCameraFolderOnly -> {
+                setUpWithOutTabLayout()
+            }
         }
         openPage()
         action_button.isSelected = false

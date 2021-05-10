@@ -1,4 +1,4 @@
-package com.mediapicker.gallery.presentation.carousalview
+package com.mediapicker.gallery.presentation.activity
 
 import android.app.Activity
 import android.content.Intent
@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.MediaGalleryEntity
+import com.mediapicker.gallery.presentation.carousalview.MediaGalleryPagerView
 import kotlinx.android.synthetic.main.oss_media_gallery_activity.*
 
-class MediaGalleryActivity : AppCompatActivity(), View.OnClickListener, MediaGalleryPagerView.MediaChangeListener {
+class MediaGalleryActivity : AppCompatActivity(), View.OnClickListener,
+    MediaGalleryPagerView.MediaChangeListener {
 
     private var origin = ""
     private var selectedPhotoIndex = 0
@@ -40,7 +43,9 @@ class MediaGalleryActivity : AppCompatActivity(), View.OnClickListener, MediaGal
 
         if(intent != null) {
             mediaGalleryList = intent.extras?.getSerializable(GALLERY_MEDIA_LIST) as ArrayList<MediaGalleryEntity>
-            selectedPhotoIndex = if (intent.extras?.containsKey(GALLERY_MEDIA_INDEX)!!) intent.extras!!.getInt(GALLERY_MEDIA_INDEX) else 0
+            selectedPhotoIndex = if (intent.extras?.containsKey(GALLERY_MEDIA_INDEX)!!) intent.extras!!.getInt(
+                GALLERY_MEDIA_INDEX
+            ) else 0
             origin = intent.extras?.getString(MEDIA_GALLERY_SOURCE)!!
         }
         crossButton.setOnClickListener(this)
@@ -77,5 +82,6 @@ class MediaGalleryActivity : AppCompatActivity(), View.OnClickListener, MediaGal
     }
 
     override fun onMediaChanged(mediaPosition: Int) {
+        Gallery.carousalActionListener?.onGalleryImagePreviewChanged()
     }
 }

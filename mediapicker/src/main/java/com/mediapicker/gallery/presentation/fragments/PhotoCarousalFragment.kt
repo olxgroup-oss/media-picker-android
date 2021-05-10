@@ -16,8 +16,9 @@ import com.mediapicker.gallery.domain.entity.GalleryViewMediaType
 import com.mediapicker.gallery.domain.entity.MediaGalleryEntity
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.activity.GalleryActivity
+import com.mediapicker.gallery.presentation.activity.MediaGalleryActivity
 import com.mediapicker.gallery.presentation.adapters.PagerAdapter
-import com.mediapicker.gallery.presentation.carousalview.MediaGalleryActivity
+import com.mediapicker.gallery.presentation.carousalview.CarousalActionListener
 import com.mediapicker.gallery.presentation.carousalview.MediaGalleryView
 import com.mediapicker.gallery.presentation.utils.DefaultPage
 import com.mediapicker.gallery.presentation.utils.getActivityScopedViewModel
@@ -100,13 +101,10 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
             GalleryConfig.MediaType.PhotoWithFolderOnly -> {
                 setUpWithOutTabLayout()
             }
-            GalleryConfig.MediaType.PhotoWithFolderAndVideo -> {
-                setUpWithTabLayout()
-            }
-            GalleryConfig.MediaType.PhotoWithVideo -> {
-                setUpWithTabLayout()
-            }
             GalleryConfig.MediaType.PhotoWithoutCameraFolderOnly -> {
+                setUpWithOutTabLayout()
+            }
+            else -> {
                 setUpWithOutTabLayout()
             }
         }
@@ -169,6 +167,14 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     override fun setHomeAsUp() = true
+
+    fun setActionButtonLabel(label: String) {
+        action_button.text = label
+    }
+
+    fun setCarousalActionListener(carousalActionListener: CarousalActionListener) {
+        Gallery.carousalActionListener = carousalActionListener
+    }
 
     override fun onBackPressed() {
         closeIfHostingOnActivity()
@@ -300,6 +306,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     override fun onGalleryItemClick(mediaIndex: Int) {
+        Gallery.carousalActionListener?.onGalleryImagePreview()
         MediaGalleryActivity.startActivityForResult(
             this, convertPhotoFileToMediaGallery(
                 bridgeViewModel.getSelectedPhotos()
