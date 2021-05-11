@@ -21,35 +21,45 @@
         android:background="@color/oss_selected_photo_overlay"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/imgCoverText"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|center_horizontal"
-        android:layout_margin="@dimen/module_small"
-        android:background="@drawable/oss_media_cover_photo_indicator_background"
-        android:gravity="center"
-        android:includeFontPadding="false"
-        android:paddingStart="@dimen/module_tiny"
-        android:paddingLeft="@dimen/module_tiny"
-        android:paddingEnd="@dimen/module_tiny"
-        android:paddingRight="@dimen/module_tiny"
-        android:text="Cover"
-        android:textSize="@dimen/caption_font_size"
-        android:visibility="gone"
-        tools:text="Hello"
-        tools:visibility="visible" />
+        android:layout_gravity="top|end">
 
-    <TextView
-        android:id="@+id/imgSelectedText"
-        android:layout_width="@dimen/module_base_9"
-        android:layout_height="@dimen/module_base_9"
-        android:layout_gravity="top|right|end"
-        android:layout_margin="@dimen/module_small"
-        android:background="@drawable/oss_circle_photo_indicator"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/label_font_size"
-        tools:text="2" />
+        <TextView
+            android:id="@+id/imgCoverText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/module_small"
+            android:layout_marginBottom="@dimen/module_small"
+            android:layout_marginStart="@dimen/module_small"
+            android:background="@drawable/oss_media_cover_photo_indicator_background"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:paddingStart="@dimen/module_tiny"
+            android:paddingLeft="@dimen/module_tiny"
+            android:paddingEnd="@dimen/module_tiny"
+            android:paddingRight="@dimen/module_tiny"
+            android:text="Cover"
+            android:textSize="@dimen/caption_font_size"
+            android:visibility="gone"
+            tools:text="Hello"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/imgSelectedText"
+            android:layout_width="@dimen/module_base_9"
+            android:layout_height="@dimen/module_base_9"
+            android:layout_marginEnd="@dimen/module_small"
+            android:layout_marginTop="@dimen/module_small"
+            android:layout_marginBottom="@dimen/module_small"
+            android:background="@drawable/oss_circle_photo_indicator"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/label_font_size"
+            tools:text="2" />
+
+    </LinearLayout>
 
 </FrameLayout>
