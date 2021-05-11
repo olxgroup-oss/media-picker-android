@@ -60,6 +60,10 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
             this.layoutManager = GridLayoutManager(activity, COLUMNS_COUNT)
             this.adapter = this@GalleryPhotoViewFragment.adapter
         }
+
+        if (Gallery.galleryConfig.galleryLabels.galleryFolderAction.isNotBlank()) {
+            actionButton.text = Gallery.galleryConfig.galleryLabels.galleryFolderAction
+        }
     }
 
     @SuppressLint("CheckResult")
