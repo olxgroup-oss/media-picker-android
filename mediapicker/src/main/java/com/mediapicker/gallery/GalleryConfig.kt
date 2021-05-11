@@ -22,6 +22,7 @@ class GalleryConfig(
     val validation: Validation,
     val photoTag: PhotoTag,
     val mediaScanningCriteria: MediaScanningCriteria,
+    val textAllCaps: Boolean,
     val galleryLabels: GalleryLabels
 ) {
 
@@ -40,6 +41,7 @@ class GalleryConfig(
     ) {
         private var shouldUsePhotoCamera: Boolean = false
         private var shouldUseVideoCamera: Boolean = false
+        private var textAllCaps: Boolean = true
         private var needToShowCover: PhotoTag = PhotoTag()
         private var showPreviewCarousal: CarousalConfig = CarousalConfig()
 
@@ -52,6 +54,7 @@ class GalleryConfig(
         private var mediaScanningCriteria = MediaScanningCriteria()
         private var galleryLabels = GalleryLabels()
 
+        fun textAllCaps(textAllCaps: Boolean) = apply { this.textAllCaps = textAllCaps }
         fun useMyPhotoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUsePhotoCamera = shouldUseMyCamera }
         fun useMyVideoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUseVideoCamera = shouldUseMyCamera }
         fun needToShowCover(needToShowCover: PhotoTag) = apply { this.needToShowCover = needToShowCover }
@@ -84,6 +87,7 @@ class GalleryConfig(
             validation,
             photoTag,
             mediaScanningCriteria,
+            textAllCaps,
             galleryLabels
         )
 

@@ -16,6 +16,8 @@ import com.mediapicker.gallery.presentation.utils.ItemDecorationAlbumColumns
 import com.mediapicker.gallery.presentation.utils.ValidatePhotos
 import com.mediapicker.gallery.presentation.utils.ValidationResult
 import com.mediapicker.gallery.utils.SnackbarUtils
+import kotlinx.android.synthetic.main.oss_custom_toolbar.*
+import kotlinx.android.synthetic.main.oss_fragment_carousal.*
 import kotlinx.android.synthetic.main.oss_fragment_folder_view.*
 
 const val COLUMNS_COUNT = 3
@@ -64,6 +66,8 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
         if (Gallery.galleryConfig.galleryLabels.galleryFolderAction.isNotBlank()) {
             actionButton.text = Gallery.galleryConfig.galleryLabels.galleryFolderAction
         }
+        toolbarTitle.isAllCaps = Gallery.galleryConfig.textAllCaps
+        actionButton.isAllCaps = Gallery.galleryConfig.textAllCaps
     }
 
     @SuppressLint("CheckResult")
