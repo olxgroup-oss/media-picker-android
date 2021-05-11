@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.contract.OnItemClickListener
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
@@ -30,6 +31,7 @@ open class GalleryFolderAdapter constructor(val context: Context, var listOfFold
         val vH = viewHolder as FolderViewHolder
         vH.root.setOnClickListener { v -> onItemClickListener?.onListItemClick(listOfFolders[position]) }
         vH.root.folderName.text = listOfFolders[position].name
+        vH.root.folderName.isAllCaps = Gallery.galleryConfig.textAllCaps
         val album = listOfFolders[position]
         if (album.hasPhotos()) {
             vH.root.backgroundImage.visibility = View.VISIBLE

@@ -11,6 +11,8 @@ import com.mediapicker.gallery.presentation.adapters.GalleryFolderAdapter
 import com.mediapicker.gallery.presentation.utils.ItemDecorationAlbumColumns
 import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.LoadAlbumViewModel
+import kotlinx.android.synthetic.main.oss_custom_toolbar.*
+import kotlinx.android.synthetic.main.oss_fragment_carousal.*
 import kotlinx.android.synthetic.main.oss_fragment_folder_view.*
 
 class FolderViewFragment : BaseGalleryViewFragment(), OnItemClickListener<PhotoAlbum> {
@@ -46,6 +48,8 @@ class FolderViewFragment : BaseGalleryViewFragment(), OnItemClickListener<PhotoA
         if (Gallery.galleryConfig.galleryLabels.galleryFolderAction.isNotBlank()) {
             actionButton.text = Gallery.galleryConfig.galleryLabels.galleryFolderAction
         }
+        toolbarTitle.isAllCaps = Gallery.galleryConfig.textAllCaps
+        actionButton.isAllCaps = Gallery.galleryConfig.textAllCaps
     }
 
     override fun initViewModels() {

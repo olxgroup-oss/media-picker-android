@@ -27,6 +27,7 @@ import com.mediapicker.gallery.presentation.viewmodels.BridgeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.HomeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.utils.SnackbarUtils
+import kotlinx.android.synthetic.main.oss_custom_toolbar.*
 import kotlinx.android.synthetic.main.oss_fragment_carousal.*
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnNeverAskAgain
@@ -82,6 +83,8 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
             }
         }
 
+        toolbarTitle.isAllCaps = Gallery.galleryConfig.textAllCaps
+        action_button.isAllCaps = Gallery.galleryConfig.textAllCaps
         action_button.text = if(Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
             Gallery.galleryConfig.galleryLabels.homeAction
         else
@@ -186,7 +189,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     private fun showError(error: String) {
-        view?.let { SnackbarUtils.show(it, error, Snackbar.LENGTH_SHORT) }
+        view?.let { SnackbarUtils.show(it, error, Snackbar.LENGTH_LONG) }
     }
 
     private fun setUpWithOutTabLayout() {
