@@ -186,7 +186,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     private fun showError(error: String) {
-        view?.let { SnackbarUtils.show(it, error, Snackbar.LENGTH_SHORT) }
+        view?.let { SnackbarUtils.show(it, error, Snackbar.LENGTH_LONG) }
     }
 
     private fun setUpWithOutTabLayout() {
