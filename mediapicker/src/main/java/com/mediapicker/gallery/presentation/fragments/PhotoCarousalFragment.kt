@@ -125,7 +125,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     )
     fun onPermissionDenied() {
        // activity?.supportFragmentManager?.popBackStack()
-        Gallery.galleryConfig.galleryCommunicator.onPermissionDenied()
+        Gallery.galleryConfig.galleryCommunicator?.onPermissionDenied()
     }
 
     fun addMediaForPager(mediaGalleryEntity: MediaGalleryEntity) {
@@ -143,7 +143,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     )
     fun showNeverAskAgainPermission() {
        //. Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
-        Gallery.galleryConfig.galleryCommunicator.onNeverAskPermissionAgain()
+        Gallery.galleryConfig.galleryCommunicator?.onNeverAskPermissionAgain()
     }
 
     @SuppressLint("NeedOnRequestPermissionsResult")
@@ -175,7 +175,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
         action_button.text = label
     }
 
-    fun setCarousalActionListener(carousalActionListener: CarousalActionListener) {
+    fun setCarousalActionListener(carousalActionListener: CarousalActionListener?) {
         Gallery.carousalActionListener = carousalActionListener
     }
 

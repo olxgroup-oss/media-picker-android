@@ -12,7 +12,7 @@ import com.mediapicker.gallery.domain.entity.Validation
 class GalleryConfig(
     val applicationContext: Context,
     val clientAuthority: String,
-    var galleryCommunicator: IGalleryCommunicator,
+    var galleryCommunicator: IGalleryCommunicator?,
     val shouldUsePhotoCamera: Boolean,
     val shouldUseVideoCamera: Boolean,
     val needToShowCover: PhotoTag,
@@ -37,7 +37,7 @@ class GalleryConfig(
     class GalleryConfigBuilder(
         private val applicationContext: Context,
         private val clientAuthority: String,
-        private val galleryCommunicator: IGalleryCommunicator = GalleryCommunicatorDefaultImpl()
+        private val galleryCommunicator: IGalleryCommunicator? = GalleryCommunicatorDefaultImpl()
     ) {
         private var shouldUsePhotoCamera: Boolean = false
         private var shouldUseVideoCamera: Boolean = false

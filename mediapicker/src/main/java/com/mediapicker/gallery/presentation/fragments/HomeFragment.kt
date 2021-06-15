@@ -100,7 +100,7 @@ open class HomeFragment : BaseFragment() {
     )
     fun onPermissionDenied() {
         // activity?.supportFragmentManager?.popBackStack()
-        Gallery.galleryConfig.galleryCommunicator.onPermissionDenied()
+        Gallery.galleryConfig.galleryCommunicator?.onPermissionDenied()
     }
 
 
@@ -112,7 +112,7 @@ open class HomeFragment : BaseFragment() {
     )
     fun showNeverAskAgainPermission() {
         //. Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
-        Gallery.galleryConfig.galleryCommunicator.onNeverAskPermissionAgain()
+        Gallery.galleryConfig.galleryCommunicator?.onNeverAskPermissionAgain()
     }
 
     @SuppressLint("NeedOnRequestPermissionsResult")

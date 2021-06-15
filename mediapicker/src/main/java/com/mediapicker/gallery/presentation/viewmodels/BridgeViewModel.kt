@@ -57,7 +57,7 @@ class BridgeViewModel(
     }
 
     private fun onActionButtonClick() {
-        galleryConfig.galleryCommunicator.actionButtonClick(listOfSelectedPhotos, listOfSelectedVideos)
+        galleryConfig.galleryCommunicator?.actionButtonClick(listOfSelectedPhotos, listOfSelectedVideos)
     }
 
 
@@ -65,12 +65,12 @@ class BridgeViewModel(
         if (galleryConfig.shouldUseVideoCamera) {
             recordVideoLiveData.postValue(Unit)
         } else {
-            galleryConfig.galleryCommunicator.recordVideo()
+            galleryConfig.galleryCommunicator?.recordVideo()
         }
     }
 
     fun onBackPressed() {
-        galleryConfig.galleryCommunicator.onCloseMainScreen()
+        galleryConfig.galleryCommunicator?.onCloseMainScreen()
     }
 
     fun getMaxSelectionLimit() = galleryConfig.validation.getMaxPhotoSelectionRule().maxSelectionLimit
@@ -84,12 +84,12 @@ class BridgeViewModel(
     }
 
     fun shouldUseMyCamera(): Boolean {
-        galleryConfig.galleryCommunicator.captureImage()
+        galleryConfig.galleryCommunicator?.captureImage()
         return galleryConfig.shouldUsePhotoCamera
     }
 
     fun onFolderSelect(){
-        galleryConfig.galleryCommunicator.onFolderSelect()
+        galleryConfig.galleryCommunicator?.onFolderSelect()
     }
 
     fun getMaxVideoLimitErrorResponse() = galleryConfig.validation.getMaxVideoSelectionRule().message
