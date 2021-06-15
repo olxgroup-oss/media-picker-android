@@ -69,6 +69,7 @@ class SelectPhotoImageAdapter constructor(
             viewHolder.itemViewType == ITEM_TYPE_CAMERA -> {
                 val cameraViewHolder = viewHolder as CameraViewHolder
                 cameraViewHolder.itemView.setOnClickListener { v -> onClickCamera() }
+                cameraViewHolder.itemView.folderName.isAllCaps = Gallery.galleryConfig.textAllCaps
                 cameraViewHolder.itemView.folderName.text =
                     viewHolder.itemView.context.getString(R.string.oss_label_camera)
             }
@@ -76,6 +77,7 @@ class SelectPhotoImageAdapter constructor(
                 val cameraViewHolder = viewHolder as CameraViewHolder
 
                 cameraViewHolder.itemView.setOnClickListener { v -> onGalleryItemClickListener.onFolderItemClick() }
+                cameraViewHolder.itemView.folderName.isAllCaps = Gallery.galleryConfig.textAllCaps
                 cameraViewHolder.itemView.folderName.text =
                     viewHolder.itemView.context.getString(R.string.oss_label_folder)
                 cameraViewHolder.itemView.img.setImageResource(R.drawable.oss_media_ic_folder_icon)
@@ -132,15 +134,12 @@ class SelectPhotoImageAdapter constructor(
     }
 
     private fun setSelectedPhoto(photoViewHolder: PhotoViewHolder) {
-        if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover) {
-            photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
-            photoViewHolder.itemView.imgCoverText.text = "Cover"
-        } else {
-            photoViewHolder.itemView.imgCoverText.visibility = View.GONE
-        }
         if (Gallery.galleryConfig.photoTag.shouldShowPhotoTag) {
             photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
             photoViewHolder.itemView.imgCoverText.text = Gallery.galleryConfig.photoTag.photoTagText
+        } else if (listCurrentPhotos.indexOf(photoViewHolder.photoFile) == 0 && Gallery.galleryConfig.needToShowCover.shouldShowPhotoTag) {
+            photoViewHolder.itemView.imgCoverText.visibility = View.VISIBLE
+            photoViewHolder.itemView.imgCoverText.text = Gallery.galleryConfig.needToShowCover.photoTagText
         } else {
             photoViewHolder.itemView.imgCoverText.visibility = View.GONE
         }

@@ -54,7 +54,8 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
                 photos.add(photo)
             } while (cursor.moveToNext())
             listOfGalleryItems.clear()
-            listOfGalleryItems.add(CameraItem())
+            if (needToAddCameraView())
+                listOfGalleryItems.add(CameraItem())
             if (needToAddFolderView())
                 listOfGalleryItems.add(PhotoAlbum.dummyInstance)
             listOfGalleryItems.addAll(getFinalListOfGalleryItems(photos))
@@ -91,7 +92,12 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
 
     private fun needToAddFolderView(): Boolean {
         return (galleryConfig.typeOfMediaSupported == GalleryConfig.MediaType.PhotoWithFolderOnly
-                || galleryConfig.typeOfMediaSupported == GalleryConfig.MediaType.PhotoWithFolderAndVideo)
+                || galleryConfig.typeOfMediaSupported == GalleryConfig.MediaType.PhotoWithFolderAndVideo
+                || galleryConfig.typeOfMediaSupported == GalleryConfig.MediaType.PhotoWithoutCameraFolderOnly)
+    }
+
+    private fun needToAddCameraView(): Boolean {
+        return (galleryConfig.typeOfMediaSupported != GalleryConfig.MediaType.PhotoWithoutCameraFolderOnly)
     }
 
 

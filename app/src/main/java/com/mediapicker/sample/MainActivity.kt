@@ -9,12 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
-import com.mediapicker.gallery.domain.entity.PhotoFile
-import com.mediapicker.gallery.domain.entity.PhotoTag
-import com.mediapicker.gallery.domain.entity.Rule
-import com.mediapicker.gallery.domain.entity.Validation
-import com.mediapicker.gallery.presentation.fragments.DefaultPage
+import com.mediapicker.gallery.domain.entity.*
 import com.mediapicker.gallery.presentation.fragments.HomeFragment
+import com.mediapicker.gallery.presentation.utils.DefaultPage
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -34,8 +31,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun getValidation(): Validation {
         return Validation.ValidationBuilder()
-            .setMinPhotoSelection(Rule.MinPhotoSelection(1, "Minimum 0 photos can be selected "))
-            .setMaxPhotoSelection(Rule.MaxPhotoSelection(2, "Maximum 2 photos can be selected "))
+            .setMinPhotoSelection(Rule.MinPhotoSelection(1, "Minimum 1 photos can be selected "))
+            .setMaxPhotoSelection(Rule.MaxPhotoSelection(5, "Maximum 5 photos can be selected "))
             .build()
     }
 
@@ -43,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val galleryConfig = GalleryConfig.GalleryConfigBuilder(applicationContext, BuildConfig.APPLICATION_ID + ".provider", MyClientGalleryCommunicator())
             .useMyPhotoCamera(true)
             .useMyVideoCamera(false)
-            .needToShowCover(false)
+            .needToShowPreviewCarousal(CarousalConfig(true, 0, true, 0))
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
             .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderOnly)
             .validation(getValidation())
@@ -154,18 +151,20 @@ class MainActivity : AppCompatActivity() {
 
 
 object SelectedItemHolder {
-    var listOfSelectedPhotos = mutableListOf<PhotoFile>().apply {
-        val builder= PhotoFile.Builder()
-        builder.apolloKey = "11111"
-        builder.imageId = 25
-        builder.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
-        this.add(builder.build())
+    var listOfSelectedPhotos = emptyList<PhotoFile>()
+
+//    var listOfSelectedPhotos = mutableListOf<PhotoFile>().apply {
+//        val builder= PhotoFile.Builder()
+//        builder.apolloKey = "11111"
+//        builder.imageId = 25
+//        builder.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
+//        this.add(builder.build())
 
      /*   val builder1 = PhotoFile.Builder()
         builder1.apolloKey = "11112"
         builder1.imageId = 20
         builder1.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
         this.add(builder1.build())*/
-    }
+//    }
     var listOfSelectedVideos = emptyList<VideoFile>()
 }

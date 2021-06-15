@@ -153,7 +153,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
                 return true
             }
         } else {
-            showMsg(bridgeViewModel.getMaxLimitErrorResponse())
+            bridgeViewModel.getError().postValue(bridgeViewModel.getMaxLimitErrorResponse())
         }
         return false
     }
@@ -172,6 +172,8 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         if (!currentSelectedPhotos.containsPhoto(photo)) {
             currentSelectedPhotos.add(photo)
             listCurrentPhotos.add(photo)
+            Gallery.pagerCommunicator?.onItemClicked(photo, true)
+            Gallery.carousalActionListener?.onItemClicked(photo, true)
             updateData(position)
         }
     }
@@ -202,6 +204,8 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         if (currentSelectedPhotos.containsPhoto(photo)) {
             currentSelectedPhotos.removePhoto(photo)
             removeFromList(photo)
+            Gallery.pagerCommunicator?.onItemClicked(photo, false)
+            Gallery.carousalActionListener?.onItemClicked(photo, false)
             updateData(position)
         }
     }
@@ -229,6 +233,8 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     fun onImageAdded(fragmentName: String, photo: PhotoFile): Boolean {
         addItem(photo)
+        Gallery.pagerCommunicator?.onItemClicked(photo, true)
+        Gallery.carousalActionListener?.onItemClicked(photo, true)
         //trackingService.postingPictureComplete()
         return true
     }
@@ -316,6 +322,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         listCurrentPhotos.addAll(currentSelectedPhotos)
 
         galleryItemAdapter.notifyDataSetChanged()
+        Gallery.pagerCommunicator?.onPreviewItemsUpdated(listCurrentPhotos)
     }
 
 }
