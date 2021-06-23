@@ -1,5 +1,6 @@
 package com.mediapicker.gallery.presentation.fragments
 
+import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mediapicker.gallery.Gallery
@@ -28,7 +29,8 @@ class FolderViewFragment : BaseGalleryViewFragment(), OnItemClickListener<PhotoA
 
     private fun setAlbumData(setOfAlbum: HashSet<PhotoAlbum>) {
         adapter.apply {
-            this.listOfFolders = mutableListOf<PhotoAlbum>().apply { this.addAll(setOfAlbum) }
+            var albumList=mutableListOf<PhotoAlbum>().apply { this.addAll(setOfAlbum) }
+            this.listOfFolders = albumList.sortedBy { it.name }
             notifyDataSetChanged()
         }
     }
