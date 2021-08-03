@@ -26,7 +26,10 @@ object Gallery {
     fun clean() {
         pagerCommunicator = null
         carousalActionListener = null
-        galleryConfig.galleryCommunicator = null
+
+        if (this::galleryConfig.isInitialized) {
+            galleryConfig.galleryCommunicator = null
+        }
     }
 
 }
