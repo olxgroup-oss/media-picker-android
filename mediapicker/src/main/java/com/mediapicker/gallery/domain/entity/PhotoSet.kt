@@ -62,16 +62,14 @@ open class PhotoSet : Serializable {
 
     fun getPhoto(size: PhotoSize): Photo? {
         var photo: Photo? = null
-        when (size) {
-            PhotoSize.SMALL -> photo = this.smallPhoto
-            PhotoSize.MEDIUM -> photo = this.mediumPhoto
-            PhotoSize.BIG -> photo = this.bigPhoto
+        photo = when (size) {
+            PhotoSize.SMALL -> this.smallPhoto
+            PhotoSize.MEDIUM -> this.mediumPhoto
+            PhotoSize.BIG -> this.bigPhoto
             PhotoSize.FULL -> if (full == null) {
-                photo = this.backgroundPhoto
+                this.backgroundPhoto
             } else {
-                photo = this.full
-            }
-            else -> {
+                this.full
             }
         }
         return photo

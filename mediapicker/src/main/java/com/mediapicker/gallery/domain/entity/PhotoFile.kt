@@ -67,7 +67,7 @@ class PhotoFile : Serializable, IGalleryItem {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
         val that = o as PhotoFile?
-        if(this.imageId == 0L || that!!.imageId == 0L){
+        if (this.imageId == 0L || that!!.imageId == 0L) {
             return this.path == that!!.path
         }
         return this.imageId == that!!.imageId

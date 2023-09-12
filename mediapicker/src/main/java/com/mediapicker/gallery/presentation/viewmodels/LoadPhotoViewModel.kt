@@ -120,8 +120,8 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
 
 
     private fun getPhoto(cursor: Cursor): PhotoFile {
-        val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
-        val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+        val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
+        val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
         val col = cursor.getColumnIndex(COL_FULL_PHOTO_URL)
         var fullPhotoUrl = ""
         if (col != -1) {

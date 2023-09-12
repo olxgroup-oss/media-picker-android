@@ -25,10 +25,30 @@ data class Validation(val rules: List<Rule>) {
 
     class ValidationBuilder {
         private val rule = HashSet<Rule>().apply {
-            this.add(Rule.MinVideoSelection(minSelectionLimit = 0, message = "Please select at least one video"))
-            this.add(Rule.MaxVideoSelection(maxSelectionLimit = 2, message = "Max video selection limit reached"))
-            this.add(Rule.MinPhotoSelection(minSelectionLimit = 1, message = "Please select at least one photo"))
-            this.add(Rule.MaxPhotoSelection(maxSelectionLimit = 4, message = "Max Photo Limit Reached "))
+            this.add(
+                Rule.MinVideoSelection(
+                    minSelectionLimit = 0,
+                    message = "Please select at least one video"
+                )
+            )
+            this.add(
+                Rule.MaxVideoSelection(
+                    maxSelectionLimit = 2,
+                    message = "Max video selection limit reached"
+                )
+            )
+            this.add(
+                Rule.MinPhotoSelection(
+                    minSelectionLimit = 1,
+                    message = "Please select at least one photo"
+                )
+            )
+            this.add(
+                Rule.MaxPhotoSelection(
+                    maxSelectionLimit = 4,
+                    message = "Max Photo Limit Reached "
+                )
+            )
             this.add(Rule.MinHeight("Image is too small (min. is 100x100 px).", "100"))
             this.add(Rule.MinWidth("Image is too small (min. is 100x100 px).", "100"))
             this.add(Rule.MaxRatio("Image is too small (min. is 100x100 px).", "100"))
@@ -92,11 +112,24 @@ data class Validation(val rules: List<Rule>) {
 
 
 sealed class Rule(private val id: Int, open val message: String, open val value: String) {
-    data class MinVideoSelection(val minSelectionLimit: Int, override val message: String) : Rule(1, message, "")
-    data class MaxVideoSelection(val maxSelectionLimit: Int, override val message: String) : Rule(2, message, "")
-    data class MinPhotoSelection(val minSelectionLimit: Int, override val message: String) : Rule(3, message, "")
-    data class MaxPhotoSelection(val maxSelectionLimit: Int, override val message: String) : Rule(4, message, "")
-    data class MinWidth(override val message: String, override val value: String) : Rule(5, message, value)
-    data class MinHeight(override val message: String, override val value: String) : Rule(6, message, value)
-    data class MaxRatio(override val message: String, override val value: String) : Rule(7, message, value)
+    data class MinVideoSelection(val minSelectionLimit: Int, override val message: String) :
+        Rule(1, message, "")
+
+    data class MaxVideoSelection(val maxSelectionLimit: Int, override val message: String) :
+        Rule(2, message, "")
+
+    data class MinPhotoSelection(val minSelectionLimit: Int, override val message: String) :
+        Rule(3, message, "")
+
+    data class MaxPhotoSelection(val maxSelectionLimit: Int, override val message: String) :
+        Rule(4, message, "")
+
+    data class MinWidth(override val message: String, override val value: String) :
+        Rule(5, message, value)
+
+    data class MinHeight(override val message: String, override val value: String) :
+        Rule(6, message, value)
+
+    data class MaxRatio(override val message: String, override val value: String) :
+        Rule(7, message, value)
 }

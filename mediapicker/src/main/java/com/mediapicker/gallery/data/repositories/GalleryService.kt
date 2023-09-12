@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import android.util.Log
 import android.webkit.MimeTypeMap
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
 import com.mediapicker.gallery.domain.entity.PhotoFile
@@ -29,11 +28,15 @@ open class GalleryService(private val applicationContext: Context) : GalleryRepo
         val selection = MediaStore.Images.Media.MIME_TYPE + "!=?"
         val mimeTypeGif = MimeTypeMap.getSingleton().getMimeTypeFromExtension("gif")
         val selectionTypeGifArgs = arrayOf(mimeTypeGif)
-        val cursor = MediaStore.Images.Media.query(
-            applicationContext.contentResolver,
+        val cursor = applicationContext.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, selection, selectionTypeGifArgs,
             MediaStore.Images.Media.DATE_ADDED + " DESC"
         )
+//        val cursor = MediaStore.Images.Media.query(
+//            applicationContext.contentResolver,
+//            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, selection, selectionTypeGifArgs,
+//            MediaStore.Images.Media.DATE_ADDED + " DESC"
+//        )
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 val album = getAlbumEntry(cursor)
@@ -59,19 +62,19 @@ open class GalleryService(private val applicationContext: Context) : GalleryRepo
         val albumIdIndex = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_ID)
 
         val albumNameIndex = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
-        if (albumIdIndex != -1 && albumNameIndex != -1) {
+        return if (albumIdIndex != -1 && albumNameIndex != -1) {
             val id = cursor.getInt(albumIdIndex)
             val name = cursor.getString(albumNameIndex)
-            return PhotoAlbum(id.toString(), name)
+            PhotoAlbum(id.toString(), name)
         } else {
-            return null
+            null
         }
 
     }
 
     private fun getPhoto(cursor: Cursor): PhotoFile {
-        val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
-        val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+        val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
+        val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
         val col = cursor.getColumnIndex(COL_FULL_PHOTO_URL)
         var fullPhotoUrl = ""
         if (col != -1) {

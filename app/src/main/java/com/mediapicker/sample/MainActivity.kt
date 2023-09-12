@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             .useMyVideoCamera(false)
             .needToShowPreviewCarousal(CarousalConfig(true, 0, true, 0))
             .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
-            .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderOnly)
+            .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderAndVideo)
             .validation(getValidation())
             .photoTag( PhotoTag(true,"RC photo"))
             .build()

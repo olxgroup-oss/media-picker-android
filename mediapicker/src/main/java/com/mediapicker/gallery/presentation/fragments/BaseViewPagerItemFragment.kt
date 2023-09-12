@@ -19,14 +19,21 @@ abstract class BaseViewPagerItemFragment : BaseFragment() {
 
     var pageTitle = ""
 
-    protected val bridgeViewModel : BridgeViewModel by lazy {
-        getActivityScopedViewModel{ BridgeViewModel(emptyList(), emptyList(),Gallery.galleryConfig) }
+    protected val bridgeViewModel: BridgeViewModel by lazy {
+        getActivityScopedViewModel {
+            BridgeViewModel(
+                emptyList(),
+                emptyList(),
+                Gallery.galleryConfig
+            )
+        }
     }
 
     override fun initViewModels() {
         super.initViewModels()
         bridgeViewModel.getMediaStateLiveData().observe(this, Observer { reloadMedia() })
-        getBaseLoadMediaViewModel().getLoadingState().observe(this, Observer { handleLoadingState(it) })
+        getBaseLoadMediaViewModel().getLoadingState()
+            .observe(this, Observer { handleLoadingState(it) })
     }
 
     override fun setUpViews() {
@@ -45,9 +52,9 @@ abstract class BaseViewPagerItemFragment : BaseFragment() {
 
     override fun getLayoutId() = R.layout.oss_fragment_gallery
 
-    abstract fun getBaseLoadMediaViewModel() : BaseLoadMediaViewModel
+    abstract fun getBaseLoadMediaViewModel(): BaseLoadMediaViewModel
 
-    protected open fun reloadMedia(){
+    protected open fun reloadMedia() {
         getBaseLoadMediaViewModel().loadMedia(this)
     }
 
@@ -55,6 +62,9 @@ abstract class BaseViewPagerItemFragment : BaseFragment() {
         when (stateData) {
             StateData.SUCCESS -> hideProgressBar()
             StateData.LOADING -> showProgressBar()
+            else -> {
+                hideProgressBar()
+            }
         }
     }
 
@@ -68,7 +78,7 @@ abstract class BaseViewPagerItemFragment : BaseFragment() {
         ossRecycleView.visibility = View.GONE
     }
 
-    protected open fun showMsg(msg : String){
+    protected open fun showMsg(msg: String) {
         SnackbarUtils.show(view, msg, Snackbar.LENGTH_LONG)
     }
 

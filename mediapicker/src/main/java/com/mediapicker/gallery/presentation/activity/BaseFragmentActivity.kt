@@ -8,8 +8,6 @@ import com.mediapicker.gallery.presentation.fragments.BaseFragment
 import kotlinx.android.synthetic.main.oss_base_fragment_activity.*
 
 abstract class BaseFragmentActivity : AppCompatActivity() {
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayout())
