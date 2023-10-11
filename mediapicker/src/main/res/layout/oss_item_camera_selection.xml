@@ -14,7 +14,7 @@
         android:layout_height="32dp"
         android:layout_gravity="center_vertical|center_horizontal"
         android:scaleType="fitCenter"
-        android:tint="#FFFFFF"
+        app:tint="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@id/folderName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -113,12 +114,11 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
         isExpectingNewPhoto = true
         val lastRequestFileToSave = FileUtils.getNewPhotoFileOnPicturesDirectory()
-        val fileUri: Uri
-        fileUri = if (android.text.TextUtils.isEmpty(Gallery.getClientAuthority())) {
+        val fileUri: Uri = if (android.text.TextUtils.isEmpty(Gallery.getClientAuthority())) {
             Uri.fromFile(lastRequestFileToSave)
         } else {
             FileProvider.getUriForFile(
-                context!!,
+                requireContext(),
                 Gallery.getClientAuthority(),
                 lastRequestFileToSave
             )
@@ -258,7 +258,14 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == PHOTO_SELECTION_REQUEST_CODE) run {
             val finalSelectionFromFolders =
-                data?.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PhotoFile>
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    data?.getSerializableExtra(
+                        EXTRA_SELECTED_PHOTO,
+                        LinkedHashSet::class.java
+                    ) as LinkedHashSet<PhotoFile>
+                } else {
+                    data?.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PhotoFile>
+                }
             setSelectedFromFolderAndNotify(finalSelectionFromFolders)
         } else if (requestCode == TAKING_PHOTO) {
             if (resultCode == Activity.RESULT_OK) {

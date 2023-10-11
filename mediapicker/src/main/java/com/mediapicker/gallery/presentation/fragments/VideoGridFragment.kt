@@ -27,7 +27,7 @@ class VideoGridFragment : BaseViewPagerItemFragment(), OnItemClickListener {
     }
 
     private val adapter: SelectVideoAdapter by lazy {
-        SelectVideoAdapter(context!!, listOf(), listOfSelectedVideos, this)
+        SelectVideoAdapter(requireContext(), listOf(), listOfSelectedVideos, this)
     }
 
     private val listOfSelectedVideos: MutableList<VideoFile> by lazy {
