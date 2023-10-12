@@ -1,7 +1,8 @@
 package com.mediapicker.gallery.presentation.fragments
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -20,13 +21,10 @@ import com.mediapicker.gallery.presentation.viewmodels.HomeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.utils.SnackbarUtils
 import kotlinx.android.synthetic.main.oss_fragment_main.*
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.OnNeverAskAgain
-import permissions.dispatcher.OnPermissionDenied
-import permissions.dispatcher.RuntimePermissions
+import permissions.dispatcher.ktx.PermissionsRequester
+import permissions.dispatcher.ktx.constructPermissionsRequest
 import java.io.Serializable
 
-@RuntimePermissions
 open class HomeFragment : BaseFragment() {
 
     private val homeViewModel: HomeViewModel by lazy {
@@ -47,41 +45,80 @@ open class HomeFragment : BaseFragment() {
         getPageFromArguments()
     }
 
+    private lateinit var permissionsRequester: PermissionsRequester
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        permissionsRequester = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            constructPermissionsRequest(
+                permissions = arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO
+                ),
+                onPermissionDenied = ::onPermissionDenied,
+                onNeverAskAgain = ::showNeverAskAgainPermission,
+                requiresPermission = ::checkPermissions
+            )
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            constructPermissionsRequest(
+                permissions = arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
+                onPermissionDenied = ::onPermissionDenied,
+                onNeverAskAgain = ::showNeverAskAgainPermission,
+                requiresPermission = ::checkPermissions
+            )
+        } else {
+            constructPermissionsRequest(
+                permissions = arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                onPermissionDenied = ::onPermissionDenied,
+                onNeverAskAgain = ::showNeverAskAgainPermission,
+                requiresPermission = ::checkPermissions
+            )
+        }
+    }
+
 
     override fun getLayoutId() = R.layout.oss_fragment_main
 
-    override fun getScreenTitle() = if(Gallery.galleryConfig.galleryLabels.homeTitle.isNotBlank())
+    override fun getScreenTitle() = if (Gallery.galleryConfig.galleryLabels.homeTitle.isNotBlank())
         Gallery.galleryConfig.galleryLabels.homeTitle
     else
         getString(R.string.oss_title_home_screen)
 
     override fun setUpViews() {
-        checkPermissionsWithPermissionCheck()
-        action_button.text = if(Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
+        action_button.text = if (Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
             Gallery.galleryConfig.galleryLabels.homeAction
         else
             getString(R.string.oss_posting_next)
+
+        permissionsRequester.launch()
     }
 
-    @NeedsPermission(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
     fun checkPermissions() {
         when (homeViewModel.getMediaType()) {
             GalleryConfig.MediaType.PhotoOnly -> {
                 setUpWithOutTabLayout()
             }
+
             GalleryConfig.MediaType.PhotoWithFolderOnly -> {
                 setUpWithOutTabLayout()
             }
+
             GalleryConfig.MediaType.PhotoWithFolderAndVideo -> {
                 setUpWithTabLayout()
             }
+
             GalleryConfig.MediaType.PhotoWithVideo -> {
                 setUpWithTabLayout()
             }
+
             GalleryConfig.MediaType.PhotoWithoutCameraFolderOnly -> {
                 setUpWithOutTabLayout()
             }
@@ -91,38 +128,14 @@ open class HomeFragment : BaseFragment() {
         action_button.setOnClickListener { onActionButtonClicked() }
     }
 
-
-    //todo change this logic
-    @OnPermissionDenied(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
     fun onPermissionDenied() {
         // activity?.supportFragmentManager?.popBackStack()
         Gallery.galleryConfig.galleryCommunicator?.onPermissionDenied()
     }
 
-
-
-    @OnNeverAskAgain(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
     fun showNeverAskAgainPermission() {
         //. Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
         Gallery.galleryConfig.galleryCommunicator?.onNeverAskPermissionAgain()
-    }
-
-    @SuppressLint("NeedOnRequestPermissionsResult")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        onRequestPermissionsResult(requestCode, grantResults)
     }
 
     override fun initViewModels() {
@@ -133,7 +146,7 @@ open class HomeFragment : BaseFragment() {
     }
 
     private fun closeIfHostingOnActivity() {
-        if(requireActivity() is GalleryActivity){
+        if (requireActivity() is GalleryActivity) {
             requireActivity().finish()
         }
     }
