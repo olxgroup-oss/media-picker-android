@@ -1,8 +1,9 @@
 package com.mediapicker.gallery.presentation.fragments
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -29,14 +30,11 @@ import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.utils.SnackbarUtils
 import kotlinx.android.synthetic.main.oss_custom_toolbar.*
 import kotlinx.android.synthetic.main.oss_fragment_carousal.*
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.OnNeverAskAgain
-import permissions.dispatcher.OnPermissionDenied
-import permissions.dispatcher.RuntimePermissions
+import permissions.dispatcher.ktx.PermissionsRequester
+import permissions.dispatcher.ktx.constructPermissionsRequest
 import java.io.Serializable
 import java.util.*
 
-@RuntimePermissions
 open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     MediaGalleryView.OnGalleryItemClickListener {
 
@@ -60,19 +58,56 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
         getPageFromArguments()
     }
 
+    private lateinit var permissionsRequester: PermissionsRequester
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        permissionsRequester = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            constructPermissionsRequest(
+                permissions = arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO
+                ),
+                onPermissionDenied = ::onPermissionDenied,
+                onNeverAskAgain = ::showNeverAskAgainPermission,
+                requiresPermission = ::checkPermissions
+            )
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            constructPermissionsRequest(
+                permissions = arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
+                onPermissionDenied = ::onPermissionDenied,
+                onNeverAskAgain = ::showNeverAskAgainPermission,
+                requiresPermission = ::checkPermissions
+            )
+        } else {
+            constructPermissionsRequest(
+                permissions = arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                onPermissionDenied = ::onPermissionDenied,
+                onNeverAskAgain = ::showNeverAskAgainPermission,
+                requiresPermission = ::checkPermissions
+            )
+        }
+    }
+
 
     override fun getLayoutId() = R.layout.oss_fragment_carousal
 
-    override fun getScreenTitle() = if(Gallery.galleryConfig.galleryLabels.homeTitle.isNotBlank())
+    override fun getScreenTitle() = if (Gallery.galleryConfig.galleryLabels.homeTitle.isNotBlank())
         Gallery.galleryConfig.galleryLabels.homeTitle
     else
         getString(R.string.oss_title_home_screen)
 
     override fun setUpViews() {
-        checkPermissionsWithPermissionCheck()
         Gallery.pagerCommunicator = this
 
-        if(Gallery.galleryConfig.showPreviewCarousal.showCarousal) {
+        if (Gallery.galleryConfig.showPreviewCarousal.showCarousal) {
             mediaGalleryViewContainer.visibility = View.VISIBLE
             mediaGalleryView.setOnGalleryClickListener(this)
             if (Gallery.galleryConfig.showPreviewCarousal.imageId != 0) {
@@ -85,28 +120,28 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
 
         toolbarTitle.isAllCaps = Gallery.galleryConfig.textAllCaps
         action_button.isAllCaps = Gallery.galleryConfig.textAllCaps
-        action_button.text = if(Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
+        action_button.text = if (Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
             Gallery.galleryConfig.galleryLabels.homeAction
         else
             getString(R.string.oss_posting_next)
+
+        permissionsRequester.launch()
     }
 
-    @NeedsPermission(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
     fun checkPermissions() {
         when (homeViewModel.getMediaType()) {
             GalleryConfig.MediaType.PhotoOnly -> {
                 setUpWithOutTabLayout()
             }
+
             GalleryConfig.MediaType.PhotoWithFolderOnly -> {
                 setUpWithOutTabLayout()
             }
+
             GalleryConfig.MediaType.PhotoWithoutCameraFolderOnly -> {
                 setUpWithOutTabLayout()
             }
+
             else -> {
                 setUpWithOutTabLayout()
             }
@@ -116,15 +151,8 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
         action_button.setOnClickListener { onActionButtonClicked() }
     }
 
-
-    //todo change this logic
-    @OnPermissionDenied(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
     fun onPermissionDenied() {
-       // activity?.supportFragmentManager?.popBackStack()
+        // activity?.supportFragmentManager?.popBackStack()
         Gallery.galleryConfig.galleryCommunicator?.onPermissionDenied()
     }
 
@@ -136,24 +164,9 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
         mediaGalleryView.removeMediaFromPager(mediaGalleryEntity)
     }
 
-    @OnNeverAskAgain(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
     fun showNeverAskAgainPermission() {
-       //. Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
+        //. Toast.makeText(context, R.string.oss_permissions_denied_attach_image, Toast.LENGTH_LONG).show()
         Gallery.galleryConfig.galleryCommunicator?.onNeverAskPermissionAgain()
-    }
-
-    @SuppressLint("NeedOnRequestPermissionsResult")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        onRequestPermissionsResult(requestCode, grantResults)
     }
 
     override fun initViewModels() {
@@ -164,8 +177,8 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     private fun closeIfHostingOnActivity() {
-        if(requireActivity() is GalleryActivity){
-           requireActivity().finish()
+        if (requireActivity() is GalleryActivity) {
+            requireActivity().finish()
         }
     }
 
@@ -268,11 +281,11 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
 
     override fun onItemClicked(photoFile: PhotoFile, isSelected: Boolean) {
         if (isSelected) {
-            if(Gallery.galleryConfig.showPreviewCarousal.addImage) {
+            if (Gallery.galleryConfig.showPreviewCarousal.addImage) {
                 addMediaForPager(getMediaEntity(photoFile))
             }
         } else {
-            if(Gallery.galleryConfig.showPreviewCarousal.addImage) {
+            if (Gallery.galleryConfig.showPreviewCarousal.addImage) {
                 removeMediaFromPager(getMediaEntity(photoFile))
             }
         }
@@ -303,7 +316,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     override fun onPreviewItemsUpdated(listOfSelectedPhotos: List<PhotoFile>) {
-        if(Gallery.galleryConfig.showPreviewCarousal.addImage) {
+        if (Gallery.galleryConfig.showPreviewCarousal.addImage) {
             mediaGalleryView.setImagesForPager(convertPhotoFileToMediaGallery(listOfSelectedPhotos))
         }
     }

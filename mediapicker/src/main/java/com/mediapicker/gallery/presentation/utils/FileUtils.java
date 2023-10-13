@@ -21,7 +21,7 @@ public class FileUtils {
         int index = 0;
 
         while (tempFile == null || tempFile.exists()) {
-            String imageName = generateFileNameBaseOnTimeWihtoutExt(IMAGE_BASE_NAME, index) + IMAGE_EXTENSION;
+            String imageName = generateFileNameBaseOnTimeWithoutExt(IMAGE_BASE_NAME, index) + IMAGE_EXTENSION;
             tempFile = new File(externalStorageDirectory, imageName);
 
             index++;
@@ -45,7 +45,7 @@ public class FileUtils {
         int index = 0;
 
         while (tempFile == null || tempFile.exists()) {
-            String imageName = generateFileNameBaseOnTimeWihtoutExt(IMAGE_BASE_NAME, index) + IMAGE_EXTENSION;
+            String imageName = generateFileNameBaseOnTimeWithoutExt(IMAGE_BASE_NAME, index) + IMAGE_EXTENSION;
             tempFile = new File(externalStorageDirectory + INTERNAL_PHOTO_PATH, imageName);
 
             index++;
@@ -54,7 +54,7 @@ public class FileUtils {
         return tempFile;
     }
 
-    public static String generateFileNameBaseOnTimeWihtoutExt(String base, int index) {
+    public static String generateFileNameBaseOnTimeWithoutExt(String base, int index) {
         StringBuilder fileName = new StringBuilder();
         fileName.append(base);
         fileName.append("_");
