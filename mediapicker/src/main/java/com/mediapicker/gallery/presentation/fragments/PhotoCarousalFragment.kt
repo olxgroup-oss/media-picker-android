@@ -72,7 +72,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
                 onNeverAskAgain = ::showNeverAskAgainPermission,
                 requiresPermission = ::checkPermissions
             )
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
             constructPermissionsRequest(
                 permissions = arrayOf(
                     Manifest.permission.CAMERA,
