@@ -1,11 +1,12 @@
 package com.mediapicker.gallery.presentation.fragments
 
 import android.app.Activity
+import com.mediapicker.gallery.databinding.OssFragmentFolderViewBinding
 import com.mediapicker.gallery.presentation.activity.GalleryActionListener
-import kotlinx.android.synthetic.main.oss_fragment_folder_view.*
 
 abstract class BaseGalleryViewFragment : BaseFragment() {
 
+    private var ossFragmentFolderViewBinding: OssFragmentFolderViewBinding? = null
 
     protected var galleryActionListener: GalleryActionListener? = null
 
@@ -17,7 +18,8 @@ abstract class BaseGalleryViewFragment : BaseFragment() {
     }
 
     override fun setUpViews() {
-        actionButton.setOnClickListener { onActionButtonClick() }
+        ossFragmentFolderViewBinding = getChildView()?.let { OssFragmentFolderViewBinding.bind(it) }
+        ossFragmentFolderViewBinding?.actionButton?.setOnClickListener { onActionButtonClick() }
     }
 
     open fun onActionButtonClick() {}

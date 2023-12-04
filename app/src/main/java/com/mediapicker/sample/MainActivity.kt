@@ -9,22 +9,30 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
-import com.mediapicker.gallery.domain.entity.*
+import com.mediapicker.gallery.domain.entity.CarousalConfig
+import com.mediapicker.gallery.domain.entity.GalleryLabels
+import com.mediapicker.gallery.domain.entity.PhotoFile
+import com.mediapicker.gallery.domain.entity.PhotoTag
+import com.mediapicker.gallery.domain.entity.Rule
+import com.mediapicker.gallery.domain.entity.Validation
 import com.mediapicker.gallery.presentation.fragments.HomeFragment
+import com.mediapicker.gallery.presentation.fragments.PhotoCarousalFragment
 import com.mediapicker.gallery.presentation.utils.DefaultPage
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
-import kotlinx.android.synthetic.main.activity_main.*
+import com.mediapicker.sample.databinding.ActivityMainBinding
 import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_VIDEO_CAPTURE: Int = 1000
-    private var fragment: HomeFragment? = null
+    private var fragment: PhotoCarousalFragment? = null
+    private lateinit var activityMainBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(activityMainBinding.root)
         setUpGallery()
         showStepFragment()
     }
@@ -36,28 +44,48 @@ class MainActivity : AppCompatActivity() {
             .build()
     }
 
-    private fun setUpGallery(){
-        val galleryConfig = GalleryConfig.GalleryConfigBuilder(applicationContext, BuildConfig.APPLICATION_ID + ".provider", MyClientGalleryCommunicator())
+    private fun setUpGallery() {
+        val galleryConfig = GalleryConfig.GalleryConfigBuilder(
+            applicationContext,
+            BuildConfig.APPLICATION_ID + ".provider",
+            MyClientGalleryCommunicator()
+        )
             .useMyPhotoCamera(true)
             .useMyVideoCamera(false)
-            .needToShowPreviewCarousal(CarousalConfig(true, 0, true, 0))
-            .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("",""))
-            .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderAndVideo)
+            .needToShowPreviewCarousal(
+                CarousalConfig(
+                    true,
+                    R.drawable.ic_launcher_foreground,
+                    true,
+                    R.string.app_name
+                )
+            )
+            .mediaScanningCriteria(GalleryConfig.MediaScanningCriteria("", ""))
+            .needToShowCover(PhotoTag(true, "Photo Tag"))
+            .setGalleryLabels(GalleryLabels(homeTitle = "Home Title", homeAction = "Home Action"))
+            .typeOfMediaSupported(GalleryConfig.MediaType.PhotoWithFolderOnly)
             .validation(getValidation())
-            .photoTag( PhotoTag(true,"RC photo"))
+            .photoTag(PhotoTag(true, "RC photo"))
             .build()
         Gallery.init(galleryConfig)
+
     }
 
     private fun attachGalleryFragment() {
         try {
             val transaction = supportFragmentManager.beginTransaction()
-            val  photos =  SelectedItemHolder.listOfSelectedPhotos
-            fragment = DemoHomeFragment.getInstance(photos,
+            val photos = SelectedItemHolder.listOfSelectedPhotos
+            fragment = PhotoCarousalFragment.getInstance(
+                photos,
                 SelectedItemHolder.listOfSelectedVideos,
                 defaultPageType = DefaultPage.PhotoPage
             )
-            transaction.replace(container.id, fragment!!, fragment!!::class.java.simpleName)
+
+//            fragment = DemoHomeFragment.getInstance(photos,
+//                SelectedItemHolder.listOfSelectedVideos,
+//                defaultPageType = DefaultPage.PhotoPage
+//            )
+            transaction.replace(activityMainBinding.container.id, fragment!!, fragment!!::class.java.simpleName)
             transaction.addToBackStack(fragment!!.javaClass.name)
             transaction.commitAllowingStateLoss()
         } catch (ex: Exception) {
@@ -66,9 +94,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun jumpToGallery() {
-       /* startActivity(GalleryActivity.getGalleryActivityIntent(SelectedItemHolder.listOfSelectedPhotos,
-            SelectedItemHolder.listOfSelectedVideos,
-            defaultPageType = DefaultPage.PhotoPage,context = baseContext))*/
+        /* startActivity(GalleryActivity.getGalleryActivityIntent(SelectedItemHolder.listOfSelectedPhotos,
+             SelectedItemHolder.listOfSelectedVideos,
+             defaultPageType = DefaultPage.PhotoPage,context = baseContext))*/
         attachGalleryFragment()
     }
 
@@ -76,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val transaction = supportFragmentManager.beginTransaction()
             val fragment = StepFragment()
-            transaction.replace(container.id, fragment, fragment::class.java.simpleName)
+            transaction.replace(activityMainBinding.container.id, fragment, fragment::class.java.simpleName)
             transaction.commitAllowingStateLoss()
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -89,7 +117,10 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        override fun actionButtonClick(listOfSelectedPhotos: List<PhotoFile>, listofSelectedVideos: List<VideoFile>) {
+        override fun actionButtonClick(
+            listOfSelectedPhotos: List<PhotoFile>,
+            listofSelectedVideos: List<VideoFile>
+        ) {
             SelectedItemHolder.listOfSelectedPhotos = listOfSelectedPhotos.toMutableList()
             SelectedItemHolder.listOfSelectedVideos = listofSelectedVideos
             showStepFragment()
@@ -116,16 +147,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun showMessage(msg: String) {
-             Toast.makeText(applicationContext,msg,Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
 
         }
 
         override fun onPermissionDenied() {
-            Toast.makeText(applicationContext,"Permission denied :(",Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Permission denied :(", Toast.LENGTH_LONG).show()
         }
 
         override fun onNeverAskPermissionAgain() {
-            Toast.makeText(applicationContext,"Permission denied :(",Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Permission denied :(", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -160,11 +191,11 @@ object SelectedItemHolder {
 //        builder.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
 //        this.add(builder.build())
 
-     /*   val builder1 = PhotoFile.Builder()
-        builder1.apolloKey = "11112"
-        builder1.imageId = 20
-        builder1.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
-        this.add(builder1.build())*/
+    /*   val builder1 = PhotoFile.Builder()
+       builder1.apolloKey = "11112"
+       builder1.imageId = 20
+       builder1.fullPhotoUrl("https://www.hackingwithswift.com/uploads/matrix.jpg")
+       this.add(builder1.build())*/
 //    }
     var listOfSelectedVideos = emptyList<VideoFile>()
 }

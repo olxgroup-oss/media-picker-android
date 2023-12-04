@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
+import com.mediapicker.gallery.databinding.OssFragmentFolderViewBinding
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.adapters.IGalleryItemClickListener
@@ -16,13 +17,12 @@ import com.mediapicker.gallery.presentation.utils.ItemDecorationAlbumColumns
 import com.mediapicker.gallery.presentation.utils.ValidatePhotos
 import com.mediapicker.gallery.presentation.utils.ValidationResult
 import com.mediapicker.gallery.utils.SnackbarUtils
-import kotlinx.android.synthetic.main.oss_custom_toolbar.*
-import kotlinx.android.synthetic.main.oss_fragment_carousal.*
-import kotlinx.android.synthetic.main.oss_fragment_folder_view.*
 
 const val COLUMNS_COUNT = 3
 
 class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
+
+    private var ossFragmentFolderViewBinding: OssFragmentFolderViewBinding? = null
 
     lateinit var adapter: SelectPhotoImageAdapter
 
@@ -53,21 +53,34 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
 
     override fun setUpViews() {
         super.setUpViews()
-        photoAlbum.let { album ->
-            adapter = SelectPhotoImageAdapter(album.getAlbumEntries(), currentSelectedPhotos.toList(), galleryItemClickListener, fromGallery = false)
-        }
 
-        folderRV.apply {
-            this.addItemDecoration(ItemDecorationAlbumColumns(resources.getDimensionPixelSize(R.dimen.module_base), COLUMNS_COUNT))
-            this.layoutManager = GridLayoutManager(activity, COLUMNS_COUNT)
-            this.adapter = this@GalleryPhotoViewFragment.adapter
-        }
+        ossFragmentFolderViewBinding = getChildView()?.let { OssFragmentFolderViewBinding.bind(it) }
 
-        if (Gallery.galleryConfig.galleryLabels.galleryFolderAction.isNotBlank()) {
-            actionButton.text = Gallery.galleryConfig.galleryLabels.galleryFolderAction
+        adapter = SelectPhotoImageAdapter(
+            photoAlbum.getAlbumEntries(),
+            currentSelectedPhotos.toList(),
+            galleryItemClickListener,
+            fromGallery = false
+        )
+
+        ossFragmentFolderViewBinding?.run {
+            folderRV.apply {
+                this.addItemDecoration(
+                    ItemDecorationAlbumColumns(
+                        resources.getDimensionPixelSize(R.dimen.module_base),
+                        COLUMNS_COUNT
+                    )
+                )
+                this.layoutManager = GridLayoutManager(activity, COLUMNS_COUNT)
+                this.adapter = this@GalleryPhotoViewFragment.adapter
+            }
+
+            if (Gallery.galleryConfig.galleryLabels.galleryFolderAction.isNotBlank()) {
+                actionButton.text = Gallery.galleryConfig.galleryLabels.galleryFolderAction
+            }
+            capitaliseToolbarTitle(Gallery.galleryConfig.textAllCaps)
+            actionButton.isAllCaps = Gallery.galleryConfig.textAllCaps
         }
-        toolbarTitle.isAllCaps = Gallery.galleryConfig.textAllCaps
-        actionButton.isAllCaps = Gallery.galleryConfig.textAllCaps
     }
 
     @SuppressLint("CheckResult")
@@ -80,13 +93,15 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
     }
 
     private fun validateNewPhoto(photo: PhotoFile, position: Int) {
-        when(val validationResult = photoValidationAction.canAddThisToList(currentSelectedPhotos.size, photo)){
+        when (val validationResult =
+            photoValidationAction.canAddThisToList(currentSelectedPhotos.size, photo)) {
             is ValidationResult.Success -> {
                 galleryActionListener?.onPhotoSelected(photo)
                 Gallery.carousalActionListener?.onItemClicked(photo, true)
                 adapter.listCurrentPhotos = currentSelectedPhotos.toList()
                 adapter.notifyDataSetChanged()
             }
+
             is ValidationResult.Failure -> {
                 var msg = validationResult.msg
                 showError(msg)
@@ -117,7 +132,10 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
     }
 
     companion object {
-        fun getInstance(photoAlbum: PhotoAlbum, currentSelectedPhotos: java.util.LinkedHashSet<PhotoFile>) = GalleryPhotoViewFragment().apply {
+        fun getInstance(
+            photoAlbum: PhotoAlbum,
+            currentSelectedPhotos: java.util.LinkedHashSet<PhotoFile>
+        ) = GalleryPhotoViewFragment().apply {
             arguments = Bundle().apply {
                 this.putSerializable(EXTRA_SELECTED_ALBUM, photoAlbum)
                 this.putSerializable(EXTRA_SELECTED_PHOTO, currentSelectedPhotos)

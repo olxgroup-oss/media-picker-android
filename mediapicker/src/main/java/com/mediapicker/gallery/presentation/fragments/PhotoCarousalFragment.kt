@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.R
+import com.mediapicker.gallery.databinding.OssFragmentCarousalBinding
 import com.mediapicker.gallery.domain.contract.GalleryPagerCommunicator
 import com.mediapicker.gallery.domain.entity.GalleryViewMediaType
 import com.mediapicker.gallery.domain.entity.MediaGalleryEntity
@@ -28,8 +29,6 @@ import com.mediapicker.gallery.presentation.viewmodels.BridgeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.HomeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.utils.SnackbarUtils
-import kotlinx.android.synthetic.main.oss_custom_toolbar.*
-import kotlinx.android.synthetic.main.oss_fragment_carousal.*
 import permissions.dispatcher.ktx.PermissionsRequester
 import permissions.dispatcher.ktx.constructPermissionsRequest
 import java.io.Serializable
@@ -37,6 +36,8 @@ import java.util.*
 
 open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     MediaGalleryView.OnGalleryItemClickListener {
+
+    private var ossFragmentCarousalBinding: OssFragmentCarousalBinding? = null
 
     private val PHOTO_PREVIEW = 43475
 
@@ -105,26 +106,31 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
         getString(R.string.oss_title_home_screen)
 
     override fun setUpViews() {
+
+        ossFragmentCarousalBinding = getChildView()?.let { OssFragmentCarousalBinding.bind(it) }
+
         Gallery.pagerCommunicator = this
 
-        if (Gallery.galleryConfig.showPreviewCarousal.showCarousal) {
-            mediaGalleryViewContainer.visibility = View.VISIBLE
-            mediaGalleryView.setOnGalleryClickListener(this)
-            if (Gallery.galleryConfig.showPreviewCarousal.imageId != 0) {
-                mediaGalleryView.updateDefaultPhoto(Gallery.galleryConfig.showPreviewCarousal.imageId)
+        ossFragmentCarousalBinding?.run {
+            if (Gallery.galleryConfig.showPreviewCarousal.showCarousal) {
+                mediaGalleryViewContainer.visibility = View.VISIBLE
+                mediaGalleryView.setOnGalleryClickListener(this@PhotoCarousalFragment)
+                if (Gallery.galleryConfig.showPreviewCarousal.imageId != 0) {
+                    mediaGalleryView.updateDefaultPhoto(Gallery.galleryConfig.showPreviewCarousal.imageId)
+                }
+                if (Gallery.galleryConfig.showPreviewCarousal.previewText != 0) {
+                    mediaGalleryView.updateDefaultText(Gallery.galleryConfig.showPreviewCarousal.previewText)
+                }
             }
-            if (Gallery.galleryConfig.showPreviewCarousal.previewText != 0) {
-                mediaGalleryView.updateDefaultText(Gallery.galleryConfig.showPreviewCarousal.previewText)
-            }
+
+            capitaliseToolbarTitle(Gallery.galleryConfig.textAllCaps)
+
+            actionButton.isAllCaps = Gallery.galleryConfig.textAllCaps
+            actionButton.text = if (Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
+                Gallery.galleryConfig.galleryLabels.homeAction
+            else
+                getString(R.string.oss_posting_next)
         }
-
-        toolbarTitle.isAllCaps = Gallery.galleryConfig.textAllCaps
-        action_button.isAllCaps = Gallery.galleryConfig.textAllCaps
-        action_button.text = if (Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
-            Gallery.galleryConfig.galleryLabels.homeAction
-        else
-            getString(R.string.oss_posting_next)
-
         permissionsRequester.launch()
     }
 
@@ -147,8 +153,8 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
             }
         }
         openPage()
-        action_button.isSelected = false
-        action_button.setOnClickListener { onActionButtonClicked() }
+        ossFragmentCarousalBinding?.actionButton?.isSelected = false
+        ossFragmentCarousalBinding?.actionButton?.setOnClickListener { onActionButtonClicked() }
     }
 
     fun onPermissionDenied() {
@@ -157,11 +163,11 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     fun addMediaForPager(mediaGalleryEntity: MediaGalleryEntity) {
-        mediaGalleryView.addMediaForPager(mediaGalleryEntity)
+        ossFragmentCarousalBinding?.mediaGalleryView?.addMediaForPager(mediaGalleryEntity)
     }
 
     fun removeMediaFromPager(mediaGalleryEntity: MediaGalleryEntity) {
-        mediaGalleryView.removeMediaFromPager(mediaGalleryEntity)
+        ossFragmentCarousalBinding?.mediaGalleryView?.removeMediaFromPager(mediaGalleryEntity)
     }
 
     fun showNeverAskAgainPermission() {
@@ -185,7 +191,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     override fun setHomeAsUp() = true
 
     fun setActionButtonLabel(label: String) {
-        action_button.text = label
+        ossFragmentCarousalBinding?.actionButton?.text = label
     }
 
     fun setCarousalActionListener(carousalActionListener: CarousalActionListener?) {
@@ -198,7 +204,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     private fun changeActionButtonState(state: Boolean) {
-        action_button.isSelected = state
+        ossFragmentCarousalBinding?.actionButton?.isSelected = state
     }
 
     private fun showError(error: String) {
@@ -206,7 +212,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
     }
 
     private fun setUpWithOutTabLayout() {
-        tabLayout.visibility = View.GONE
+        ossFragmentCarousalBinding?.tabLayout?.visibility = View.GONE
         PagerAdapter(
             childFragmentManager,
             listOf(
@@ -216,15 +222,15 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
                 )
             )
         ).apply {
-            viewPager.adapter = this
+            ossFragmentCarousalBinding?.viewPager?.adapter = this
         }
     }
 
     private fun openPage() {
         if (defaultPageToOpen is DefaultPage.PhotoPage) {
-            viewPager.currentItem = 0
+            ossFragmentCarousalBinding?.viewPager?.currentItem = 0
         } else {
-            viewPager.currentItem = 1
+            ossFragmentCarousalBinding?.viewPager?.currentItem = 1
         }
     }
 
@@ -244,8 +250,8 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
                     getVideosFromArguments()
                 )
             )
-        ).apply { viewPager.adapter = this }
-        tabLayout.setupWithViewPager(viewPager)
+        ).apply { ossFragmentCarousalBinding?.viewPager?.adapter = this }
+        ossFragmentCarousalBinding?.tabLayout?.setupWithViewPager(ossFragmentCarousalBinding?.viewPager)
     }
 
 
@@ -317,7 +323,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
 
     override fun onPreviewItemsUpdated(listOfSelectedPhotos: List<PhotoFile>) {
         if (Gallery.galleryConfig.showPreviewCarousal.addImage) {
-            mediaGalleryView.setImagesForPager(convertPhotoFileToMediaGallery(listOfSelectedPhotos))
+            ossFragmentCarousalBinding?.mediaGalleryView?.setImagesForPager(convertPhotoFileToMediaGallery(listOfSelectedPhotos))
         }
     }
 
@@ -338,7 +344,7 @@ open class PhotoCarousalFragment : BaseFragment(), GalleryPagerCommunicator,
                 val bundle = data.extras
                 index = bundle!!.getInt("gallery_media_index", 0)
             }
-            mediaGalleryView.setSelectedPhoto(index)
+            ossFragmentCarousalBinding?.mediaGalleryView?.setSelectedPhoto(index)
         }
     }
 }
