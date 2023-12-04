@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mediapicker.gallery.R
+import com.mediapicker.gallery.databinding.OssItemCameraSelectionBinding
+import com.mediapicker.gallery.databinding.OssItemVideoSelectionBinding
 import com.mediapicker.gallery.presentation.viewmodels.RecordVideoItem
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.presentation.viewmodels.VideoItem
 import com.mediapicker.gallery.util.AnimationHelper
-import kotlinx.android.synthetic.main.oss_item_camera_selection.view.*
-import kotlinx.android.synthetic.main.oss_item_video_selection.view.*
 
 class SelectVideoAdapter constructor(
     val context: Context,
@@ -26,9 +26,12 @@ class SelectVideoAdapter constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val resId = if (viewType == ITEM_TYPE_RECORD_VIDEO) R.layout.oss_item_camera_selection else R.layout.oss_item_video_selection
+        val resId =
+            if (viewType == ITEM_TYPE_RECORD_VIDEO) R.layout.oss_item_camera_selection else R.layout.oss_item_video_selection
         val view = LayoutInflater.from(parent.context).inflate(resId, parent, false)
-        return if (viewType == ITEM_TYPE_RECORD_VIDEO) RecordVideoViewHolder(view) else VideoViewHolder(view)
+        return if (viewType == ITEM_TYPE_RECORD_VIDEO) RecordVideoViewHolder(view) else VideoViewHolder(
+            view
+        )
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -43,15 +46,26 @@ class SelectVideoAdapter constructor(
         when {
             viewHolder.itemViewType == ITEM_TYPE_RECORD_VIDEO -> {
                 val recordVH = viewHolder as RecordVideoViewHolder
-                recordVH.itemView.img.setImageResource(R.drawable.oss_media_ic_slow_motion_video_black_24dp)
-                recordVH.itemView.folderName.text = context.getString(R.string.oss_label_record_video)
+                with(OssItemCameraSelectionBinding.bind(recordVH.itemView)) {
+                    img.setImageResource(R.drawable.oss_media_ic_slow_motion_video_black_24dp)
+                    folderName.text =
+                        context.getString(R.string.oss_label_record_video)
+                }
+
                 recordVH.itemView.setOnClickListener { onItemClickListener?.recordVideo() }
             }
+
             viewHolder.itemViewType == ITEM_TYPE_VIDEO -> {
                 val videoVH = viewHolder as VideoViewHolder
-                videoVH.itemView.setOnClickListener { onItemClickListener?.onVideoItemClick(listOfItem[position]) }
+                videoVH.itemView.setOnClickListener {
+                    onItemClickListener?.onVideoItemClick(
+                        listOfItem[position]
+                    )
+                }
                 videoVH.setData(
-                    (listOfItem[position] as VideoFile).apply { this.isSelected = listOfSelectedVideos.contains(this) },
+                    (listOfItem[position] as VideoFile).apply {
+                        this.isSelected = listOfSelectedVideos.contains(this)
+                    },
                     findPositionOfSelectedItems(listOfItem[position] as VideoFile)
                 )
             }
@@ -76,23 +90,24 @@ internal class RecordVideoViewHolder(private val root: View) : RecyclerView.View
 internal class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
 
     fun setData(videoItem: VideoFile, selectViewPosition: Int) {
-        root.croppedImage.setImageBitmap(videoItem.thumbnail)
-        root.durationLabel.text = videoItem.getFormatedDuration()
-        if (videoItem.isSelected && selectViewPosition != -1) {
-            root.white_overlay.visibility = View.VISIBLE
-            root.imgSelectedText.text = "$selectViewPosition"
-            if (selectViewPosition == 0) {
-                root.imgCoverText.visibility = View.VISIBLE
+        with(OssItemVideoSelectionBinding.bind(root)) {
+            croppedImage.setImageBitmap(videoItem.thumbnail)
+            durationLabel.text = videoItem.getFormatedDuration()
+            if (videoItem.isSelected && selectViewPosition != -1) {
+                whiteOverlay.visibility = View.VISIBLE
+                imgSelectedText.text = "$selectViewPosition"
+                if (selectViewPosition == 0) {
+                    imgCoverText.visibility = View.VISIBLE
+                }
+                root.scaleX = AnimationHelper.SELECTED_SCALE
+                root.scaleY = AnimationHelper.SELECTED_SCALE
+            } else {
+                imgSelectedText.text = ""
+                whiteOverlay.visibility = View.GONE
+                root.scaleX = AnimationHelper.UNSELECTED_SCALE
+                root.scaleY = AnimationHelper.UNSELECTED_SCALE
             }
-            root.scaleX = AnimationHelper.SELECTED_SCALE
-            root.scaleY = AnimationHelper.SELECTED_SCALE
-        } else {
-            root.imgSelectedText.text = ""
-            root.white_overlay.visibility = View.GONE
-            root.scaleX = AnimationHelper.UNSELECTED_SCALE
-            root.scaleY = AnimationHelper.UNSELECTED_SCALE
         }
-
     }
 }
 
