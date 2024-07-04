@@ -30,6 +30,7 @@
         style="@style/OSS_CustomButton"
         android:enabled="true"
         android:text="@string/oss_posting_next"
+        android:layout_margin="@dimen/module_medium"
         app:layout_constraintTop_toBottomOf="@id/ossRecycleView"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

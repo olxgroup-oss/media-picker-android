@@ -12,6 +12,7 @@ import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 import com.mediapicker.gallery.domain.entity.*
 import com.mediapicker.gallery.presentation.fragments.HomeFragment
 import com.mediapicker.gallery.presentation.utils.DefaultPage
+import com.mediapicker.gallery.presentation.utils.PermissionRequestWrapper
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -126,6 +127,13 @@ class MainActivity : AppCompatActivity() {
 
         override fun onNeverAskPermissionAgain() {
             Toast.makeText(applicationContext,"Permission denied :(",Toast.LENGTH_LONG).show()
+        }
+
+        override fun onShowPermissionRationale(permissionRequest: PermissionRequestWrapper) {
+            Toast.makeText(applicationContext,"Permission show rationale :|",Toast.LENGTH_LONG).show()
+        }
+
+        override fun onStepValidate(isValid: Boolean) {
         }
     }
 

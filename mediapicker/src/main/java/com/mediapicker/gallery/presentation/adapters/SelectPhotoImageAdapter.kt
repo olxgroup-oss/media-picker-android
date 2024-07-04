@@ -1,10 +1,14 @@
 package com.mediapicker.gallery.presentation.adapters
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -67,20 +71,30 @@ class SelectPhotoImageAdapter constructor(
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         when {
             viewHolder.itemViewType == ITEM_TYPE_CAMERA -> {
+                val uiConfig = Gallery.galleryConfig.galleryUiConfig
                 val cameraViewHolder = viewHolder as CameraViewHolder
+
+                val tile = cameraViewHolder.itemView.findViewById<ConstraintLayout>(R.id.gridTile)
+                tile.setBackgroundColor(ContextCompat.getColor(cameraViewHolder.itemView.context, uiConfig.tileColor))
+
                 cameraViewHolder.itemView.setOnClickListener { v -> onClickCamera() }
                 cameraViewHolder.itemView.folderName.isAllCaps = Gallery.galleryConfig.textAllCaps
                 cameraViewHolder.itemView.folderName.text =
                     viewHolder.itemView.context.getString(R.string.oss_label_camera)
+                cameraViewHolder.itemView.img.setImageResource(uiConfig.cameraIcon)
             }
             viewHolder.itemViewType == ITEM_TYPE_ALBUM -> {
                 val cameraViewHolder = viewHolder as CameraViewHolder
+                val uiConfig = Gallery.galleryConfig.galleryUiConfig
+
+                val tile = cameraViewHolder.itemView.findViewById<ConstraintLayout>(R.id.gridTile)
+                tile.setBackgroundColor(ContextCompat.getColor(cameraViewHolder.itemView.context, uiConfig.tileColor))
 
                 cameraViewHolder.itemView.setOnClickListener { v -> onGalleryItemClickListener.onFolderItemClick() }
                 cameraViewHolder.itemView.folderName.isAllCaps = Gallery.galleryConfig.textAllCaps
                 cameraViewHolder.itemView.folderName.text =
                     viewHolder.itemView.context.getString(R.string.oss_label_folder)
-                cameraViewHolder.itemView.img.setImageResource(R.drawable.oss_media_ic_folder_icon)
+                cameraViewHolder.itemView.img.setImageResource(uiConfig.folderIcon)
             }
             else -> {
                 val photoViewHolder = viewHolder as PhotoViewHolder

@@ -7,6 +7,7 @@ import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 import com.mediapicker.gallery.domain.entity.CarousalConfig
 import com.mediapicker.gallery.domain.entity.GalleryLabels
 import com.mediapicker.gallery.domain.entity.PhotoTag
+import com.mediapicker.gallery.domain.entity.GalleryUIConfig
 import com.mediapicker.gallery.domain.entity.Validation
 
 class GalleryConfig(
@@ -23,7 +24,8 @@ class GalleryConfig(
     val photoTag: PhotoTag,
     val mediaScanningCriteria: MediaScanningCriteria,
     val textAllCaps: Boolean,
-    val galleryLabels: GalleryLabels
+    val galleryLabels: GalleryLabels,
+    val galleryUiConfig: GalleryUIConfig
 ) {
 
 
@@ -53,6 +55,7 @@ class GalleryConfig(
         private  var photoTag: PhotoTag=PhotoTag()
         private var mediaScanningCriteria = MediaScanningCriteria()
         private var galleryLabels = GalleryLabels()
+        private var galleryUiConfig = GalleryUIConfig()
 
         fun textAllCaps(textAllCaps: Boolean) = apply { this.textAllCaps = textAllCaps }
         fun useMyPhotoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUsePhotoCamera = shouldUseMyCamera }
@@ -69,6 +72,10 @@ class GalleryConfig(
         }
         fun photoTag(photoTag: PhotoTag):GalleryConfigBuilder{
             this.photoTag=photoTag
+            return this
+        }
+        fun galleryUIConfig(uiConfig: GalleryUIConfig):GalleryConfigBuilder{
+            this.galleryUiConfig = uiConfig
             return this
         }
 
@@ -88,7 +95,8 @@ class GalleryConfig(
             photoTag,
             mediaScanningCriteria,
             textAllCaps,
-            galleryLabels
+            galleryLabels,
+            galleryUiConfig
         )
 
     }

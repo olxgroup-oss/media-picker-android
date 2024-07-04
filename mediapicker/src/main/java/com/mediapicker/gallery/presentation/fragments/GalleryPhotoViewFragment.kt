@@ -66,8 +66,11 @@ class GalleryPhotoViewFragment : BaseGalleryViewFragment() {
         if (Gallery.galleryConfig.galleryLabels.galleryFolderAction.isNotBlank()) {
             actionButton.text = Gallery.galleryConfig.galleryLabels.galleryFolderAction
         }
+
         toolbarTitle.isAllCaps = Gallery.galleryConfig.textAllCaps
         actionButton.isAllCaps = Gallery.galleryConfig.textAllCaps
+
+        toolbarTitle.gravity = Gallery.galleryConfig.galleryLabels.titleAlignment
     }
 
     @SuppressLint("CheckResult")

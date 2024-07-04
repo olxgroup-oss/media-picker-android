@@ -22,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_margin="@dimen/module_medium"
         style="@style/OSS_CustomButton"
         android:enabled="true"
         android:text="Done" />
