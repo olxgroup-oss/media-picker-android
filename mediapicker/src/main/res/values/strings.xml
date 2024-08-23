@@ -15,5 +15,17 @@
     <string name="oss_label_record_video">Record Video</string>
     <string name="oss_permissions_denied_attach_image">We need this permission to send an image</string>
 
+    <string name="request_full_access">Allow Full Access</string>
+    <string name="request_partial_access">Access Management</string>
+    <string name="photo_picker">Photo Picker</string>
 
+    <string name="permissions_denied_never_ask_again">Permissions denied with \'Never ask again\'. Please enable them in settings.</string>
+    <string name="permissions_required_title">Permissions Required</string>
+    <string name="permissions_required_message">The app needs certain permissions to function correctly. Please enable them in the app settings.</string>
+    <string name="settings">Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="permissions_denied_rationale">Permissions denied. Please grant the required permissions to proceed.</string>
+    <string name="photos_partially_granted">You have granted some parts of the photos</string>
+    <string name="allow">Allow</string>
+    <string name="photos_denied">You haven\'t granted any photos</string>
 </resources>

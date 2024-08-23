@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import android.util.Log
 import android.webkit.MimeTypeMap
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
 import com.mediapicker.gallery.domain.entity.PhotoFile
@@ -70,8 +69,10 @@ open class GalleryService(private val applicationContext: Context) : GalleryRepo
     }
 
     private fun getPhoto(cursor: Cursor): PhotoFile {
-        val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
-        val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+        val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
+        val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+        val mimeType =
+            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE))
         val col = cursor.getColumnIndex(COL_FULL_PHOTO_URL)
         var fullPhotoUrl = ""
         if (col != -1) {
@@ -83,6 +84,7 @@ open class GalleryService(private val applicationContext: Context) : GalleryRepo
             .smallPhotoUrl("")
             .fullPhotoUrl(fullPhotoUrl)
             .photoBackendId(0L)
+            .mimeType()
             .build()
     }
 

@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mediapicker.gallery.R
+import com.mediapicker.gallery.databinding.OssItemCameraSelectionBinding
+import com.mediapicker.gallery.databinding.OssItemVideoSelectionBinding
 import com.mediapicker.gallery.presentation.viewmodels.RecordVideoItem
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.presentation.viewmodels.VideoItem
 import com.mediapicker.gallery.util.AnimationHelper
-import kotlinx.android.synthetic.main.oss_item_camera_selection.view.*
-import kotlinx.android.synthetic.main.oss_item_video_selection.view.*
 
-class SelectVideoAdapter constructor(
+class SelectVideoAdapter(
     val context: Context,
     var listOfItem: List<VideoItem>,
-    val listOfSelectedVideos: MutableList<VideoFile>,
+    private val listOfSelectedVideos: MutableList<VideoFile>,
     private val onItemClickListener: OnItemClickListener? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -26,9 +26,23 @@ class SelectVideoAdapter constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val resId = if (viewType == ITEM_TYPE_RECORD_VIDEO) R.layout.oss_item_camera_selection else R.layout.oss_item_video_selection
-        val view = LayoutInflater.from(parent.context).inflate(resId, parent, false)
-        return if (viewType == ITEM_TYPE_RECORD_VIDEO) RecordVideoViewHolder(view) else VideoViewHolder(view)
+        return if (viewType == ITEM_TYPE_RECORD_VIDEO) {
+            val binding: OssItemCameraSelectionBinding = OssItemCameraSelectionBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            RecordVideoViewHolder(binding)
+        } else {
+            val binding: OssItemVideoSelectionBinding = OssItemVideoSelectionBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            VideoViewHolder(
+                binding
+            )
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -40,18 +54,26 @@ class SelectVideoAdapter constructor(
 
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        when {
-            viewHolder.itemViewType == ITEM_TYPE_RECORD_VIDEO -> {
+        when (viewHolder.itemViewType) {
+            ITEM_TYPE_RECORD_VIDEO -> {
                 val recordVH = viewHolder as RecordVideoViewHolder
-                recordVH.itemView.img.setImageResource(R.drawable.oss_media_ic_slow_motion_video_black_24dp)
-                recordVH.itemView.folderName.text = context.getString(R.string.oss_label_record_video)
+                recordVH.binding.img.setImageResource(R.drawable.oss_media_ic_slow_motion_video_black_24dp)
+                recordVH.binding.folderName.text =
+                    context.getString(R.string.oss_label_record_video)
                 recordVH.itemView.setOnClickListener { onItemClickListener?.recordVideo() }
             }
-            viewHolder.itemViewType == ITEM_TYPE_VIDEO -> {
+
+            ITEM_TYPE_VIDEO -> {
                 val videoVH = viewHolder as VideoViewHolder
-                videoVH.itemView.setOnClickListener { onItemClickListener?.onVideoItemClick(listOfItem[position]) }
+                videoVH.itemView.setOnClickListener {
+                    onItemClickListener?.onVideoItemClick(
+                        listOfItem[position]
+                    )
+                }
                 videoVH.setData(
-                    (listOfItem[position] as VideoFile).apply { this.isSelected = listOfSelectedVideos.contains(this) },
+                    (listOfItem[position] as VideoFile).apply {
+                        this.isSelected = listOfSelectedVideos.contains(this)
+                    },
                     findPositionOfSelectedItems(listOfItem[position] as VideoFile)
                 )
             }
@@ -69,28 +91,28 @@ interface OnItemClickListener {
 }
 
 
-internal class RecordVideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
+internal class RecordVideoViewHolder(val binding: OssItemCameraSelectionBinding) :
+    RecyclerView.ViewHolder(binding.root)
 
-}
-
-internal class VideoViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
+internal class VideoViewHolder(private val binding: OssItemVideoSelectionBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
     fun setData(videoItem: VideoFile, selectViewPosition: Int) {
-        root.croppedImage.setImageBitmap(videoItem.thumbnail)
-        root.durationLabel.text = videoItem.getFormatedDuration()
+        binding.croppedImage.setImageBitmap(videoItem.thumbnail)
+        binding.durationLabel.text = videoItem.getFormattedDuration()
         if (videoItem.isSelected && selectViewPosition != -1) {
-            root.white_overlay.visibility = View.VISIBLE
-            root.imgSelectedText.text = "$selectViewPosition"
+            binding.whiteOverlay.visibility = View.VISIBLE
+            binding.imgSelectedText.text = "$selectViewPosition"
             if (selectViewPosition == 0) {
-                root.imgCoverText.visibility = View.VISIBLE
+                binding.imgCoverText.visibility = View.VISIBLE
             }
-            root.scaleX = AnimationHelper.SELECTED_SCALE
-            root.scaleY = AnimationHelper.SELECTED_SCALE
+            binding.root.scaleX = AnimationHelper.SELECTED_SCALE
+            binding.root.scaleY = AnimationHelper.SELECTED_SCALE
         } else {
-            root.imgSelectedText.text = ""
-            root.white_overlay.visibility = View.GONE
-            root.scaleX = AnimationHelper.UNSELECTED_SCALE
-            root.scaleY = AnimationHelper.UNSELECTED_SCALE
+            binding.imgSelectedText.text = ""
+            binding.whiteOverlay.visibility = View.GONE
+            binding.root.scaleX = AnimationHelper.UNSELECTED_SCALE
+            binding.root.scaleY = AnimationHelper.UNSELECTED_SCALE
         }
 
     }

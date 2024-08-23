@@ -1,7 +1,7 @@
 package com.mediapicker.gallery.presentation.viewmodels
 
+//import android.database.DataSetObserver
 import android.database.Cursor
-import android.database.DataSetObserver
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
@@ -13,20 +13,19 @@ import com.mediapicker.gallery.domain.entity.IGalleryItem
 import com.mediapicker.gallery.domain.entity.PhotoAlbum
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.viewmodels.factory.BaseLoadMediaViewModel
-import java.util.*
 
-class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
+class LoadPhotoViewModel(val galleryConfig: GalleryConfig) :
     BaseLoadMediaViewModel(galleryConfig) {
 
     companion object {
         private const val COL_FULL_PHOTO_URL = "fullPhotoUrl"
     }
 
-    private var isObserverRegistered = false
+//    private var isObserverRegistered = false
+//
+//    private var lastLoadedCursor: Cursor? = null
 
-    private var lastLoadedCursor: Cursor? = null
-
-     var currentSelectedPhotos: LinkedHashSet<PhotoFile> = LinkedHashSet()
+    var currentSelectedPhotos: LinkedHashSet<PhotoFile> = LinkedHashSet()
 
     private val galleryItemsLiveData = MutableLiveData<List<IGalleryItem>>()
 
@@ -39,7 +38,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
         return CursorLoader(
             getApplication(),
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, selection,
-            selectionTypeGifArgs, MediaStore.Images.Media.DATE_ADDED +" DESC"
+            selectionTypeGifArgs, MediaStore.Images.Media.DATE_ADDED + " DESC"
         )
     }
 
@@ -63,32 +62,32 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
         galleryItemsLiveData.postValue(listOfGalleryItems)
     }
 
-    private fun unregisterDataSetObserver() {
-        if (lastLoadedCursor != null && isObserverRegistered) {
-            lastLoadedCursor?.unregisterDataSetObserver(dataObserver)
-            isObserverRegistered = false
-        }
-    }
+//    private fun unregisterDataSetObserver() {
+//        if (lastLoadedCursor != null && isObserverRegistered) {
+//            lastLoadedCursor?.unregisterDataSetObserver(dataObserver)
+//            isObserverRegistered = false
+//        }
+//    }
+//
+//    private fun registerDataSetObserver() {
+//        if (!isObserverRegistered) {
+//            if (lastLoadedCursor != null) {
+//                lastLoadedCursor?.registerDataSetObserver(dataObserver)
+//                isObserverRegistered = true
+//            }
+//        }
+//    }
+//
+//    private val dataObserver = object : DataSetObserver() {
+//        override fun onChanged() {
+//            super.onChanged()
+//            getNewlyAddedMedia()
+//        }
+//    }
 
-    private fun registerDataSetObserver() {
-        if (!isObserverRegistered) {
-            if (lastLoadedCursor != null) {
-                lastLoadedCursor?.registerDataSetObserver(dataObserver)
-                isObserverRegistered = true
-            }
-        }
-    }
-
-    private val dataObserver = object : DataSetObserver() {
-        override fun onChanged() {
-            super.onChanged()
-            getNewlyAddedMedia()
-        }
-    }
-
-    private fun getNewlyAddedMedia() {
-
-    }
+//    private fun getNewlyAddedMedia() {
+//
+//    }
 
     private fun needToAddFolderView(): Boolean {
         return (galleryConfig.typeOfMediaSupported == GalleryConfig.MediaType.PhotoWithFolderOnly
@@ -108,7 +107,7 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
                 if (!photos.contains(currentSelectedPhoto)) {
                     val photoBackendId = currentSelectedPhoto.photoBackendId
                     if (photoBackendId != null) {
-                        currentSelectedPhoto.path = "" + photoBackendId!!
+                        currentSelectedPhoto.path = "" + photoBackendId
                     }
                     finalSetOfPhotos.add(currentSelectedPhoto)
                 }
@@ -120,8 +119,10 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
 
 
     private fun getPhoto(cursor: Cursor): PhotoFile {
-        val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
-        val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+        val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
+        val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+        val mimeType =
+            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE))
         val col = cursor.getColumnIndex(COL_FULL_PHOTO_URL)
         var fullPhotoUrl = ""
         if (col != -1) {
@@ -133,12 +134,13 @@ class LoadPhotoViewModel constructor(val galleryConfig: GalleryConfig) :
             .path(path)
             .smallPhotoUrl("")
             .fullPhotoUrl(fullPhotoUrl)
+            .mimeType()
             .photoBackendId(0L)
             .build()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        // unregisterDataSetObserver()
-    }
+//    override fun onCleared() {
+//        super.onCleared()
+//        // unregisterDataSetObserver()
+//    }
 }

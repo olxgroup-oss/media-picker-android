@@ -7,7 +7,9 @@ import android.media.ExifInterface
 import android.media.ExifInterface.ORIENTATION_NORMAL
 import android.os.Build
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -17,15 +19,16 @@ import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.github.chrisbanes.photoview.PhotoView
 import com.github.chrisbanes.photoview.PhotoViewAttacher
-import com.mediapicker.gallery.R
+import com.mediapicker.gallery.databinding.OssMediaGalleryPagerViewBinding
 import com.mediapicker.gallery.domain.entity.MediaGalleryEntity
-import kotlinx.android.synthetic.main.oss_media_gallery_pager_view.view.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.*
+import java.util.Locale
+import kotlin.math.floor
 
-open class MediaGalleryPagerView@JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+open class MediaGalleryPagerView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) :
     FrameLayout(context, attrs, defStyleAttr) {
 
     private val maxImageSize: Int = 1080
@@ -37,9 +40,19 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
     private var isGallery = false
     private var mediaChangeListener: MediaChangeListener? = null
 
+    val binding: OssMediaGalleryPagerViewBinding by lazy {
+        OssMediaGalleryPagerViewBinding.inflate(LayoutInflater.from(context), this)
+    }
+
     private val pageChangeListener: ViewPager.OnPageChangeListener = object :
         ViewPager.OnPageChangeListener {
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+        }
+
         override fun onPageSelected(position: Int) {
             val resolvedPosition = adapter.resolveItemPosition(position)
             loadDataBasedOnPosition(resolvedPosition)
@@ -52,13 +65,13 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
     }
 
     private val leftArrowClickListener = OnClickListener {
-        if(currentItem > 0) {
+        if (currentItem > 0) {
             setSelectedPhoto(currentItem - 1)
         }
     }
 
     private val rightArrowClickListener = OnClickListener {
-        if(currentItem < mediaList.size - 1) {
+        if (currentItem < mediaList.size - 1) {
             setSelectedPhoto(currentItem + 1)
         }
     }
@@ -81,11 +94,11 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
             val photoH = bitmap.height
             val widthRatio = targetW.toFloat() / photoW.toFloat()
             val heightRatio = targetH.toFloat() / photoH.toFloat()
-            var finalWidth = Math.floor(photoW * widthRatio.toDouble()).toInt()
-            var finalHeight = Math.floor(photoH * widthRatio.toDouble()).toInt()
+            var finalWidth = floor(photoW * widthRatio.toDouble()).toInt()
+            var finalHeight = floor(photoH * widthRatio.toDouble()).toInt()
             if (finalWidth > targetW || finalHeight > targetH) {
-                finalWidth = Math.floor(photoW * heightRatio.toDouble()).toInt()
-                finalHeight = Math.floor(photoH * heightRatio.toDouble()).toInt()
+                finalWidth = floor(photoW * heightRatio.toDouble()).toInt()
+                finalHeight = floor(photoH * heightRatio.toDouble()).toInt()
             }
             return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
         }
@@ -115,7 +128,8 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
     }
 
     fun removeMedia(media: MediaGalleryEntity) {
-        mediaList = mediaList.filter { it.mediaId != media.mediaId } as MutableList<MediaGalleryEntity>
+        mediaList =
+            mediaList.filter { it.mediaId != media.mediaId } as MutableList<MediaGalleryEntity>
         val resolvedPosition = adapter.resolveItemPosition(currentItem)
         setPhotoCount(resolvedPosition + 1, mediaList.size)
         setViewBasedOnMediaList()
@@ -124,44 +138,45 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
     }
 
     private fun loadDataBasedOnPosition(position: Int) {
-        imageLabel.text = ""
+        binding.imageLabel.text = ""
         setPhotoCount(position + 1, mediaList.size)
         setNavigationIconVisibilityBasedOnPosition(position)
     }
 
     private fun setNavigationIconVisibilityBasedOnPosition(position: Int) {
-        if(mediaList.size == 0) {
-            leftArrow.visibility = View.GONE
-            rightArrow.visibility = View.GONE
+        if (mediaList.size == 0) {
+            binding.leftArrow.visibility = View.GONE
+            binding.rightArrow.visibility = View.GONE
             return
         }
-        if(position == 0) {
-            leftArrow.visibility = View.GONE
+        if (position == 0) {
+            binding.leftArrow.visibility = View.GONE
         } else {
-            leftArrow.visibility = View.VISIBLE
+            binding.leftArrow.visibility = View.VISIBLE
         }
 
-        if(position == mediaList.size - 1) {
-            rightArrow.visibility = View.GONE
+        if (position == mediaList.size - 1) {
+            binding.rightArrow.visibility = View.GONE
         } else {
-            rightArrow.visibility = View.VISIBLE
+            binding.rightArrow.visibility = View.VISIBLE
         }
     }
 
     private fun setPhotoCount(currentImage: Int, size: Int) {
-        if (photoCount != null) {
+        if (binding.photoCount != null) {
             if (size > 1) {
-                photoCount.visibility = View.VISIBLE
-                photoCount.text = String.format(Locale.ENGLISH, " %1\$d / %2\$d ", currentImage, size)
+                binding.photoCount.visibility = View.VISIBLE
+                binding.photoCount.text =
+                    String.format(Locale.ENGLISH, " %1\$d / %2\$d ", currentImage, size)
             } else {
-                photoCount.visibility = View.GONE
+                binding.photoCount.visibility = View.GONE
             }
         }
     }
 
     private fun resolvePlaceHolder() {
         if (isGallery) {
-            image_placeholder!!.visibility = View.GONE
+            binding.imagePlaceholder.visibility = View.GONE
         }
     }
 
@@ -186,11 +201,11 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
     }
 
     fun setSelectedPhoto(position: Int) {
-        itemImages!!.currentItem = adapter.resolveItemPosition(position)
+        binding.itemImages.currentItem = adapter.resolveItemPosition(position)
     }
 
     val currentItem: Int
-        get() = adapter.resolveItemPosition(itemImages!!.currentItem)
+        get() = adapter.resolveItemPosition(binding.itemImages.currentItem)
 
     val mediaListSize: Int
         get() = mediaList.size
@@ -201,7 +216,8 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
         fun resolveItemPosition(position: Int): Int {
             val configuration = resources.configuration
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 &&
-                configuration.layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL) {
+                configuration.layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL
+            ) {
                 getRtlPosition(position)
             } else {
                 position
@@ -209,19 +225,19 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
         }
 
         private fun getRtlPosition(position: Int): Int {
-            return mediaList!!.size - (position + 1)
+            return mediaList.size - (position + 1)
         }
 
         override fun getCount(): Int {
-            return if (mediaList == null) 0 else mediaList!!.size
+            return if (mediaList == null) 0 else mediaList.size
         }
 
         override fun getItemPosition(`object`: Any): Int {
-            if (`object` == null || !((`object` as View).tag is MediaGalleryEntity)) {
+            if (`object` == null || (`object` as View).tag !is MediaGalleryEntity) {
                 return POSITION_NONE
             }
 
-            val item = (`object` as View).tag as MediaGalleryEntity
+            val item = `object`.tag as MediaGalleryEntity
             val position: Int = mediaList.indexOf(item)
             return if (position >= 0) {
                 position
@@ -233,7 +249,7 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
         override fun instantiateItem(container: ViewGroup, position: Int): View {
             fixImageScaleType(container.context)
             val resolvedPosition = resolveItemPosition(position)
-            val pagerImage: MediaGalleryEntity = mediaList!![resolvedPosition]
+            val pagerImage: MediaGalleryEntity = mediaList[resolvedPosition]
             loadImage(pagerImage)
             resolvePitchPanel()
             container.addView(img, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
@@ -248,20 +264,22 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
 
         private fun loadImage(media: MediaGalleryEntity) {
             val imageUrl: String = media.path!!
-            image_progress!!.visibility = View.VISIBLE
-            img!!.setOnClickListener(onItemClickListener)
-            if(media.isLocalImage) {
-                img!!.tag = media
+            binding.imageProgress.visibility = View.VISIBLE
+            img?.setOnClickListener(onItemClickListener)
+            if (media.isLocalImage) {
+                img?.tag = media
                 val bmp = getLocalImage(media)
                 if (bmp != null) {
-                    img!!.setImageBitmap(bmp)
-                    img!!.rotation = getRotationInDegrees(imageUrl)
+                    img?.setImageBitmap(bmp)
+                    img?.rotation = getRotationInDegrees(imageUrl)
                 }
             } else {
-                img!!.setTag(img!!.id, media)
-                Glide.with(context!!)
-                    .load(imageUrl)
-                    .into(img!!)
+                img?.let {
+                    it.setTag(img?.id ?: 0, media)
+                    Glide.with(context)
+                        .load(imageUrl)
+                        .into(it)
+                }
             }
         }
 
@@ -274,7 +292,8 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
                 e.printStackTrace()
             }
             if (exif != null) {
-                val rotation: Int = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ORIENTATION_NORMAL)
+                val rotation: Int =
+                    exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ORIENTATION_NORMAL)
                 rotationInDegrees = exifToDegrees(rotation)
             }
             return rotationInDegrees.toFloat()
@@ -294,16 +313,16 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
         private fun fixImageScaleType(context: Context) {
             if (!isGallery) {
                 img = ImageView(context, null)
-                img!!.scaleType = ImageView.ScaleType.FIT_CENTER
+                img?.scaleType = ImageView.ScaleType.FIT_CENTER
             } else {
                 img = PhotoView(context, null)
-                img!!.scaleType = ImageView.ScaleType.FIT_CENTER
+                img?.scaleType = ImageView.ScaleType.FIT_CENTER
             }
         }
 
         override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-            var view = `object` as View?
-            itemImages.removeView(view)
+            val view = `object` as View?
+            binding.itemImages.removeView(view)
         }
 
         override fun isViewFromObject(view: View, `object`: Any): Boolean {
@@ -316,38 +335,38 @@ open class MediaGalleryPagerView@JvmOverloads constructor(
     }
 
     init {
-        View.inflate(context, R.layout.oss_media_gallery_pager_view, this)
+//        View.inflate(context, R.layout.oss_media_gallery_pager_view, this)
         adapter = ImagePageAdapter()
-        itemImages!!.addOnPageChangeListener(pageChangeListener)
-        itemImages!!.adapter = adapter
-        leftArrow.setOnClickListener(leftArrowClickListener)
-        rightArrow.setOnClickListener(rightArrowClickListener)
+        binding.itemImages.addOnPageChangeListener(pageChangeListener)
+        binding.itemImages.adapter = adapter
+        binding.leftArrow.setOnClickListener(leftArrowClickListener)
+        binding.rightArrow.setOnClickListener(rightArrowClickListener)
         setViewBasedOnMediaList()
     }
 
     private fun setViewBasedOnMediaList() {
         navigationArrowVisibility()
-        if(mediaList.size > 0) {
-            defaultContainer.visibility = View.GONE
-            blackBackground.visibility = View.VISIBLE
-            galleryPagerGradient.visibility = View.GONE
-            itemImages.visibility = View.VISIBLE
+        if (mediaList.size > 0) {
+            binding.defaultContainer.visibility = View.GONE
+            binding.blackBackground.visibility = View.VISIBLE
+            binding.galleryPagerGradient.visibility = View.GONE
+            binding.itemImages.visibility = View.VISIBLE
         } else {
-            defaultContainer.visibility = View.VISIBLE
-            blackBackground.visibility = View.GONE
-            galleryPagerGradient.visibility = View.GONE
-            image_progress.visibility = View.GONE
-            itemImages.visibility = View.GONE
+            binding.defaultContainer.visibility = View.VISIBLE
+            binding.blackBackground.visibility = View.GONE
+            binding.galleryPagerGradient.visibility = View.GONE
+            binding.imageProgress.visibility = View.GONE
+            binding.itemImages.visibility = View.GONE
         }
     }
 
     private fun navigationArrowVisibility() {
-        if(mediaList.size > 1) {
-            leftArrow.visibility = View.VISIBLE
-            rightArrow.visibility = View.VISIBLE
+        if (mediaList.size > 1) {
+            binding.leftArrow.visibility = View.VISIBLE
+            binding.rightArrow.visibility = View.VISIBLE
         } else {
-            leftArrow.visibility = View.GONE
-            rightArrow.visibility = View.GONE
+            binding.leftArrow.visibility = View.GONE
+            binding.rightArrow.visibility = View.GONE
         }
     }
 }

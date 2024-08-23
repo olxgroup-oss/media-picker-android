@@ -24,6 +24,7 @@ class PhotoFile : Serializable, IGalleryItem {
     var status: Status? = null
     var error: String? = null
     var adId: String? = null
+    var mimeType: String? = null
 
     val isAlreadyUploaded: Boolean
         get() = !TextUtils.isEmpty(fullPhotoUrl)
@@ -39,6 +40,7 @@ class PhotoFile : Serializable, IGalleryItem {
         this.status = builder.status
         this.error = builder.error
         this.adId = builder.adId
+        this.mimeType = builder.mimeType
     }
 
     constructor(photoSet: PhotoSet) {
@@ -63,14 +65,14 @@ class PhotoFile : Serializable, IGalleryItem {
         return existPhoto
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as PhotoFile?
-        if(this.imageId == 0L || that!!.imageId == 0L){
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as PhotoFile?
+        if (this.imageId == 0L || that!!.imageId == 0L) {
             return this.path == that!!.path
         }
-        return this.imageId == that!!.imageId
+        return this.imageId == that.imageId
     }
 
     override fun hashCode(): Int {
@@ -88,6 +90,7 @@ class PhotoFile : Serializable, IGalleryItem {
         var status: Status? = null
         var error: String? = null
         var adId: String? = null
+        var mimeType: String? = null
 
         fun imageId(imageId: Long): Builder {
             this.imageId = imageId
@@ -136,6 +139,10 @@ class PhotoFile : Serializable, IGalleryItem {
 
         fun adId(adId: String): Builder {
             this.adId = adId
+            return this
+        }
+
+        fun mimeType(): Builder {
             return this
         }
 

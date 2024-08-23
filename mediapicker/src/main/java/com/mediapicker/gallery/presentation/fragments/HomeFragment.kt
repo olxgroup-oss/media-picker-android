@@ -2,30 +2,41 @@ package com.mediapicker.gallery.presentation.fragments
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.R
+import com.mediapicker.gallery.databinding.OssFragmentMainBinding
 import com.mediapicker.gallery.domain.entity.PhotoFile
 import com.mediapicker.gallery.presentation.activity.GalleryActivity
 import com.mediapicker.gallery.presentation.adapters.PagerAdapter
 import com.mediapicker.gallery.presentation.utils.DefaultPage
+import com.mediapicker.gallery.presentation.utils.PermissionsUtil
+import com.mediapicker.gallery.presentation.utils.PermissionsUtil.openAppSettings
 import com.mediapicker.gallery.presentation.utils.getActivityScopedViewModel
 import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.BridgeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.HomeViewModel
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.utils.SnackbarUtils
-import kotlinx.android.synthetic.main.oss_fragment_main.*
-import permissions.dispatcher.ktx.PermissionsRequester
-import permissions.dispatcher.ktx.constructPermissionsRequest
 import java.io.Serializable
 
 open class HomeFragment : BaseFragment() {
+    private  var permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
+        PermissionsUtil.handlePermissionsResult(
+            requireActivity(),
+            granted,
+            onAllPermissionsGranted = { checkPermissions() },
+            onPermissionDenied = { onPermissionDenied() }
+        )
+    }
 
     private val homeViewModel: HomeViewModel by lazy {
         getFragmentScopedViewModel { HomeViewModel(Gallery.galleryConfig) }
@@ -45,60 +56,35 @@ open class HomeFragment : BaseFragment() {
         getPageFromArguments()
     }
 
-    private lateinit var permissionsRequester: PermissionsRequester
+    private val ossFragmentMainBinding: OssFragmentMainBinding? by lazy {
+        ossFragmentBaseBinding?.baseContainer?.findViewById<ConstraintLayout>(R.id.constraint_layout_parent)
+            ?.let { OssFragmentMainBinding.bind(it) }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        permissionsRequester = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            constructPermissionsRequest(
-                permissions = arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO
-                ),
-                onPermissionDenied = ::onPermissionDenied,
-                onNeverAskAgain = ::showNeverAskAgainPermission,
-                requiresPermission = ::checkPermissions
-            )
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            constructPermissionsRequest(
-                permissions = arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ),
-                onPermissionDenied = ::onPermissionDenied,
-                onNeverAskAgain = ::showNeverAskAgainPermission,
-                requiresPermission = ::checkPermissions
-            )
-        } else {
-            constructPermissionsRequest(
-                permissions = arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                onPermissionDenied = ::onPermissionDenied,
-                onNeverAskAgain = ::showNeverAskAgainPermission,
-                requiresPermission = ::checkPermissions
-            )
-        }
     }
-
 
     override fun getLayoutId() = R.layout.oss_fragment_main
 
-    override fun getScreenTitle() = if (Gallery.galleryConfig.galleryLabels.homeTitle.isNotBlank())
-        Gallery.galleryConfig.galleryLabels.homeTitle
-    else
-        getString(R.string.oss_title_home_screen)
+    override fun getScreenTitle() =
+        Gallery.galleryConfig.galleryLabels.homeTitle.ifBlank { getString(R.string.oss_title_home_screen) }
 
     override fun setUpViews() {
-        action_button.text = if (Gallery.galleryConfig.galleryLabels.homeAction.isNotBlank())
-            Gallery.galleryConfig.galleryLabels.homeAction
-        else
-            getString(R.string.oss_posting_next)
-
-        permissionsRequester.launch()
+        ossFragmentMainBinding?.actionButton?.apply {
+            setOnClickListener { onActionButtonClicked() }
+            text =
+                Gallery.galleryConfig.galleryLabels.homeAction.ifBlank { getString(R.string.oss_posting_next) }
+            isSelected = false
+        }
+        requestPermissions()
+//        ossFragmentMainBinding?.fullAccessButton?.setOnClickListener {
+//            activity?.let { it1 -> openAppSettings(it1) }
+//        }
+        ossFragmentMainBinding?.button?.setOnClickListener {
+            requestPermissions()
+        }
+        checkPermission()
     }
 
     fun checkPermissions() {
@@ -124,11 +110,13 @@ open class HomeFragment : BaseFragment() {
             }
         }
         openPage()
-        action_button.isSelected = false
-        action_button.setOnClickListener { onActionButtonClicked() }
+        ossFragmentMainBinding?.actionButton?.isSelected = false
+        ossFragmentMainBinding?.actionButton?.setOnClickListener { onActionButtonClicked() }
+        checkPermission()
     }
 
     fun onPermissionDenied() {
+        checkPermission()
         // activity?.supportFragmentManager?.popBackStack()
         Gallery.galleryConfig.galleryCommunicator?.onPermissionDenied()
     }
@@ -140,9 +128,9 @@ open class HomeFragment : BaseFragment() {
 
     override fun initViewModels() {
         super.initViewModels()
-        bridgeViewModel.getActionState().observe(this, Observer { changeActionButtonState(it) })
-        bridgeViewModel.getError().observe(this, Observer { showError(it) })
-        bridgeViewModel.getClosingSignal().observe(this, Observer { closeIfHostingOnActivity() })
+        bridgeViewModel.getActionState().observe(this) { changeActionButtonState(it) }
+        bridgeViewModel.getError().observe(this) { showError(it) }
+        bridgeViewModel.getClosingSignal().observe(this) { closeIfHostingOnActivity() }
     }
 
     private fun closeIfHostingOnActivity() {
@@ -159,7 +147,7 @@ open class HomeFragment : BaseFragment() {
     }
 
     private fun changeActionButtonState(state: Boolean) {
-        action_button.isSelected = state
+        ossFragmentMainBinding?.actionButton?.isSelected = state
     }
 
     private fun showError(error: String) {
@@ -167,7 +155,7 @@ open class HomeFragment : BaseFragment() {
     }
 
     private fun setUpWithOutTabLayout() {
-        tabLayout.visibility = View.GONE
+        ossFragmentMainBinding?.tabLayout?.visibility = View.GONE
         PagerAdapter(
             childFragmentManager,
             listOf(
@@ -177,15 +165,15 @@ open class HomeFragment : BaseFragment() {
                 )
             )
         ).apply {
-            viewPager.adapter = this
+            ossFragmentMainBinding?.viewPager?.adapter = this
         }
     }
 
     private fun openPage() {
         if (defaultPageToOpen is DefaultPage.PhotoPage) {
-            viewPager.currentItem = 0
+            ossFragmentMainBinding?.viewPager?.currentItem = 0
         } else {
-            viewPager.currentItem = 1
+            ossFragmentMainBinding?.viewPager?.currentItem = 1
         }
     }
 
@@ -205,12 +193,11 @@ open class HomeFragment : BaseFragment() {
                     getVideosFromArguments()
                 )
             )
-        ).apply { viewPager.adapter = this }
-        tabLayout.setupWithViewPager(viewPager)
+        ).apply { ossFragmentMainBinding?.viewPager?.adapter = this }
+        ossFragmentMainBinding?.tabLayout?.setupWithViewPager(ossFragmentMainBinding?.viewPager)
     }
 
 
-    @Suppress("UNCHECKED_CAST")
     private fun getPageFromArguments(): DefaultPage {
         this.arguments?.let {
             if (it.containsKey(EXTRA_DEFAULT_PAGE)) {
@@ -224,6 +211,44 @@ open class HomeFragment : BaseFragment() {
         bridgeViewModel.reloadMedia()
     }
 
+    private fun requestPermissions() {
+        PermissionsUtil.requestPermissions(requireActivity(), permissionLauncher)
+    }
+
+    private fun checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            && (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.READ_MEDIA_IMAGES
+            ) == PackageManager.PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.READ_MEDIA_VIDEO
+            ) == PackageManager.PERMISSION_GRANTED)
+        ) {
+            // Full access on Android 13 (API level 33) or higher
+            ossFragmentMainBinding?.permissionAccessManagement?.visibility = View.GONE
+        } else if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+            ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Partial access on Android 14 (API level 34) or higher
+            ossFragmentMainBinding?.textView?.text = getString(R.string.photos_partially_granted)
+            ossFragmentMainBinding?.button?.text = getString(R.string.allow)
+            ossFragmentMainBinding?.permissionAccessManagement?.visibility = View.VISIBLE
+        } else if (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Full access up to Android 12 (API level 32)
+            ossFragmentMainBinding?.permissionAccessManagement?.visibility = View.GONE
+        } else {
+            // Access denied
+            ossFragmentMainBinding?.textView?.text = getString(R.string.photos_denied)
+            ossFragmentMainBinding?.button?.text = getString(R.string.allow)
+            ossFragmentMainBinding?.permissionAccessManagement?.visibility = View.VISIBLE
+        }
+    }
     companion object {
         fun getInstance(
             listOfSelectedPhotos: List<PhotoFile> = emptyList(),

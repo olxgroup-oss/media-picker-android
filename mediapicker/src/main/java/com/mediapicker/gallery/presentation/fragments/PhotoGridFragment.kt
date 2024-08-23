@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
-import androidx.lifecycle.Observer
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.PhotoFile
@@ -16,14 +19,17 @@ import com.mediapicker.gallery.presentation.activity.FolderViewActivity
 import com.mediapicker.gallery.presentation.adapters.IGalleryItemClickListener
 import com.mediapicker.gallery.presentation.adapters.SelectPhotoImageAdapter
 import com.mediapicker.gallery.presentation.utils.Constants.EXTRA_SELECTED_PHOTO
-import com.mediapicker.gallery.presentation.utils.Constants.PHOTO_SELECTION_REQUEST_CODE
 import com.mediapicker.gallery.presentation.utils.FileUtils
+import com.mediapicker.gallery.presentation.utils.ValidatePhotos
 import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.LoadPhotoViewModel
 import java.io.Serializable
 
+private const val TAKING_PHOTO = 9999
 
 open class PhotoGridFragment : BaseViewPagerItemFragment() {
+
+    private var photoValidationAction: ValidatePhotos = ValidatePhotos()
 
     companion object {
         fun getInstance(title: String, listOfSelectedPhotos: List<PhotoFile>) =
@@ -40,8 +46,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     private var isSingleSelectionMode = false
     private var numberOfPhotosBeforeCapture: Int = 0
-    private val TAKING_PHOTO = 9999
-    protected var numberOfPhoto = 0
+    private var numberOfPhoto = 0
 
 
     private var isExpectingNewPhoto: Boolean = false
@@ -69,6 +74,30 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         )
     }
 
+    private var photoSelectionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val finalSelectionFromFolders = data?.getSerializableExtra(EXTRA_SELECTED_PHOTO) as? LinkedHashSet<PhotoFile>
+            finalSelectionFromFolders?.let {
+                setSelectedFromFolderAndNotify(it)
+            }
+        }
+    }
+
+    // Initialize the ActivityResultLauncher for taking a photo
+    private var  takePhotoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            if (lastRequestFileToSavePath.isNotEmpty()) {
+                insertIntoGallery()
+            }
+            // To avoid preselect issue during camera photo click
+            // addItem(getPhoto(lastRequestFileToSavePath))
+            loadPhotoViewModel.loadMedia(this)
+        } else {
+            isExpectingNewPhoto = false
+        }
+    }
+
     override fun getScreenTitle() = getString(R.string.oss_title_tab_photo)
 
     override fun getBaseLoadMediaViewModel() = loadPhotoViewModel
@@ -80,17 +109,17 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         for (listCurrentPhoto in listCurrentPhotos) {
             loadPhotoViewModel.currentSelectedPhotos.add(listCurrentPhoto)
         }
-        loadPhotoViewModel.getGalleryItems().observe(this, Observer {
+        loadPhotoViewModel.getGalleryItems().observe(this) {
             galleryItemAdapter.updateGalleryItems(it)
             onStepValidate()
-        })
+        }
         loadPhotoViewModel.loadMedia(this)
     }
 
     private val galleryItemSelectHandler = object :
         IGalleryItemClickListener {
-        override fun onPhotoItemClick(photo: PhotoFile, position: Int) {
-            if (handleItemClick(photo)) {
+        override fun onPhotoItemClick(photoFile: PhotoFile, position: Int) {
+            if (handleItemClick(photoFile)) {
                 updateData(position)
             }
         }
@@ -98,7 +127,10 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         override fun onFolderItemClick() {
             //trackingService.postingFolderSelect()
             bridgeViewModel.onFolderSelect()
-            FolderViewActivity.startActivityForResult(this@PhotoGridFragment, currentSelectedPhotos)
+            val intent = Intent(requireContext(), FolderViewActivity::class.java).apply {
+                putExtra(EXTRA_SELECTED_PHOTO, currentSelectedPhotos)
+            }
+            photoSelectionLauncher.launch(intent)
         }
 
         override fun onCameraIconClick() {
@@ -118,7 +150,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
             Uri.fromFile(lastRequestFileToSave)
         } else {
             FileProvider.getUriForFile(
-                context!!,
+                requireContext(),
                 Gallery.getClientAuthority(),
                 lastRequestFileToSave
             )
@@ -132,13 +164,13 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
         val chooserIntent = Intent.createChooser(pickIntent, "Capture new Photo")
         pickIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivityForResult(chooserIntent, TAKING_PHOTO)
+        takePhotoLauncher.launch(chooserIntent)
     }
 
 
     protected fun handleItemClick(photo: PhotoFile): Boolean {
         if (isSingleSelectionMode) {
-            onImageAdded("", photo)
+            onImageAdded(photo)
             galleryItemAdapter.notifyDataSetChanged()
             return true
         } else if (checkIfAlreadySelected(photo)) {
@@ -147,7 +179,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
             onStepValidate()
             return true
         } else if (currentSelectedPhotos.size < bridgeViewModel.getMaxSelectionLimit()) {
-            if (onImageValidate("", photo) && onImageAdded("", photo)) {
+            if (onImageValidate(photo) && onImageAdded(photo)) {
                 addNewPhotoToCurrentSelection(photo, getPosition(photo))
                 onStepValidate()
                 return true
@@ -231,7 +263,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
 
     }
 
-    fun onImageAdded(fragmentName: String, photo: PhotoFile): Boolean {
+    private fun onImageAdded(photo: PhotoFile): Boolean {
         addItem(photo)
         Gallery.pagerCommunicator?.onItemClicked(photo, true)
         Gallery.carousalActionListener?.onItemClicked(photo, true)
@@ -239,47 +271,34 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
         return true
     }
 
-    fun onImageRemoved(fragmentName: String, photo: PhotoFile): Boolean {
-        return true
+//    fun onImageRemoved(fragmentName: String, photo: PhotoFile): Boolean {
+//        return true
+//    }
+
+    fun onImageValidate(photo: PhotoFile): Boolean {
+        val rule = photoValidationAction.complyRulesImages(photo.path)
+        var isValid = true
+        if (rule != null) {
+            showMsg(rule.message)
+            isValid = false
+        }
+
+        return isValid
     }
 
-    fun onImageValidate(fragmentName: String, photo: PhotoFile): Boolean {
-        return true
-    }
-
-    fun addItem(photo: PhotoFile) {
+    private fun addItem(photo: PhotoFile) {
         currentSelectedPhotos.add(photo)
         listCurrentPhotos.add(photo)
     }
 
     override fun shouldHideToolBar() = true
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == PHOTO_SELECTION_REQUEST_CODE) run {
-            val finalSelectionFromFolders =
-                data?.getSerializableExtra(EXTRA_SELECTED_PHOTO) as LinkedHashSet<PhotoFile>
-            setSelectedFromFolderAndNotify(finalSelectionFromFolders)
-        } else if (requestCode == TAKING_PHOTO) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (lastRequestFileToSavePath.isNotEmpty()) {
-                    insertIntoGallery()
-                }
-                addItem(getPhoto(lastRequestFileToSavePath))
-                loadPhotoViewModel.loadMedia(this)
-            } else {
-                isExpectingNewPhoto = false
-            }
-        }
-    }
-
     private fun getPhoto(path: String): PhotoFile {
-        var fullPhotoUrl = ""
         return PhotoFile.Builder()
             .imageId(0)
             .path(path)
             .smallPhotoUrl("")
-            .fullPhotoUrl(fullPhotoUrl)
+            .fullPhotoUrl("")
             .photoBackendId(0L)
             .build()
     }
@@ -287,7 +306,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
     private fun insertIntoGallery() {
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
                 put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
                 put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
                 put(MediaStore.Images.Media.IS_PENDING, 1)
@@ -295,7 +314,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
                 put(MediaStore.MediaColumns.DATA, lastRequestFileToSavePath)
             }
         }
-        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
             addImageIntoGalleryQAndAboveDevices(values)
         } else {
             addImageIntoGalleryBelowQDevices(values)
@@ -307,6 +326,7 @@ open class PhotoGridFragment : BaseViewPagerItemFragment() {
             .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun addImageIntoGalleryQAndAboveDevices(values: ContentValues) {
         val collection =
             MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
