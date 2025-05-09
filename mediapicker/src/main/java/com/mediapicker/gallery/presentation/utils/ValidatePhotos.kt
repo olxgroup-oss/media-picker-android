@@ -38,7 +38,7 @@ class ValidatePhotos {
         return Pair(canAddThisToList1, exception)
     }
 
-    private fun complyRulesImages(path: String?): Rule? {
+    fun complyRulesImages(path: String?): Rule? {
         Gallery.galleryConfig.validation.rules.forEach { rules ->
             if (!complyImageRule(path, rules)) {
                 return rules
@@ -91,7 +91,7 @@ class InValidPhotoException(message: String) : Throwable(message)
 class MimeTypeNotSupportedException(message: String) : Throwable(message)
 
 sealed class ValidationResult {
-    object Success : ValidationResult()
+    data object Success : ValidationResult()
 
     class Failure(val msg: String) : ValidationResult()
 }

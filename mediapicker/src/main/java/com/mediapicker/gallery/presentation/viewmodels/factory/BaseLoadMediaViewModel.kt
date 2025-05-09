@@ -1,16 +1,17 @@
 package com.mediapicker.gallery.presentation.viewmodels.factory
 
+import android.app.Application
 import android.database.Cursor
 import android.os.Bundle
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
-import com.mediapicker.gallery.GalleryConfig
 import com.mediapicker.gallery.presentation.viewmodels.StateData
 import java.util.concurrent.Executors
 
-abstract class BaseLoadMediaViewModel(private val galleryConfig: GalleryConfig) : ViewModel(), LoaderManager.LoaderCallbacks<Cursor> {
+abstract class BaseLoadMediaViewModel(application: Application) : AndroidViewModel(application),
+    LoaderManager.LoaderCallbacks<Cursor> {
 
     private val loadingStateLiveData = MutableLiveData<StateData>()
 
@@ -20,8 +21,6 @@ abstract class BaseLoadMediaViewModel(private val galleryConfig: GalleryConfig) 
     }
 
     fun getLoadingState() = loadingStateLiveData
-
-    protected fun getApplication() = galleryConfig.applicationContext
 
     abstract fun getCursorLoader(): Loader<Cursor>
 

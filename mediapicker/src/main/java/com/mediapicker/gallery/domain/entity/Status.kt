@@ -1,11 +1,11 @@
 package com.mediapicker.gallery.domain.entity
 
-enum class Status private constructor(name: String) {
-    PENDING("PENDING"),
-    POSTING("POSTING"),
-    OK("OK"),
-    VALIDATION_ERROR("VALIDATION_ERROR"),
-    NETWORK_ERROR("NETWORK_ERROR");
+enum class Status {
+    PENDING,
+    POSTING,
+    OK,
+    VALIDATION_ERROR,
+    NETWORK_ERROR;
 
     override fun toString(): String {
         return name
@@ -14,7 +14,7 @@ enum class Status private constructor(name: String) {
     companion object {
 
         fun fromName(name: String): Status? {
-            for (type in Status.values()) {
+            for (type in entries) {
                 if (type.name == name) {
                     return type
                 }

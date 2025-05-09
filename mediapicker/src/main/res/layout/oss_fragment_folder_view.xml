@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/linear_layout_parent"
+    android:background="@android:color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/folderRV"
@@ -13,16 +14,17 @@
         android:background="@android:color/white"
         android:drawSelectorOnTop="true"
         android:horizontalSpacing="0dp"
-        android:verticalSpacing="0dp"
-        android:paddingBottom="@dimen/module_bigger"/>
+        android:paddingBottom="@dimen/module_bigger"
+        android:verticalSpacing="0dp" />
 
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/actionButton"
+        style="@style/OSS_CustomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        style="@style/OSS_CustomButton"
+        android:layout_margin="@dimen/module_medium"
         android:enabled="true"
         android:text="Done" />
 </LinearLayout>

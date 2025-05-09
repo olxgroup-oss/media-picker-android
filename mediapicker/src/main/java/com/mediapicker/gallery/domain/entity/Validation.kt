@@ -1,7 +1,5 @@
 package com.mediapicker.gallery.domain.entity
 
-import java.util.*
-
 data class Validation(val rules: List<Rule>) {
 
     fun getMinVideoSelectionRule() = rules.filterIsInstance<Rule.MinVideoSelection>().first()
@@ -12,7 +10,7 @@ data class Validation(val rules: List<Rule>) {
 
     fun getMaxPhotoSelectionRule() = rules.filterIsInstance<Rule.MaxPhotoSelection>().first()
 
-    fun getMinWidhtRule() = rules.filterIsInstance<Rule.MinWidth>().first()
+    fun getMinWidthRule() = rules.filterIsInstance<Rule.MinWidth>().first()
 
     fun getMinHeightRule() = rules.filterIsInstance<Rule.MinHeight>().first()
 

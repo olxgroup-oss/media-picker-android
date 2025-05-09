@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:id="@+id/parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -22,7 +23,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:drawableTop="@drawable/oss_media_ic_no_images"
         android:text="@string/oss_activity_gallery_no_images"
         android:textAppearance="?textAppearanceSearchResultTitle"
         android:visibility="invisible"
@@ -30,7 +30,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:drawableTopCompat="@drawable/oss_media_ic_no_images"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"

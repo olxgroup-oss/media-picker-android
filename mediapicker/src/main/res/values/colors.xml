@@ -21,4 +21,9 @@
     <color name="oss_enable_action_button">@color/primary</color>
     <color name="oss_disable_action_button">#5C002f34</color>
 
+
+    <color name="button_background_color">#FF000000</color>
+    <color name="button_border_color">#B3FFFFFF</color>
+    <color name="oss_text_color">#FF000000</color> <!-- Black -->
+
 </resources>

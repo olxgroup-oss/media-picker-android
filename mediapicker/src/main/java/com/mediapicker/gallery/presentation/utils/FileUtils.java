@@ -6,13 +6,14 @@ import android.os.Environment;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class FileUtils {
 
     public static final String WHATSAPP_SEARCH_TERM = "'%WhatsApp%'";
-    private static String INTERNAL_PHOTO_PATH = "/DCIM/";
-    private static String IMAGE_EXTENSION = ".jpg";
-    private static String IMAGE_BASE_NAME = "image";
+    private static final String INTERNAL_PHOTO_PATH = "/DCIM/";
+    private static final String IMAGE_EXTENSION = ".jpg";
+    private static final String IMAGE_BASE_NAME = "image";
 
     public static File getNewPhotoFileOnPicturesDirectory() {
         File externalStorageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
@@ -62,7 +63,7 @@ public class FileUtils {
 
         if (index > 0) {
             fileName.append("_");
-            fileName.append(String.valueOf(index));
+            fileName.append(index);
         }
 
         return fileName.toString();
@@ -70,7 +71,7 @@ public class FileUtils {
 
     public static String getCurrentDateInFileNameStringFormat() {
         Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault());
         return dateFormat.format(date);
     }
 

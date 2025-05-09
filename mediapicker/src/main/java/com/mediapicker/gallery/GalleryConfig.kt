@@ -1,16 +1,15 @@
 package com.mediapicker.gallery
 
-import android.content.Context
 import androidx.annotation.LayoutRes
 import com.mediapicker.gallery.domain.contract.GalleryCommunicatorDefaultImpl
 import com.mediapicker.gallery.domain.contract.IGalleryCommunicator
 import com.mediapicker.gallery.domain.entity.CarousalConfig
 import com.mediapicker.gallery.domain.entity.GalleryLabels
+import com.mediapicker.gallery.domain.entity.GalleryUIConfig
 import com.mediapicker.gallery.domain.entity.PhotoTag
 import com.mediapicker.gallery.domain.entity.Validation
 
 class GalleryConfig(
-    val applicationContext: Context,
     val clientAuthority: String,
     var galleryCommunicator: IGalleryCommunicator?,
     val shouldUsePhotoCamera: Boolean,
@@ -23,19 +22,19 @@ class GalleryConfig(
     val photoTag: PhotoTag,
     val mediaScanningCriteria: MediaScanningCriteria,
     val textAllCaps: Boolean,
-    val galleryLabels: GalleryLabels
+    val galleryLabels: GalleryLabels,
+    val galleryUiConfig: GalleryUIConfig
 ) {
 
 
     fun shouldOnlyValidatePhoto() = typeOfMediaSupported == MediaType.PhotoWithFolderOnly || typeOfMediaSupported == MediaType.PhotoOnly || typeOfMediaSupported == MediaType.PhotoWithoutCameraFolderOnly
 
-    fun isGalleryInitialize() = applicationContext != null && clientAuthority != null
+//    fun isGalleryInitialize() = applicationContext != null && clientAuthority != null
 
 
     class GalleryNotInitilizedException(message: String = "Please initialize gallery with application and client authority") : Exception(message)
 
     class GalleryConfigBuilder(
-        private val applicationContext: Context,
         private val clientAuthority: String,
         private val galleryCommunicator: IGalleryCommunicator? = GalleryCommunicatorDefaultImpl()
     ) {
@@ -53,6 +52,7 @@ class GalleryConfig(
         private  var photoTag: PhotoTag=PhotoTag()
         private var mediaScanningCriteria = MediaScanningCriteria()
         private var galleryLabels = GalleryLabels()
+        private var galleryUiConfig = GalleryUIConfig()
 
         fun textAllCaps(textAllCaps: Boolean) = apply { this.textAllCaps = textAllCaps }
         fun useMyPhotoCamera(shouldUseMyCamera: Boolean) = apply { this.shouldUsePhotoCamera = shouldUseMyCamera }
@@ -71,11 +71,14 @@ class GalleryConfig(
             this.photoTag=photoTag
             return this
         }
+        fun galleryUIConfig(uiConfig: GalleryUIConfig):GalleryConfigBuilder{
+            this.galleryUiConfig = uiConfig
+            return this
+        }
 
         fun mediaScanningCriteria(mediaScanningCriteria: MediaScanningCriteria) = apply { this.mediaScanningCriteria = mediaScanningCriteria }
 
         fun build() = GalleryConfig(
-            applicationContext,
             clientAuthority,
             galleryCommunicator,
             shouldUsePhotoCamera,
@@ -88,17 +91,18 @@ class GalleryConfig(
             photoTag,
             mediaScanningCriteria,
             textAllCaps,
-            galleryLabels
+            galleryLabels,
+            galleryUiConfig
         )
 
     }
 
     sealed class MediaType {
-        object PhotoOnly : MediaType()
-        object PhotoWithVideo : MediaType()
-        object PhotoWithFolderAndVideo : MediaType()
-        object PhotoWithFolderOnly : MediaType()
-        object PhotoWithoutCameraFolderOnly : MediaType()
+        data object PhotoOnly : MediaType()
+        data object PhotoWithVideo : MediaType()
+        data object PhotoWithFolderAndVideo : MediaType()
+        data object PhotoWithFolderOnly : MediaType()
+        data object PhotoWithoutCameraFolderOnly : MediaType()
     }
 
     data class MediaScanningCriteria(val photoBrowseQuery: String = "", val videoBrowseQuery: String = "") {

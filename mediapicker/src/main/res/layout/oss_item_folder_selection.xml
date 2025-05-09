@@ -31,12 +31,12 @@
         android:layout_height="@dimen/module_medium_big"
         android:layout_gravity="center_vertical|center_horizontal"
         android:scaleType="fitCenter"
-        android:tint="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/oss_media_ic_camera"
-        android:layout_margin="@dimen/module_small"/>
+        android:layout_margin="@dimen/module_small"
+        app:tint="@android:color/white" />
 
 
 

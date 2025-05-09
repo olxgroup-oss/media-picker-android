@@ -36,7 +36,7 @@ open class PhotoSet : Serializable {
             return min(MAX_ASPECT_RATIO, max(MIN_ASPECT_RATIO, aspectRatio))
         }
 
-    constructor() {}
+    constructor()
 
     constructor(uploadedPhoto: UploadedPhoto) {
         this.id = uploadedPhoto.id
@@ -61,17 +61,14 @@ open class PhotoSet : Serializable {
 
 
     fun getPhoto(size: PhotoSize): Photo? {
-        var photo: Photo? = null
-        when (size) {
-            PhotoSize.SMALL -> photo = this.smallPhoto
-            PhotoSize.MEDIUM -> photo = this.mediumPhoto
-            PhotoSize.BIG -> photo = this.bigPhoto
+        var photo: Photo? = when (size) {
+            PhotoSize.SMALL -> this.smallPhoto
+            PhotoSize.MEDIUM -> this.mediumPhoto
+            PhotoSize.BIG -> this.bigPhoto
             PhotoSize.FULL -> if (full == null) {
-                photo = this.backgroundPhoto
+                this.backgroundPhoto
             } else {
-                photo = this.full
-            }
-            else -> {
+                this.full
             }
         }
         return photo

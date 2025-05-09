@@ -2,12 +2,11 @@ package com.mediapicker.gallery.presentation.fragments
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.mediapicker.gallery.Gallery
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.presentation.adapters.OnItemClickListener
 import com.mediapicker.gallery.presentation.adapters.SelectVideoAdapter
-import com.mediapicker.gallery.presentation.utils.getFragmentScopedViewModel
 import com.mediapicker.gallery.presentation.viewmodels.LoadVideoViewModel
 import com.mediapicker.gallery.presentation.viewmodels.VideoFile
 import com.mediapicker.gallery.presentation.viewmodels.VideoItem
@@ -16,18 +15,26 @@ import java.io.Serializable
 class VideoGridFragment : BaseViewPagerItemFragment(), OnItemClickListener {
 
     companion object {
-        fun getInstance(title: String, listOfSelectedVideos: List<VideoFile>) = VideoGridFragment().apply {
-            this.pageTitle = title
-            this.arguments = Bundle().apply { putSerializable(EXTRA_SELECTED_VIDEOS, listOfSelectedVideos as Serializable) }
-        }
+        fun getInstance(title: String, listOfSelectedVideos: List<VideoFile>) =
+            VideoGridFragment().apply {
+                this.pageTitle = title
+                this.arguments = Bundle().apply {
+                    putSerializable(
+                        EXTRA_SELECTED_VIDEOS,
+                        listOfSelectedVideos as Serializable
+                    )
+                }
+            }
     }
 
     private val loadVideoViewModel: LoadVideoViewModel by lazy {
-        getFragmentScopedViewModel { LoadVideoViewModel(Gallery.galleryConfig) }
+        ViewModelProvider(this)[LoadVideoViewModel::class.java].apply {
+            galleryConfig = Gallery.galleryConfig
+        }
     }
 
     private val adapter: SelectVideoAdapter by lazy {
-        SelectVideoAdapter(context!!, listOf(), listOfSelectedVideos, this)
+        SelectVideoAdapter(requireContext(), listOf(), listOfSelectedVideos, this)
     }
 
     private val listOfSelectedVideos: MutableList<VideoFile> by lazy {
@@ -47,11 +54,13 @@ class VideoGridFragment : BaseViewPagerItemFragment(), OnItemClickListener {
 
     override fun initViewModels() {
         super.initViewModels()
-        loadVideoViewModel.getVideoItem().observe(this, Observer {
+        loadVideoViewModel.getVideoItem().observe(this) {
             updateListItems(it)
-        })
+        }
         loadVideoViewModel.loadMedia(this)
-        bridgeViewModel.recordVideoWithNativeCamera().observe(this, Observer { recordVideoWithNativeCamera() })
+        bridgeViewModel.recordVideoWithNativeCamera().observe(
+            this
+        ) { recordVideoWithNativeCamera() }
     }
 
     private fun recordVideoWithNativeCamera() {
@@ -67,7 +76,10 @@ class VideoGridFragment : BaseViewPagerItemFragment(), OnItemClickListener {
             videoItem.isSelected = (!videoItem.isSelected)
             when {
                 listOfSelectedVideos.contains(videoItem) -> listOfSelectedVideos.remove(videoItem)
-                listOfSelectedVideos.size < bridgeViewModel.getMaxVideoSelectionLimit() -> listOfSelectedVideos.add(videoItem)
+                listOfSelectedVideos.size < bridgeViewModel.getMaxVideoSelectionLimit() -> listOfSelectedVideos.add(
+                    videoItem
+                )
+
                 else -> {
                     showMsg(bridgeViewModel.getMaxVideoLimitErrorResponse())
                 }

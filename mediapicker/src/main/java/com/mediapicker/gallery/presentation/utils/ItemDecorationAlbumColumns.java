@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemDecorationAlbumColumns extends RecyclerView.ItemDecoration {
 
-    private int mSizeGridSpacingPx;
-    private int mGridSize;
+    private final int mSizeGridSpacingPx;
+    private final int mGridSize;
 
     private boolean mNeedLeftSpacing = false;
 

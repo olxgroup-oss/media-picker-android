@@ -10,7 +10,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.mediapicker.gallery.R
 import com.mediapicker.gallery.domain.entity.MediaGalleryEntity
 
-class MediaGalleryView(context: Context, attrs: AttributeSet?) : MediaGalleryPagerView(context, attrs), View.OnClickListener,
+class MediaGalleryView(context: Context, attrs: AttributeSet?) :
+    MediaGalleryPagerView(context, attrs), View.OnClickListener,
     MediaGalleryPagerView.MediaChangeListener {
 
     private var onGalleryItemClickListener: OnGalleryItemClickListener? = null
@@ -49,6 +50,7 @@ class MediaGalleryView(context: Context, attrs: AttributeSet?) : MediaGalleryPag
             tvDefaultText.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(resources.getString(id), Html.FROM_HTML_MODE_COMPACT)
             } else {
+                @Suppress("DEPRECATION used for old versions")
                 Html.fromHtml(resources.getString(id))
             }
         } else {

@@ -4,6 +4,6 @@ import java.io.Serializable
 
 
 sealed class DefaultPage : Serializable {
-    object PhotoPage : DefaultPage()
-    object VideoPage : DefaultPage()
+    data object PhotoPage : DefaultPage()
+    data object VideoPage : DefaultPage()
 }
